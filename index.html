@@ -4645,17 +4645,24 @@ function _itunesJSONP(term,cb,country){
   const cbName="itcb_"+Math.random().toString(36).slice(2);
   let done=false;
   const s=document.createElement('script');
-  const to=setTimeout(()=>{ if(!done){done=true;try{delete window[cbName];}catch(e){}s.remove();cb(null);} },8000);
-  window[cbName]=(data)=>{ if(done)return; done=true; clearTimeout(to); cb(_pickPreview(data)); try{delete window[cbName];}catch(e){} s.remove(); };
+  const to=setTimeout(()=>{ if(!done){done=true;_itDiag.jsonpErr++;_itDiag.lastErr='jsonp: timeout';try{delete window[cbName];}catch(e){}s.remove();cb(null);} },4000);
+  window[cbName]=(data)=>{ if(done)return; done=true; clearTimeout(to); _itDiag.jsonpOk++; cb(_pickPreview(data)); try{delete window[cbName];}catch(e){} s.remove(); };
   s.src=`https://itunes.apple.com/search?term=${term}&media=music&entity=song&country=${c}&limit=5&callback=${cbName}`;
-  s.onerror=()=>{ if(!done){done=true;clearTimeout(to);cb(null);} };
+  s.onerror=()=>{ if(!done){done=true;clearTimeout(to);_itDiag.jsonpErr++;_itDiag.lastErr='jsonp: onerror';cb(null);} };
   document.head.appendChild(s);
 }
+window._itDiag=window._itDiag||{fetchOk:0,fetchErr:0,jsonpOk:0,jsonpErr:0,lastErr:''};
 function _itunesTry(term,country){
   const c=country||'IT';
   const url=`https://itunes.apple.com/search?term=${encodeURIComponent(term)}&media=music&entity=song&country=${c}&limit=10`;
-  return fetch(url,{mode:'cors'}).then(r=>r.ok?r.json():Promise.reject()).then(d=>_pickPreview(d))
-    .catch(()=>new Promise(res=>_itunesJSONP(encodeURIComponent(term),res,c)));
+  let ctrl=null, to=null;
+  try{ ctrl=new AbortController(); to=setTimeout(()=>{try{ctrl.abort();}catch(e){}},3500); }catch(e){}
+  const opt=ctrl?{mode:'cors',signal:ctrl.signal}:{mode:'cors'};
+  return fetch(url,opt)
+    .then(r=>{ if(to)clearTimeout(to); if(!r.ok)throw new Error('HTTP '+r.status); return r.json(); })
+    .then(d=>{ _itDiag.fetchOk++; return _pickPreview(d); })
+    .catch((e)=>{ if(to)clearTimeout(to); _itDiag.fetchErr++; _itDiag.lastErr='fetch: '+(e&&e.message||e); 
+      return new Promise(res=>_itunesJSONP(encodeURIComponent(term),res,c)); });
 }
 function itunesSearch(title,artist,cb){
   const key=(title+"|"+artist).toLowerCase();
@@ -4669,7 +4676,7 @@ function itunesSearch(title,artist,cb){
   function nextTry(){
     if(i>=queue.length){ _previewCache[key]=null; cb(null); return; }
     const pair=queue[i++], term=pair[0], country=pair[1];
-    let to=setTimeout(()=>{ next(null); }, 6000);
+    let to=setTimeout(()=>{ next(null); }, 4500);
     let advanced=false;
     function next(u){ if(advanced)return; advanced=true; clearTimeout(to); if(u){ _previewCache[key]=u; cb(u); } else { nextTry(); } }
     _itunesTry(term,country).then(u=>next(u)).catch(()=>next(null));
@@ -4720,7 +4727,10 @@ function mountPlayer(container, song, opts){
   // PRE-CARICO l'URL al montaggio: così quando l'utente tocca, play() parte nel gesto (fix iOS)
   itunesSearch(song.t, song.a, (u)=>{
     if(u){ url=u.url; art=u.art; btn.disabled=false; btn.style.opacity='1'; setBtn('play'); st.textContent='Pronto · premi “Ascolta” e indovina'; revBtn.style.display='block'; }
-    else { btn.disabled=true; btn.textContent='🔇 Anteprima assente'; st.textContent='⚠️ Anteprima non disponibile — usa i link qui sotto'; revBtn.style.display='block'; if(opts.onNoPreview)opts.onNoPreview(); }
+    else { btn.disabled=true; btn.textContent='🔇 Anteprima assente'; revBtn.style.display='block';
+      const d=window._itDiag||{}; 
+      st.innerHTML='⚠️ Anteprima non disponibile<br><span style="font-size:10px;opacity:.7">diag: fetch ok '+(d.fetchOk||0)+'/err '+(d.fetchErr||0)+' · jsonp ok '+(d.jsonpOk||0)+'/err '+(d.jsonpErr||0)+(d.lastErr?' · '+d.lastErr:'')+'</span>';
+      if(opts.onNoPreview)opts.onNoPreview(); }
   });
   btn.onclick=()=>{ if(!url)return; if(playing){ doPause(); } else { doPlay(); } };
   revBtn.onclick=()=>{
