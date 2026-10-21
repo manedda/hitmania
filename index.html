@@ -257,6 +257,8 @@
   .player .pbars span:nth-child(2){animation-delay:.1s}.player .pbars span:nth-child(3){animation-delay:.2s}.player .pbars span:nth-child(4){animation-delay:.3s}.player .pbars span:nth-child(5){animation-delay:.15s}.player .pbars span:nth-child(6){animation-delay:.25s}
   @keyframes eqp{0%,100%{height:15%}50%{height:95%}}
   .player .pstatus{color:var(--muted);font-size:13px;min-height:18px}
+  .player .pprog{height:7px;border-radius:999px;background:rgba(0,0,0,.4);overflow:hidden;margin:10px 0 8px}
+  .player .pprog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--cyan),var(--pink));transition:width .15s linear}
   .player .pbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid rgba(24,224,255,.55);border-radius:12px;padding:12px 18px;font-size:15px;font-weight:800;cursor:pointer;color:#fff;font-family:inherit;background:rgba(24,224,255,.12);box-shadow:0 0 16px rgba(24,224,255,.25);transition:.2s;margin-top:6px;width:100%}
   .player .pbtn:hover{transform:translateY(-2px)}
   .player .pbtn:active{transform:scale(.98)}
@@ -4296,7 +4298,7 @@ const _previewCache={};
 function cleanForSearch(s){ return String(s).replace(/\(.*?\)/g,' ').replace(/\[.*?\]/g,' ').replace(/ft\.?.*$/i,' ').replace(/feat\.?.*$/i,' ').replace(/\s+/g,' ').trim(); }
 function firstArtist(a){ return String(a).split(/ ft\.?| feat\.?|&|,|\//i)[0].trim(); }
 function _pickPreview(data){
-  try{ if(data&&data.results){ for(const r of data.results){ if(r.previewUrl)return r.previewUrl; } } }catch(e){}
+  try{ if(data&&data.results){ for(const r of data.results){ if(r.previewUrl){ let art=r.artworkUrl100||r.artworkUrl60||''; if(art)art=art.replace(/\/[0-9]+x[0-9]+bb\./,'/300x300bb.'); return {url:r.previewUrl, art:art}; } } } }catch(e){}
   return null;
 }
 /* JSONP fallback (iniezione <script>) */
@@ -4340,11 +4342,13 @@ function mountPlayer(container, song, opts){
     <div class="player">
       <div class="pdisc" id="pDisc"></div>
       <div class="pbars" id="pBars"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="pprog" id="pProg"><div class="pprog-fill" id="pProgFill"></div></div>
       <div class="pstatus" id="pStatus">🔎 Carico l'anteprima…</div>
       <button class="pbtn" id="pPlay" disabled style="opacity:.6">⏳ Attendi…</button>
       <div id="pRevealWrap" style="margin-top:10px">
         <button class="pbtn" id="pReveal" style="background:rgba(255,210,63,.14);border-color:rgba(255,210,63,.55);box-shadow:0 0 16px rgba(255,210,63,.22);display:none">👁 Rivela brano</button>
-        <div id="pAnswer" style="display:none;margin-top:8px">
+        <div id="pAnswer" style="display:none;margin-top:10px">
+          <img id="pArt" alt="" style="display:none;width:120px;height:120px;border-radius:12px;margin:0 auto 10px;box-shadow:0 8px 24px rgba(0,0,0,.5)">
           <div style="font-size:20px;font-weight:900" id="pSong"></div>
           <div style="color:var(--yellow);font-weight:700;font-size:15px" id="pArtist"></div>
         </div>
@@ -4353,37 +4357,41 @@ function mountPlayer(container, song, opts){
   const a=hitAudio();
   const disc=container.querySelector('#pDisc'), bars=container.querySelector('#pBars'), st=container.querySelector('#pStatus'), btn=container.querySelector('#pPlay');
   const revBtn=container.querySelector('#pReveal'), ansBox=container.querySelector('#pAnswer');
-  let url=null, clipTimer=null, playing=false;
+  const progFill=container.querySelector('#pProgFill');
+  let url=null, art=null, clipTimer=null, playing=false, rafId=null;
   function stopVisual(){ bars.classList.remove('playing'); disc.classList.remove('spin'); }
   function startVisual(){ bars.classList.add('playing'); disc.classList.add('spin'); }
-  function setBtn(state){ // 'play' | 'pause'
-    if(state==='pause'){ btn.textContent='⏸️ Pausa'; } else { btn.textContent='▶️ Ascolta'; }
+  function setBtn(s){ btn.textContent = s==='pause' ? '⏸️ Pausa' : '▶️ Ascolta'; }
+  function tickProg(){
+    if(progFill && a.duration){ progFill.style.width=Math.min(100,(a.currentTime/a.duration)*100)+'%'; }
+    if(playing){ rafId=requestAnimationFrame(tickProg); }
   }
   function doPlay(){
-    // chiamato DENTRO il tap (gesto utente) → iOS autorizza la riproduzione
     try{ if(a.src!==url){ a.src=url; a.currentTime=0; } }catch(e){}
     const pr=a.play();
-    if(pr&&pr.then){ pr.then(()=>{ playing=true; st.textContent='🎧 In riproduzione… indovina!'; startVisual(); setBtn('pause'); })
-      .catch(()=>{ st.textContent='⚠️ Tocca ancora “Ascolta”'; }); }
-    else { playing=true; st.textContent='🎧 In riproduzione… indovina!'; startVisual(); setBtn('pause'); }
+    const okStart=()=>{ playing=true; st.textContent='🎧 In riproduzione… indovina!'; startVisual(); setBtn('pause'); cancelAnimationFrame(rafId); tickProg(); };
+    if(pr&&pr.then){ pr.then(okStart).catch(()=>{ st.textContent='⚠️ Tocca ancora “Ascolta”'; }); }
+    else { okStart(); }
   }
-  function doPause(){ try{a.pause();}catch(e){} playing=false; stopVisual(); setBtn('play'); st.textContent='⏸️ In pausa · riprendi quando vuoi'; }
-  a.onended=()=>{ playing=false; stopVisual(); setBtn('play'); st.textContent='Anteprima finita · riascolta o rivela'; };
-  a.onpause=()=>{ if(playing){ /* pausa esterna */ } stopVisual(); };
+  function doPause(){ try{a.pause();}catch(e){} playing=false; cancelAnimationFrame(rafId); stopVisual(); setBtn('play'); st.textContent='⏸️ In pausa · riprendi quando vuoi'; }
+  a.onended=()=>{ playing=false; cancelAnimationFrame(rafId); if(progFill)progFill.style.width='100%'; stopVisual(); setBtn('play'); st.textContent='Anteprima finita · riascolta o rivela'; };
+  a.onpause=()=>{ stopVisual(); };
   // PRE-CARICO l'URL al montaggio: così quando l'utente tocca, play() parte nel gesto (fix iOS)
   itunesSearch(song.t, song.a, (u)=>{
-    if(u){ url=u; btn.disabled=false; btn.style.opacity='1'; setBtn('play'); st.textContent='Pronto · premi “Ascolta” e indovina'; revBtn.style.display='block'; }
+    if(u){ url=u.url; art=u.art; btn.disabled=false; btn.style.opacity='1'; setBtn('play'); st.textContent='Pronto · premi “Ascolta” e indovina'; revBtn.style.display='block'; }
     else { btn.disabled=true; btn.textContent='🔇 Anteprima assente'; st.textContent='⚠️ Anteprima non disponibile — usa i link qui sotto'; revBtn.style.display='block'; if(opts.onNoPreview)opts.onNoPreview(); }
   });
   btn.onclick=()=>{ if(!url)return; if(playing){ doPause(); } else { doPlay(); } };
   revBtn.onclick=()=>{
     container.querySelector('#pSong').textContent=song.t;
     container.querySelector('#pArtist').textContent=song.a;
+    const im=container.querySelector('#pArt');
+    if(art && im){ im.src=art; im.style.display='block'; }
     ansBox.style.display='block';
     revBtn.style.display='none';
     if(opts.onReveal)opts.onReveal();
   };
-  return { stop(){ try{a.pause();}catch(e){} playing=false; if(clipTimer)clearTimeout(clipTimer); stopVisual(); } };
+  return { stop(){ try{a.pause();}catch(e){} playing=false; cancelAnimationFrame(rafId); if(clipTimer)clearTimeout(clipTimer); stopVisual(); } };
 }
 function stopHitAudio(){ try{hitAudio().pause();}catch(e){} }
 
