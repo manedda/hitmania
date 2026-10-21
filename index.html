@@ -4210,31 +4210,52 @@ function renderQuiz(team){
 }
 
 /* ---- LISTEN ---- */
+function nextSongFromPool(){ return state.songPool.length?state.songPool.shift():buildSongPool()[0]; }
+/* Cerca un brano CON anteprima disponibile: prova fino a maxTries brani, saltando quelli senza preview.
+   cb(song, previewObj) — se nessuno ha anteprima entro maxTries, torna l'ultimo provato con previewObj=null. */
+function findPlayableSong(maxTries, cb){
+  let tries=0, last=null;
+  function attempt(){
+    const song=nextSongFromPool(); last=song; tries++;
+    itunesSearch(song.t, song.a, (u)=>{
+      if(u){ cb(song, u); }
+      else if(tries<maxTries){ attempt(); }
+      else { cb(last, null); }
+    });
+  }
+  attempt();
+}
+
 function renderListen(team){
   const box=document.getElementById('challengeBox');
-  const song=state.songPool.length?state.songPool.shift():buildSongPool()[0];
-  const q=encodeURIComponent(song.t+" "+song.a);
-  const order=[state.service,...Object.keys(SVC).filter(k=>k!==state.service)];
-  const links=order.map((k,idx)=>{const s=SVC[k];return `<a class="svc ${s.cls}" href="${s.url(q)}" target="hitmaniaPlayer" rel="noopener" onclick="sfx('click')"><span class="svc-ic ${s.cls}">${s.ic}</span>${s.n}</a>`;}).join('');
   const half=Math.round(state.points.listen/2);
+  // schermata di preparazione: cerca un brano CON anteprima garantita
   box.innerHTML=`
-    <div class="challenge-type"><span class="ic">🎧</span><h3>Ascolto</h3><p>Ascoltate l'anteprima · indovinate titolo + interprete · fino a +${state.points.listen}</p></div>
-    <div class="bigcard">
-      <div class="lab">🎧 Brano misterioso</div>
-      <div class="song" style="font-size:16px;color:var(--muted)">La squadra indovina titolo e interprete</div>
-      <div id="listenPlayer"></div>
-      <div class="catlabel">categoria: ${catLabel()}</div>
-      <div class="svctoggle"><a onclick="document.getElementById('listenFallback').style.display='block';this.parentNode.style.display='none'">🔇 Anteprima assente? Apri su Amazon/Spotify/YouTube</a></div>
-      <div class="svcfallback" id="listenFallback" style="display:none">
-        <div class="services">${links}</div>
+    <div class="challenge-type"><span class="ic">🎧</span><h3>Ascolto</h3><p>Preparo il brano…</p></div>
+    <div class="bigcard"><div class="player"><div class="pdisc spin" style="margin:2px auto 10px"></div><div class="pstatus">🔎 Cerco un brano con anteprima…</div></div></div>`;
+  findPlayableSong(12, (song, preview)=>{
+    const q=encodeURIComponent(song.t+" "+song.a);
+    const order=[state.service,...Object.keys(SVC).filter(k=>k!==state.service)];
+    const links=order.map((k,idx)=>{const s=SVC[k];return `<a class="svc ${s.cls}" href="${s.url(q)}" target="hitmaniaPlayer" rel="noopener" onclick="sfx('click')"><span class="svc-ic ${s.cls}">${s.ic}</span>${s.n}</a>`;}).join('');
+    box.innerHTML=`
+      <div class="challenge-type"><span class="ic">🎧</span><h3>Ascolto</h3><p>Ascoltate l'anteprima · indovinate titolo + interprete · fino a +${state.points.listen}</p></div>
+      <div class="bigcard">
+        <div class="lab">🎧 Brano misterioso</div>
+        <div class="song" style="font-size:16px;color:var(--muted)">La squadra indovina titolo e interprete</div>
+        <div id="listenPlayer"></div>
+        <div class="catlabel">categoria: ${catLabel()}</div>
+        <div class="svctoggle"><a onclick="document.getElementById('listenFallback').style.display='block';this.parentNode.style.display='none'">🔗 Apri anche su Amazon/Spotify/YouTube</a></div>
+        <div class="svcfallback" id="listenFallback" style="display:none">
+          <div class="services">${links}</div>
+        </div>
       </div>
-    </div>
-    <div class="btnrow">
-      <button class="btn ok" onclick="award(state.teams[${state.turnIndex}],${half});sfx('correct');showToast('Titolo +${half} 🎉');this.disabled=true;this.style.opacity=.5">✓ Titolo (+${half})</button>
-      <button class="btn ok" onclick="award(state.teams[${state.turnIndex}],${half});sfx('correct');showToast('Interprete +${half} 🎉');this.disabled=true;this.style.opacity=.5">✓ Interprete (+${half})</button>
-    </div>
-    <button class="btn ghost" style="margin-top:10px" onclick="stopHitAudio();nextTurn(false)">→ Prossimo turno</button>`;
-  mountPlayer(document.getElementById('listenPlayer'), song, {onNoPreview:()=>{document.getElementById('listenFallback').style.display='block';}});
+      <div class="btnrow">
+        <button class="btn ok" onclick="award(state.teams[${state.turnIndex}],${half});sfx('correct');showToast('Titolo +${half} 🎉');this.disabled=true;this.style.opacity=.5">✓ Titolo (+${half})</button>
+        <button class="btn ok" onclick="award(state.teams[${state.turnIndex}],${half});sfx('correct');showToast('Interprete +${half} 🎉');this.disabled=true;this.style.opacity=.5">✓ Interprete (+${half})</button>
+      </div>
+      <button class="btn ghost" style="margin-top:10px" onclick="stopHitAudio();nextTurn(false)">→ Prossimo turno</button>`;
+    mountPlayer(document.getElementById('listenPlayer'), song, {onNoPreview:()=>{document.getElementById('listenFallback').style.display='block';}});
+  });
 }
 
 /* ---- MIME ---- */
