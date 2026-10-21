@@ -4234,9 +4234,6 @@ function renderListen(team){
     <div class="challenge-type"><span class="ic">🎧</span><h3>Ascolto</h3><p>Preparo il brano…</p></div>
     <div class="bigcard"><div class="player"><div class="pdisc spin" style="margin:2px auto 10px"></div><div class="pstatus">🔎 Cerco un brano con anteprima…</div></div></div>`;
   findPlayableSong(12, (song, preview)=>{
-    const q=encodeURIComponent(song.t+" "+song.a);
-    const order=[state.service,...Object.keys(SVC).filter(k=>k!==state.service)];
-    const links=order.map((k,idx)=>{const s=SVC[k];return `<a class="svc ${s.cls}" href="${s.url(q)}" target="hitmaniaPlayer" rel="noopener" onclick="sfx('click')"><span class="svc-ic ${s.cls}">${s.ic}</span>${s.n}</a>`;}).join('');
     box.innerHTML=`
       <div class="challenge-type"><span class="ic">🎧</span><h3>Ascolto</h3><p>Ascoltate l'anteprima · indovinate titolo + interprete · fino a +${state.points.listen}</p></div>
       <div class="bigcard">
@@ -4244,17 +4241,13 @@ function renderListen(team){
         <div class="song" style="font-size:16px;color:var(--muted)">La squadra indovina titolo e interprete</div>
         <div id="listenPlayer"></div>
         <div class="catlabel">categoria: ${catLabel()}</div>
-        <div class="svctoggle"><a onclick="document.getElementById('listenFallback').style.display='block';this.parentNode.style.display='none'">🔗 Apri anche su Amazon/Spotify/YouTube</a></div>
-        <div class="svcfallback" id="listenFallback" style="display:none">
-          <div class="services">${links}</div>
-        </div>
       </div>
       <div class="btnrow">
         <button class="btn ok" onclick="award(state.teams[${state.turnIndex}],${half});sfx('correct');showToast('Titolo +${half} 🎉');this.disabled=true;this.style.opacity=.5">✓ Titolo (+${half})</button>
         <button class="btn ok" onclick="award(state.teams[${state.turnIndex}],${half});sfx('correct');showToast('Interprete +${half} 🎉');this.disabled=true;this.style.opacity=.5">✓ Interprete (+${half})</button>
       </div>
       <button class="btn ghost" style="margin-top:10px" onclick="stopHitAudio();nextTurn(false)">→ Prossimo turno</button>`;
-    mountPlayer(document.getElementById('listenPlayer'), song, {onNoPreview:()=>{document.getElementById('listenFallback').style.display='block';}});
+    mountPlayer(document.getElementById('listenPlayer'), song, {});
   });
 }
 
