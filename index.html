@@ -4294,23 +4294,34 @@ let HITAUDIO=null;
 function hitAudio(){ if(!HITAUDIO){HITAUDIO=new Audio();HITAUDIO.preload="none";} return HITAUDIO; }
 const _previewCache={};
 function cleanForSearch(s){ return String(s).replace(/\(.*?\)/g,' ').replace(/ft\.?.*$/i,' ').replace(/feat\.?.*$/i,' ').replace(/\s+/g,' ').trim(); }
-function itunesSearch(title,artist,cb){
-  const key=(title+"|"+artist).toLowerCase();
-  if(_previewCache[key]!==undefined){ cb(_previewCache[key]); return; }
+function _pickPreview(data){
+  try{ if(data&&data.results){ for(const r of data.results){ if(r.previewUrl)return r.previewUrl; } } }catch(e){}
+  return null;
+}
+/* JSONP fallback (iniezione <script>) */
+function _itunesJSONP(term,cb){
   const cbName="itcb_"+Math.random().toString(36).slice(2);
   let done=false;
   const s=document.createElement('script');
-  const to=setTimeout(()=>{ if(!done){done=true;try{delete window[cbName];}catch(e){}s.remove();cb(null);} },7000);
-  window[cbName]=(data)=>{ if(done)return; done=true; clearTimeout(to);
-    let url=null;
-    try{ if(data&&data.results){ for(const r of data.results){ if(r.previewUrl){url=r.previewUrl;break;} } } }catch(e){}
-    _previewCache[key]=url; cb(url);
-    try{delete window[cbName];}catch(e){} s.remove();
-  };
-  const term=encodeURIComponent(cleanForSearch(title)+" "+cleanForSearch(artist));
+  const to=setTimeout(()=>{ if(!done){done=true;try{delete window[cbName];}catch(e){}s.remove();cb(null);} },8000);
+  window[cbName]=(data)=>{ if(done)return; done=true; clearTimeout(to); cb(_pickPreview(data)); try{delete window[cbName];}catch(e){} s.remove(); };
   s.src=`https://itunes.apple.com/search?term=${term}&media=music&entity=song&limit=5&callback=${cbName}`;
-  s.onerror=()=>{ if(!done){done=true;clearTimeout(to);_previewCache[key]=null;cb(null);} };
+  s.onerror=()=>{ if(!done){done=true;clearTimeout(to);cb(null);} };
   document.head.appendChild(s);
+}
+function itunesSearch(title,artist,cb){
+  const key=(title+"|"+artist).toLowerCase();
+  if(_previewCache[key]!==undefined){ cb(_previewCache[key]); return; }
+  const term=encodeURIComponent(cleanForSearch(title)+" "+cleanForSearch(artist));
+  const url=`https://itunes.apple.com/search?term=${term}&media=music&entity=song&limit=5`;
+  const finish=(u)=>{ _previewCache[key]=u; cb(u); };
+  let settled=false;
+  const guard=setTimeout(()=>{ if(!settled){ settled=true; _itunesJSONP(term,finish); } },8000);
+  // metodo primario: fetch (l'API iTunes invia header CORS) — funziona meglio di JSONP su iOS Safari
+  fetch(url,{mode:'cors'})
+    .then(r=>r.ok?r.json():Promise.reject())
+    .then(data=>{ if(settled)return; settled=true; clearTimeout(guard); const u=_pickPreview(data); if(u)finish(u); else _itunesJSONP(term,finish); })
+    .catch(()=>{ if(settled)return; settled=true; clearTimeout(guard); _itunesJSONP(term,finish); });
 }
 /* Renderizza un player "al buio" in un contenitore. onReveal opzionale. clipSec=0 => intera preview */
 function mountPlayer(container, song, opts){
