@@ -245,6 +245,24 @@
     text-shadow:0 6px 40px rgba(255,46,147,.25);animation:spPulse 1.4s ease-in-out infinite}
   #splash .sp-sub{color:var(--cyan);font-size:12px;letter-spacing:5px;font-weight:700;margin-top:6px}
   @keyframes spPulse{50%{opacity:.75}}
+
+  /* ===== APPLE PREVIEW PLAYER ===== */
+  .player{margin:14px 0 4px;background:rgba(0,0,0,.28);border:1px solid var(--cardborder);border-radius:14px;padding:16px;text-align:center}
+  .player .pdisc{width:84px;height:84px;border-radius:50%;margin:2px auto 10px;background:radial-gradient(circle at 50% 50%,#1a1a1a 0 18%,#000 18% 20%,#222 20% 100%);border:5px solid #111;box-shadow:0 0 0 5px #1b1b1b,0 8px 24px rgba(0,0,0,.5);position:relative;display:grid;place-items:center}
+  .player .pdisc::before{content:"";width:16px;height:16px;border-radius:50%;background:linear-gradient(var(--pink),var(--purple))}
+  .player .pdisc.spin{animation:spin 3s linear infinite}
+  .player .pbars{display:flex;gap:4px;align-items:flex-end;height:34px;justify-content:center;margin:8px 0}
+  .player .pbars span{width:5px;background:linear-gradient(var(--cyan),var(--pink));border-radius:3px;height:20%}
+  .player .pbars.playing span{animation:eqp .8s ease-in-out infinite}
+  .player .pbars span:nth-child(2){animation-delay:.1s}.player .pbars span:nth-child(3){animation-delay:.2s}.player .pbars span:nth-child(4){animation-delay:.3s}.player .pbars span:nth-child(5){animation-delay:.15s}.player .pbars span:nth-child(6){animation-delay:.25s}
+  @keyframes eqp{0%,100%{height:15%}50%{height:95%}}
+  .player .pstatus{color:var(--muted);font-size:13px;min-height:18px}
+  .player .pbtn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:1.5px solid rgba(24,224,255,.55);border-radius:12px;padding:12px 18px;font-size:15px;font-weight:800;cursor:pointer;color:#fff;font-family:inherit;background:rgba(24,224,255,.12);box-shadow:0 0 16px rgba(24,224,255,.25);transition:.2s;margin-top:6px;width:100%}
+  .player .pbtn:hover{transform:translateY(-2px)}
+  .player .pbtn:active{transform:scale(.98)}
+  .svctoggle{margin-top:10px;text-align:center}
+  .svctoggle a{color:var(--muted);font-size:12px;cursor:pointer;text-decoration:underline}
+  .svcfallback{margin-top:8px}
 </style>
 </head>
 <body>
@@ -270,8 +288,9 @@
     <div class="card">
       <h2 class="title">🎵 Pronti a scatenarvi?</h2>
       <p class="sub">Sfidatevi a colpi di musica: quiz, ascolto, mimo e karaoke. La squadra con più punti alla fine vince!</p>
-      <button class="btn" onclick="go('setup')">▶ GIOCA</button>
-      <div class="btnrow"><button class="btn sec" onclick="go('rules')">📖 Come si gioca</button></div>
+      <button class="btn" onclick="go('setup')">▶ GIOCA IN SQUADRE</button>
+      <div class="btnrow"><button class="btn sec" onclick="startSolo()">🎧 GIOCA DA SOLO</button></div>
+      <div class="btnrow"><button class="btn ghost" onclick="go('rules')">📖 Come si gioca</button></div>
     </div>
     <div class="homefoot">
       <p>Hitmania è un party game musicale <b>fan-made</b> a scopo di intrattenimento, senza fini di lucro e non affiliato ad Amazon Music, Spotify, YouTube o ad alcun editore musicale. I titoli e gli interpreti citati appartengono ai rispettivi proprietari; il gioco <b>non riproduce testi né registrazioni</b>, ma rimanda ai servizi di streaming per l'ascolto.</p>
@@ -416,6 +435,16 @@
     <div class="card" id="finalBoard"></div>
     <button class="btn" style="margin-top:16px" onclick="go('setup')">🔁 Rigioca</button>
     <button class="btn ghost" style="margin-top:10px" onclick="go('home')">🏠 Home</button>
+  </section>
+
+  <!-- SOLO -->
+  <section class="screen" id="s-solo">
+    <div style="text-align:center">
+      <span class="pill" id="soloPill">MODALITÀ SOLO</span>
+      <h2 class="title" id="soloTitle" style="margin-top:8px">🎧 Indovina il brano</h2>
+    </div>
+    <div class="card" id="soloBox"></div>
+    <div class="mini-score" id="soloScore"></div>
   </section>
 
   <!-- PRIVACY -->
@@ -4079,23 +4108,26 @@ function renderListen(team){
   const song=state.songPool.length?state.songPool.shift():buildSongPool()[0];
   const q=encodeURIComponent(song.t+" "+song.a);
   const order=[state.service,...Object.keys(SVC).filter(k=>k!==state.service)];
-  const links=order.map((k,idx)=>{const s=SVC[k];return `<a class="svc ${s.cls} ${idx===0?'primary':''}" href="${s.url(q)}" target="hitmaniaPlayer" rel="noopener" onclick="sfx('click')"><span class="svc-ic ${s.cls}">${s.ic}</span>${s.n}${idx===0?' ★':''}</a>`;}).join('');
+  const links=order.map((k,idx)=>{const s=SVC[k];return `<a class="svc ${s.cls}" href="${s.url(q)}" target="hitmaniaPlayer" rel="noopener" onclick="sfx('click')"><span class="svc-ic ${s.cls}">${s.ic}</span>${s.n}</a>`;}).join('');
   const half=Math.round(state.points.listen/2);
   box.innerHTML=`
-    <div class="challenge-type"><span class="ic">🎧</span><h3>Ascolto</h3><p>Riproducete il brano · titolo + interprete · fino a +${state.points.listen}</p></div>
+    <div class="challenge-type"><span class="ic">🎧</span><h3>Ascolto</h3><p>Ascoltate l'anteprima · indovinate titolo + interprete · fino a +${state.points.listen}</p></div>
     <div class="bigcard">
-      <div class="lab">▶ Brano da riprodurre</div>
-      <div class="song">${escapeHtml(song.t)}</div>
-      <div class="artist">${escapeHtml(song.a)}</div>
-      <div class="services">${links}</div>
+      <div class="lab">🎧 Brano misterioso</div>
+      <div class="song" style="font-size:16px;color:var(--muted)">La squadra indovina titolo e interprete</div>
+      <div id="listenPlayer"></div>
       <div class="catlabel">categoria: ${catLabel()}</div>
-      <div class="hint">Servizio predefinito: <b>${SVC[state.service].n}</b> ★ · i brani si aprono sempre nella stessa scheda: <b>accedi una volta sola</b>. La squadra indovina <b>titolo</b> e <b>interprete</b>.</div>
+      <div class="svctoggle"><a onclick="document.getElementById('listenFallback').style.display='block';this.parentNode.style.display='none'">🔇 Anteprima assente? Apri su Amazon/Spotify/YouTube</a></div>
+      <div class="svcfallback" id="listenFallback" style="display:none">
+        <div class="services">${links}</div>
+      </div>
     </div>
     <div class="btnrow">
       <button class="btn ok" onclick="award(state.teams[${state.turnIndex}],${half});sfx('correct');showToast('Titolo +${half} 🎉');this.disabled=true;this.style.opacity=.5">✓ Titolo (+${half})</button>
       <button class="btn ok" onclick="award(state.teams[${state.turnIndex}],${half});sfx('correct');showToast('Interprete +${half} 🎉');this.disabled=true;this.style.opacity=.5">✓ Interprete (+${half})</button>
     </div>
-    <button class="btn ghost" style="margin-top:10px" onclick="nextTurn(false)">→ Prossimo turno</button>`;
+    <button class="btn ghost" style="margin-top:10px" onclick="stopHitAudio();nextTurn(false)">→ Prossimo turno</button>`;
+  mountPlayer(document.getElementById('listenPlayer'), song, {onNoPreview:()=>{document.getElementById('listenFallback').style.display='block';}});
 }
 
 /* ---- MIME ---- */
@@ -4152,6 +4184,67 @@ function showNext(){const box=document.getElementById('challengeBox');if(!box.qu
 function startBarTimer(sec,elId,fillId){clearTimer();let t=sec;const el=document.getElementById(elId),fill=document.getElementById(fillId);if(el){el.textContent=t;el.classList.remove('low');}if(fill)fill.style.width='100%';timerId=setInterval(()=>{t--;if(el)el.textContent=t<=0?"⏰":t;if(fill)fill.style.width=Math.max(0,100*t/sec)+'%';if(t<=5&&t>0){if(el)el.classList.add('low');sfx("tick");}if(t<=0){clearTimer();sfx("wrong");}},1000);}
 function clearTimer(){if(timerId){clearInterval(timerId);timerId=null;}}
 
+/* ===== APPLE PREVIEW (iTunes Search via JSONP — nessun ID da curare) ===== */
+let HITAUDIO=null;
+function hitAudio(){ if(!HITAUDIO){HITAUDIO=new Audio();HITAUDIO.preload="none";} return HITAUDIO; }
+const _previewCache={};
+function cleanForSearch(s){ return String(s).replace(/\(.*?\)/g,' ').replace(/ft\.?.*$/i,' ').replace(/feat\.?.*$/i,' ').replace(/\s+/g,' ').trim(); }
+function itunesSearch(title,artist,cb){
+  const key=(title+"|"+artist).toLowerCase();
+  if(_previewCache[key]!==undefined){ cb(_previewCache[key]); return; }
+  const cbName="itcb_"+Math.random().toString(36).slice(2);
+  let done=false;
+  const s=document.createElement('script');
+  const to=setTimeout(()=>{ if(!done){done=true;try{delete window[cbName];}catch(e){}s.remove();cb(null);} },7000);
+  window[cbName]=(data)=>{ if(done)return; done=true; clearTimeout(to);
+    let url=null;
+    try{ if(data&&data.results){ for(const r of data.results){ if(r.previewUrl){url=r.previewUrl;break;} } } }catch(e){}
+    _previewCache[key]=url; cb(url);
+    try{delete window[cbName];}catch(e){} s.remove();
+  };
+  const term=encodeURIComponent(cleanForSearch(title)+" "+cleanForSearch(artist));
+  s.src=`https://itunes.apple.com/search?term=${term}&media=music&entity=song&limit=5&callback=${cbName}`;
+  s.onerror=()=>{ if(!done){done=true;clearTimeout(to);_previewCache[key]=null;cb(null);} };
+  document.head.appendChild(s);
+}
+/* Renderizza un player "al buio" in un contenitore. onReveal opzionale. clipSec=0 => intera preview */
+function mountPlayer(container, song, opts){
+  opts=opts||{};
+  const clipSec=opts.clipSec||0;
+  container.innerHTML=`
+    <div class="player">
+      <div class="pdisc" id="pDisc"></div>
+      <div class="pbars" id="pBars"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="pstatus" id="pStatus">Premi “Ascolta” per sentire ${clipSec?clipSec+' secondi':'un\'anteprima'} del brano</div>
+      <button class="pbtn" id="pPlay">▶️ Ascolta${clipSec?` (${clipSec}s)`:''}</button>
+    </div>`;
+  const a=hitAudio();
+  const disc=container.querySelector('#pDisc'), bars=container.querySelector('#pBars'), st=container.querySelector('#pStatus'), btn=container.querySelector('#pPlay');
+  let url=null, clipTimer=null;
+  function stopVisual(){ bars.classList.remove('playing'); disc.classList.remove('spin'); }
+  function startVisual(){ bars.classList.add('playing'); disc.classList.add('spin'); }
+  function doPlay(){
+    try{a.pause();}catch(e){}
+    a.src=url; a.currentTime=0;
+    a.play().then(()=>{
+      st.textContent='🎧 In riproduzione… indovina!'; startVisual();
+      if(clipTimer)clearTimeout(clipTimer);
+      if(clipSec){ clipTimer=setTimeout(()=>{ try{a.pause();}catch(e){} stopVisual(); st.textContent='⏱ Clip terminata · riascolta o rivela'; }, clipSec*1000); }
+    }).catch(()=>{ st.textContent='⚠️ Tocca di nuovo “Ascolta”'; });
+  }
+  a.onended=()=>{ stopVisual(); st.textContent='Anteprima finita · riascolta o rivela'; };
+  btn.onclick=()=>{
+    if(url){ doPlay(); return; }
+    st.textContent='🔎 Cerco l\'anteprima…';
+    itunesSearch(song.t, song.a, (u)=>{
+      if(u){ url=u; doPlay(); }
+      else { st.textContent='⚠️ Anteprima non disponibile — usa i link qui sotto'; if(opts.onNoPreview)opts.onNoPreview(); }
+    });
+  };
+  return { stop(){ try{a.pause();}catch(e){} if(clipTimer)clearTimeout(clipTimer); stopVisual(); } };
+}
+function stopHitAudio(){ try{hitAudio().pause();}catch(e){} }
+
 /* ================= END ================= */
 function endGame(){
   clearTimer();sfx("win");
@@ -4165,6 +4258,107 @@ function endGame(){
 }
 
 /* ================= PWA / INSTALL ================= */
+/* ===== MODALITÀ SOLO (giocabile da soli: Quiz + Ascolto al buio) ===== */
+let solo={round:0,total:10,score:0,streak:0,best:0,pool:[],quiz:[],mode:"mix"};
+function loadSoloBest(){ try{return parseInt(localStorage.getItem('hitmania_solo_best')||'0',10)||0;}catch(e){return 0;} }
+function saveSoloBest(v){ try{localStorage.setItem('hitmania_solo_best',String(v));}catch(e){} }
+function startSolo(){
+  ac();
+  soundOn=document.getElementById('optSound')?document.getElementById('optSound').checked:true;
+  solo.round=0;solo.score=0;solo.streak=0;
+  solo.best=loadSoloBest();
+  // difficoltà: riusa lo stato se impostata, altrimenti medio
+  if(!state.difficulty)state.difficulty="medio";
+  solo.pool=buildSoloPool();
+  solo.quiz=shuffle(QUIZ);
+  go('solo');
+  soloNext(true);
+}
+function buildSoloPool(){
+  // in solo usa il filtro notorietà della difficoltà ma ignora categorie (varietà massima)
+  const allow=state.difficulty==="facile"?["pop1"]:(state.difficulty==="difficile"?["pop1","pop2","pop3"]:["pop1","pop2"]);
+  let pool=SONGS.filter(s=>allow.some(x=>s.c.includes(x)));
+  if(pool.length<10)pool=SONGS.slice();
+  return shuffle(pool);
+}
+function soloScoreBar(){
+  const el=document.getElementById('soloScore');
+  el.innerHTML=`<div class="ms">🎯 Punti: ${solo.score}</div><div class="ms">🔥 Serie: ${solo.streak}</div><div class="ms">🏆 Record: ${Math.max(solo.best,solo.score)}</div>`;
+}
+function soloNext(first){
+  clearTimer();stopHitAudio();
+  if(!first)solo.round++;
+  if(solo.round>=solo.total){ return soloEnd(); }
+  document.getElementById('soloPill').textContent=`DOMANDA ${solo.round+1} / ${solo.total}`;
+  soloScoreBar();
+  // alterna: indice pari = Ascolto al buio, dispari = Quiz
+  if(solo.round%2===1){ soloQuiz(); } else { soloListen(); }
+}
+function soloListen(){
+  const box=document.getElementById('soloBox');
+  const song=solo.pool.length?solo.pool.shift():buildSoloPool()[0];
+  const clip=state.difficulty==="facile"?0:(state.difficulty==="difficile"?7:15);
+  document.getElementById('soloTitle').textContent="🎧 Indovina il brano";
+  box.innerHTML=`
+    <p class="hint" style="text-align:center;margin-bottom:6px">Ascolta e pensa a <b>titolo</b> e <b>interprete</b>, poi rivela.</p>
+    <div id="soloPlayer"></div>
+    <button class="btn" id="soloReveal" style="margin-top:12px">👁 Rivela la risposta</button>
+    <div id="soloAns" class="hidden" style="text-align:center;margin-top:12px">
+      <div style="font-size:22px;font-weight:900" id="soloSong"></div>
+      <div style="color:var(--yellow);font-weight:700" id="soloArtist"></div>
+      <div class="row" style="display:flex;gap:10px;margin-top:12px">
+        <button class="btn ok" id="soloOk">✓ Indovinato</button>
+        <button class="btn no" id="soloNo">✗ No</button>
+      </div>
+    </div>`;
+  mountPlayer(document.getElementById('soloPlayer'), song, {clipSec:clip});
+  document.getElementById('soloReveal').onclick=()=>{
+    document.getElementById('soloSong').textContent=song.t;
+    document.getElementById('soloArtist').textContent=song.a;
+    document.getElementById('soloAns').classList.remove('hidden');
+    document.getElementById('soloReveal').classList.add('hidden');
+  };
+  document.getElementById('soloOk').onclick=()=>{ solo.score+=10; solo.streak++; if(solo.streak>=3)solo.score+=2; sfx('correct'); showToast(solo.streak>=3?`+12 🔥 serie ${solo.streak}`:'+10 🎉'); soloNext(false); };
+  document.getElementById('soloNo').onclick=()=>{ solo.streak=0; sfx('wrong'); soloNext(false); };
+}
+function soloQuiz(){
+  const box=document.getElementById('soloBox');
+  const q=solo.quiz.length?solo.quiz.shift():shuffle(QUIZ)[0];
+  const correct=q.a[0],opts=shuffle(q.a),letters=["A","B","C","D"];
+  document.getElementById('soloTitle').textContent="🧠 Quiz musicale";
+  box.innerHTML=`<p style="font-size:19px;font-weight:800;text-align:center;margin:6px 0 10px">${escapeHtml(q.q)}</p><div id="soloOpts"></div>`;
+  const oc=box.querySelector('#soloOpts');let answered=false;
+  opts.forEach((o,i)=>{
+    const b=document.createElement('button');b.className='opt';b.dataset.v=o;
+    b.innerHTML=`<span class="k">${letters[i]}</span><span>${escapeHtml(o)}</span>`;
+    b.onclick=()=>{
+      if(answered)return;answered=true;
+      oc.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(x.dataset.v===correct)x.classList.add('correct');});
+      if(o===correct){ b.classList.add('correct'); solo.score+=10; solo.streak++; if(solo.streak>=3)solo.score+=2; sfx('correct'); showToast(solo.streak>=3?`+12 🔥 serie ${solo.streak}`:'+10 🎉'); }
+      else{ b.classList.add('wrong'); solo.streak=0; sfx('wrong'); }
+      const nb=document.createElement('button');nb.className='btn';nb.style.marginTop='14px';nb.textContent='→ Avanti';nb.onclick=()=>soloNext(false);box.appendChild(nb);
+    };
+    oc.appendChild(b);
+  });
+}
+function soloEnd(){
+  stopHitAudio();sfx('win');
+  const box=document.getElementById('soloBox');
+  const isRecord=solo.score>solo.best;
+  if(isRecord)saveSoloBest(solo.score);
+  document.getElementById('soloPill').textContent="FINE";
+  document.getElementById('soloTitle').textContent=isRecord?"🏆 Nuovo record!":"🎵 Partita finita";
+  document.getElementById('soloScore').innerHTML='';
+  box.innerHTML=`
+    <div style="text-align:center">
+      <div style="font-size:64px">${isRecord?'🏆':'🎧'}</div>
+      <h2 style="font-size:34px;margin:6px 0">${solo.score} punti</h2>
+      <p class="hint">${isRecord?'Hai battuto il tuo record precedente!':'Record personale: '+Math.max(solo.best,solo.score)+' punti'}</p>
+      <button class="btn" style="margin-top:16px" onclick="startSolo()">🔁 Rigioca</button>
+      <button class="btn ghost" style="margin-top:10px" onclick="go('home')">🏠 Home</button>
+    </div>`;
+}
+
 function setupPWA(){
   const ICON_PNG="icon-512.png";
   const icon="data:image/svg+xml,"+encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='%23ff2e93'/><stop offset='0.5' stop-color='%238a2be2'/><stop offset='1' stop-color='%2318e0ff'/></linearGradient></defs><rect width='512' height='512' rx='96' fill='%230b0618'/><circle cx='256' cy='256' r='150' fill='none' stroke='url(%23g)' stroke-width='26'/><circle cx='256' cy='256' r='40' fill='url(%23g)'/><text x='256' y='450' font-family='Arial' font-size='62' font-weight='bold' fill='url(%23g)' text-anchor='middle'>HITMANIA</text></svg>`);
