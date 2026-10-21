@@ -300,7 +300,7 @@
       </div>
       <button class="btn" onclick="goSetup('team')">▶ GIOCA IN SQUADRE</button>
       <div class="btnrow"><button class="btn sec" onclick="goSetup('solo')">🎧 GIOCA DA SOLO</button></div>
-      <div class="btnrow"><button class="btn ghost" onclick="go('rules')">📖 Come si gioca</button></div>
+      <div class="btnrow"><button class="btn ghost" onclick="go('rules')">📖 Come si gioca</button><button class="btn ghost" onclick="go('records')">🏆 Record</button></div>
     </div>
     <div class="homefoot">
       <p>Hitmania è un party game musicale <b>fan-made</b> a scopo di intrattenimento, senza fini di lucro e non affiliato ad Amazon Music, Spotify, YouTube o ad alcun editore musicale. I titoli e gli interpreti citati appartengono ai rispettivi proprietari; il gioco <b>non riproduce testi né registrazioni</b>, ma rimanda ai servizi di streaming per l'ascolto.</p>
@@ -409,13 +409,7 @@
 
     <!-- SERVIZIO + OPZIONI -->
     <div class="card">
-      <h4>🎧 Servizio musicale predefinito</h4>
-      <div class="seg" id="svcSeg">
-        <div class="opt-svc amz on" data-svc="amz" onclick="pickService('amz')"><span class="svc-ic amz"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><defs><linearGradient id="amg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4FD4F0"/><stop offset="1" stop-color="#17255A"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#amg)"/><ellipse cx="9.6" cy="13.6" rx="2.1" ry="1.6" fill="#fff"/><rect x="11.4" y="6.4" width="1.25" height="7.2" fill="#fff"/><path d="M12.65 6.4c1.7.15 2.9.95 3.3 2.15-.85-.65-1.95-.95-3.3-1z" fill="#fff"/><path d="M6.4 18.3c3.4 1.9 7.8 1.9 11.2 0" stroke="#fff" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".9"/></svg></span>Amazon Music</div>
-        <div class="opt-svc spo" data-svc="spo" onclick="pickService('spo')"><span class="svc-ic spo"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#1DB954"/><path d="M17.6 11c-3-1.8-8-2-10.9-1.1a.86.86 0 1 1-.5-1.64C9.5 7.2 15 7.43 18.4 9.46a.86.86 0 1 1-.88 1.48zm-.1 2.64a.72.72 0 0 1-1 .24c-2.5-1.54-6.3-2-9.2-1.1a.72.72 0 1 1-.42-1.37c3.35-1.02 7.5-.5 10.4 1.26.34.2.45.66.22 1zm-1.1 2.55a.57.57 0 0 1-.79.19c-2.18-1.33-4.92-1.63-8.15-.9a.57.57 0 1 1-.26-1.12c3.5-.8 6.56-.45 8.98 1.04.27.16.36.52.22.79z" fill="#000"/></svg></span>Spotify</div>
-        <div class="opt-svc yt" data-svc="yt" onclick="pickService('yt')"><span class="svc-ic yt"><svg viewBox="0 0 28 20" width="28" height="20" aria-hidden="true"><rect x="0.5" y="0.5" width="27" height="19" rx="5" fill="#FF0000"/><path d="M11 5.5l7 4.5-7 4.5z" fill="#fff"/></svg></span>YouTube</div>
-      </div>
-      <div class="lblrow"><h3>⚙️ Opzioni</h3></div>
+<div class="lblrow"><h3>⚙️ Opzioni</h3></div>
       <div class="steprow"><span class="lab2">⚡ Quiz a tempo + bonus velocità</span><label class="switch"><input type="checkbox" id="optTimed" checked><span class="slider"></span></label></div>
       <div class="steprow"><span class="lab2">🔊 Effetti sonori</span><label class="switch"><input type="checkbox" id="optSound" checked onchange="syncSound()"><span class="slider"></span></label></div>
     </div>
@@ -445,6 +439,15 @@
     <div class="card" id="finalBoard"></div>
     <button class="btn" style="margin-top:16px" onclick="goSetup(state.solo?'solo':'team')">🔁 Rigioca</button>
     <button class="btn ghost" style="margin-top:10px" onclick="go('home')">🏠 Home</button>
+  </section>
+
+  <!-- RECORDS -->
+  <section class="screen" id="s-records">
+    <h2 class="title">🏆 Storico Record</h2>
+    <p class="sub">I migliori punteggi salvati su questo dispositivo.</p>
+    <div id="recordsBox"></div>
+    <button class="btn ghost" style="margin-top:14px" onclick="clearRecords()">🗑 Cancella storico</button>
+    <button class="btn" style="margin-top:10px" onclick="go('home')">🏠 Home</button>
   </section>
 
   <!-- PRIVACY -->
@@ -3991,6 +3994,7 @@ function go(id,fromHistory){
   // gestione cronologia: ogni schermata diventa uno stato, così il tasto "indietro" naviga nel gioco
   if(!fromHistory){ try{history.pushState({screen:id},'', '#'+id);}catch(e){} }
   if(id==='home'){ try{maybeShowResume();}catch(e){} }
+  if(id==='records'){ try{renderRecords();}catch(e){} }
 }
 // Intercetta il tasto "indietro" del browser: naviga tra le schermate invece di uscire
 window.addEventListener('popstate',(ev)=>{
@@ -4022,11 +4026,12 @@ function goSetup(mode){
   const title=document.getElementById('setupTitle'), sub=document.getElementById('setupSub'), teamsCard=document.getElementById('teamsCard');
   const chTitle=document.getElementById('chTitle'), catSub=document.getElementById('catSubLabel');
   if(state.solo){
-    // 1 giocatore, niente gestione squadre
-    state.teams=[{name:"Tu",color:COLORS[0],score:0}];
+    // 1 giocatore con nome/username per salvare i record
+    let nm="Tu"; try{nm=localStorage.getItem('hitmania_solo_name')||"Tu";}catch(e){}
+    state.teams=[{name:nm,color:COLORS[0],score:0}];
     title.textContent="🎧 Gioca da solo";
     sub.textContent="Sfida personale: quiz e ascolto. Batti il tuo record!";
-    teamsCard.style.display="none";
+    teamsCard.style.display="";
     chTitle.textContent="🏁 Sfide & punti";
     if(catSub)catSub.textContent="(Ascolto)";
     // in solo: disattiva mimo/karaoke, attiva quiz+listen
@@ -4068,6 +4073,16 @@ function renderChList(){
 }
 function renderTeams(){
   const el=document.getElementById('teamList');el.innerHTML='';
+  const addBtn=document.querySelector('#teamsCard .btn.sec.small');
+  if(state.solo){
+    if(addBtn)addBtn.style.display='none';
+    const d=document.createElement('div');d.className='team-item';
+    d.innerHTML=`<span class="dot" style="background:${state.teams[0].color};color:${state.teams[0].color}"></span>
+      <input type="text" placeholder="Il tuo nome o username" value="${(state.teams[0].name==='Tu'?'':state.teams[0].name).replace(/"/g,'&quot;')}" oninput="state.teams[0].name=this.value||'Tu';try{localStorage.setItem('hitmania_solo_name',state.teams[0].name);}catch(e){}">`;
+    el.appendChild(d);
+    return;
+  }
+  if(addBtn)addBtn.style.display='';
   state.teams.forEach((t,i)=>{
     const d=document.createElement('div');d.className='team-item';
     d.innerHTML=`<span class="dot" style="background:${t.color};color:${t.color}"></span>
@@ -4309,43 +4324,54 @@ function clearTimer(){if(timerId){clearInterval(timerId);timerId=null;}}
 let HITAUDIO=null;
 function hitAudio(){ if(!HITAUDIO){HITAUDIO=new Audio();HITAUDIO.preload="none";} return HITAUDIO; }
 const _previewCache={};
-function cleanForSearch(s){ return String(s).replace(/\(.*?\)/g,' ').replace(/\[.*?\]/g,' ').replace(/ft\.?.*$/i,' ').replace(/feat\.?.*$/i,' ').replace(/\s+/g,' ').trim(); }
-function firstArtist(a){ return String(a).split(/ ft\.?| feat\.?|&|,|\//i)[0].trim(); }
+function cleanForSearch(s){
+  return String(s)
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/\(.*?\)/g,' ').replace(/\[.*?\]/g,' ')
+    .replace(/ft\.?.*$/i,' ').replace(/feat\.?.*$/i,' ')
+    .replace(/\b(remaster(ed)?|radio edit|single version|album version|live|mono|stereo|deluxe|remix)\b.*$/i,' ')
+    .replace(/&/g,' and ').replace(/[\u2018\u2019]/g,"'")
+    .replace(/[^\w\s'\-]/g,' ').replace(/\s+/g,' ').trim();
+}
+function firstArtist(a){ return String(a).split(/ ft\.?| feat\.?|&|,|\/| x /i)[0].trim(); }
 function _pickPreview(data){
   try{ if(data&&data.results){ for(const r of data.results){ if(r.previewUrl){ let art=r.artworkUrl100||r.artworkUrl60||''; if(art)art=art.replace(/\/[0-9]+x[0-9]+bb\./,'/300x300bb.'); return {url:r.previewUrl, art:art}; } } } }catch(e){}
   return null;
 }
 /* JSONP fallback (iniezione <script>) */
-function _itunesJSONP(term,cb){
+function _itunesJSONP(term,cb,country){
+  const c=country||'IT';
   const cbName="itcb_"+Math.random().toString(36).slice(2);
   let done=false;
   const s=document.createElement('script');
   const to=setTimeout(()=>{ if(!done){done=true;try{delete window[cbName];}catch(e){}s.remove();cb(null);} },8000);
   window[cbName]=(data)=>{ if(done)return; done=true; clearTimeout(to); cb(_pickPreview(data)); try{delete window[cbName];}catch(e){} s.remove(); };
-  s.src=`https://itunes.apple.com/search?term=${term}&media=music&entity=song&limit=5&callback=${cbName}`;
+  s.src=`https://itunes.apple.com/search?term=${term}&media=music&entity=song&country=${c}&limit=5&callback=${cbName}`;
   s.onerror=()=>{ if(!done){done=true;clearTimeout(to);cb(null);} };
   document.head.appendChild(s);
 }
-function _itunesTry(term){
-  const url=`https://itunes.apple.com/search?term=${encodeURIComponent(term)}&media=music&entity=song&limit=10`;
+function _itunesTry(term,country){
+  const c=country||'IT';
+  const url=`https://itunes.apple.com/search?term=${encodeURIComponent(term)}&media=music&entity=song&country=${c}&limit=10`;
   return fetch(url,{mode:'cors'}).then(r=>r.ok?r.json():Promise.reject()).then(d=>_pickPreview(d))
-    .catch(()=>new Promise(res=>_itunesJSONP(encodeURIComponent(term),res)));
+    .catch(()=>new Promise(res=>_itunesJSONP(encodeURIComponent(term),res,c)));
 }
 function itunesSearch(title,artist,cb){
   const key=(title+"|"+artist).toLowerCase();
   if(_previewCache[key]!==undefined){ cb(_previewCache[key]); return; }
-  const t=cleanForSearch(title), a=cleanForSearch(artist), a1=firstArtist(artist);
-  // più tentativi in sequenza: dal più specifico al più permissivo
-  const attempts=[ t+" "+a1, t+" "+a, title+" "+artist, t ];
-  const seen=new Set(); const queue=attempts.filter(x=>{const k=x.toLowerCase().trim(); if(!k||seen.has(k))return false; seen.add(k); return true;});
+  const ca1=cleanForSearch(firstArtist(artist)), ca=cleanForSearch(artist), ct=cleanForSearch(title);
+  const terms=[ ct+" "+ca1, ct+" "+ca, title+" "+artist, ct ];
+  const seenT=new Set(); const tq=terms.filter(x=>{const k=x.toLowerCase().trim(); if(!k||seenT.has(k))return false; seenT.add(k); return true;});
+  const stores=['IT','US'];
+  const queue=[]; tq.forEach(term=>stores.forEach(c=>queue.push([term,c])));
   let i=0;
   function nextTry(){
     if(i>=queue.length){ _previewCache[key]=null; cb(null); return; }
-    const term=queue[i++];
-    let to=setTimeout(()=>{ /* timeout del singolo tentativo → passa al prossimo */ next(null,true); }, 7000);
+    const pair=queue[i++], term=pair[0], country=pair[1];
+    let to=setTimeout(()=>{ next(null); }, 6000);
     let advanced=false;
-    function next(u, isTimeout){ if(advanced)return; advanced=true; clearTimeout(to); if(u){ _previewCache[key]=u; cb(u); } else { nextTry(); } }
-    _itunesTry(term).then(u=>next(u)).catch(()=>next(null));
+    function next(u){ if(advanced)return; advanced=true; clearTimeout(to); if(u){ _previewCache[key]=u; cb(u); } else { nextTry(); } }
+    _itunesTry(term,country).then(u=>next(u)).catch(()=>next(null));
   }
   nextTry();
 }
@@ -4410,12 +4436,47 @@ function mountPlayer(container, song, opts){
 function stopHitAudio(){ try{hitAudio().pause();}catch(e){} }
 
 /* ================= END ================= */
+/* ===== STORICO RECORD (localStorage) ===== */
+function loadRecords(){ try{ return JSON.parse(localStorage.getItem('hitmania_records')||'{"solo":[],"team":[]}'); }catch(e){ return {solo:[],team:[]}; } }
+function saveRecords(r){ try{ localStorage.setItem('hitmania_records', JSON.stringify(r)); }catch(e){} }
+function addRecord(kind, name, score){
+  if(!name) name = kind==='solo'?'Anonimo':'Squadra';
+  const r=loadRecords(); if(!r[kind])r[kind]=[];
+  const key=name.trim().toLowerCase();
+  const existing=r[kind].find(x=>x.name.trim().toLowerCase()===key);
+  const now=Date.now();
+  if(existing){ existing.plays=(existing.plays||1)+1; if(score>existing.best){existing.best=score;existing.bestAt=now;} existing.last=score; existing.lastAt=now; }
+  else{ r[kind].push({name:name.trim(), best:score, bestAt:now, last:score, lastAt:now, plays:1}); }
+  r[kind].sort((a,b)=>b.best-a.best);
+  if(r[kind].length>50)r[kind]=r[kind].slice(0,50);
+  saveRecords(r);
+  return r;
+}
+function fmtDate(ts){ try{ const d=new Date(ts); return d.toLocaleDateString('it-IT',{day:'2-digit',month:'2-digit',year:'2-digit'}); }catch(e){ return ''; } }
+function renderRecords(){
+  const r=loadRecords();
+  const box=document.getElementById('recordsBox');
+  function table(kind,title,icon){
+    const list=(r[kind]||[]).slice(0,20);
+    if(!list.length) return `<div class="card"><h4>${icon} ${title}</h4><p class="hint" style="margin:0">Nessun record ancora. Gioca una partita!</p></div>`;
+    const medals=["🥇","🥈","🥉"];
+    let rows=list.map((x,i)=>`<div class="score-row ${i===0?'lead':''}">
+      <div class="rank">${medals[i]||(i+1)}</div>
+      <div class="nm">${escapeHtml(x.name)}<br><span style="font-weight:400;color:var(--muted);font-size:11px">${x.plays||1} ${((x.plays||1)===1?'partita':'partite')} · ultimo ${x.last} · ${fmtDate(x.bestAt)}</span></div>
+      <div class="pts">${x.best}</div></div>`).join('');
+    return `<div class="card"><h4>${icon} ${title}</h4>${rows}</div>`;
+  }
+  box.innerHTML = table('solo','Record — Giocatore singolo','🎧') + table('team','Record — Squadre','👥');
+}
+function clearRecords(){ if(confirm('Vuoi cancellare tutto lo storico dei record?')){ saveRecords({solo:[],team:[]}); renderRecords(); sfx('wrong'); } }
+
 function endGame(){
   clearTimer();sfx("win");stopHitAudio();_gameRunning=false;clearGameState();
   if(state.solo){
     const sc=state.teams[0].score;
     let best=0; try{best=parseInt(localStorage.getItem('hitmania_solo_best')||'0',10)||0;}catch(e){}
     const isRec=sc>best; if(isRec){try{localStorage.setItem('hitmania_solo_best',String(sc));}catch(e){}}
+    addRecord('solo', state.teams[0].name, sc);
     document.getElementById('winName').textContent=isRec?"🏆 Nuovo record!":"🎵 Partita finita";
     document.getElementById('winPts').textContent=sc+" punti";
     const board=document.getElementById('finalBoard');
@@ -4424,6 +4485,7 @@ function endGame(){
     return go('results');
   }
   const sorted=state.teams.slice().sort((a,b)=>b.score-a.score);
+  sorted.forEach(tm=>addRecord('team', tm.name, tm.score));
   const win=sorted[0],tie=sorted.filter(t=>t.score===win.score);
   document.getElementById('winName').textContent=tie.length>1?"Pareggio!":win.name+" vince!";
   document.getElementById('winPts').textContent=tie.length>1?("Parimerito a "+win.score+" punti"):(win.score+" punti");
