@@ -288,6 +288,14 @@
     <div class="card">
       <h2 class="title">🎵 Pronti a scatenarvi?</h2>
       <p class="sub">Sfidatevi a colpi di musica: quiz, ascolto, mimo e karaoke. La squadra con più punti alla fine vince!</p>
+      <div id="resumeBox" style="display:none;margin-bottom:14px;padding:14px;border-radius:14px;background:linear-gradient(135deg,rgba(43,255,136,.15),rgba(24,224,255,.1));border:1.5px solid rgba(43,255,136,.5)">
+        <div style="font-weight:800;margin-bottom:2px">⏸️ Partita in sospeso</div>
+        <div class="hint" id="resumeInfo" style="margin:0 0 10px"></div>
+        <div class="row" style="display:flex;gap:10px">
+          <button class="btn ok" style="margin-top:0" onclick="resumeGame()">▶️ Riprendi</button>
+          <button class="btn no" style="margin-top:0" onclick="clearGameState();maybeShowResume();sfx('click')">🗑 Scarta</button>
+        </div>
+      </div>
       <button class="btn" onclick="goSetup('team')">▶ GIOCA IN SQUADRE</button>
       <div class="btnrow"><button class="btn sec" onclick="goSetup('solo')">🎧 GIOCA DA SOLO</button></div>
       <div class="btnrow"><button class="btn ghost" onclick="go('rules')">📖 Come si gioca</button></div>
@@ -3980,6 +3988,7 @@ function go(id,fromHistory){
   window.scrollTo({top:0,behavior:'smooth'});
   // gestione cronologia: ogni schermata diventa uno stato, così il tasto "indietro" naviga nel gioco
   if(!fromHistory){ try{history.pushState({screen:id},'', '#'+id);}catch(e){} }
+  if(id==='home'){ try{maybeShowResume();}catch(e){} }
 }
 // Intercetta il tasto "indietro" del browser: naviga tra le schermate invece di uscire
 window.addEventListener('popstate',(ev)=>{
@@ -4078,6 +4087,56 @@ function buildSongPool(){
   if(state.cats.length){const f=pool.filter(s=>state.cats.every(c=>s.c.includes(c)));if(f.length>=4)pool=f;}
   return shuffle(pool);
 }
+function saveGameState(){
+  if(!state.solo && !_gameRunning) return;
+  try{
+    const snap={
+      v:1, ts:Date.now(), solo:state.solo, teams:state.teams, service:state.service, cats:state.cats,
+      timed:state.timed, laps:state.laps, difficulty:state.difficulty, enabled:state.enabled, points:state.points,
+      round:state.round, turnIndex:state.turnIndex, lap:state.lap, roundTypes:state.roundTypes,
+      songPool:state.songPool, wordPool:state.wordPool, quizPool:state.quizPool
+    };
+    localStorage.setItem('hitmania_savegame', JSON.stringify(snap));
+  }catch(e){}
+}
+function loadGameState(){ try{ const s=localStorage.getItem('hitmania_savegame'); return s?JSON.parse(s):null; }catch(e){ return null; } }
+function clearGameState(){ try{ localStorage.removeItem('hitmania_savegame'); }catch(e){} }
+function resumeGame(){
+  const snap=loadGameState();
+  if(!snap){ return; }
+  ac();
+  Object.assign(state,{solo:snap.solo,teams:snap.teams,service:snap.service,cats:snap.cats||[],timed:snap.timed,
+    laps:snap.laps,difficulty:snap.difficulty,enabled:snap.enabled,points:snap.points,round:snap.round,
+    turnIndex:snap.turnIndex,lap:snap.lap,roundTypes:snap.roundTypes,songPool:snap.songPool||[],
+    wordPool:snap.wordPool||[],quizPool:snap.quizPool||[]});
+  soundOn=document.getElementById('optSound')?document.getElementById('optSound').checked:true;
+  _gameRunning=true;
+  go('game');renderRoundBar();
+  // ri-renderizza il turno corrente senza avanzare
+  renderCurrentTurn();
+}
+function renderCurrentTurn(){
+  clearTimer();renderRoundBar();renderMiniScore();
+  const rt=state.roundTypes[state.round],m=CH_BY[rt],team=state.teams[state.turnIndex];
+  const lapTxt=state.laps>1?` · Giro ${state.lap+1}/${state.laps}`:'';
+  document.getElementById('roundPill').textContent=`ROUND ${state.round+1} · ${m.n.toUpperCase()}${lapTxt}`;
+  document.getElementById('turnWho').innerHTML = state.solo
+    ? `<span style="font-size:20px">🎧 Sfida personale</span>`
+    : `<span class="dot" style="display:inline-block;width:16px;height:16px;background:${team.color};color:${team.color};margin-right:8px;vertical-align:middle"></span>${escapeHtml(team.name)}`;
+  if(rt==="quiz")renderQuiz(team);else if(rt==="listen")renderListen(team);else if(rt==="mime")renderMime(team);else renderKaraoke(team);
+}
+function maybeShowResume(){
+  const snap=loadGameState();
+  const box=document.getElementById('resumeBox');
+  if(!box) return;
+  if(snap){
+    const who=snap.solo?'Sfida personale':((snap.teams&&snap.teams.length?snap.teams.length:0)+' squadre');
+    const rN=(snap.round||0)+1, rTot=(snap.roundTypes&&snap.roundTypes.length)||0;
+    box.style.display='block';
+    box.querySelector('#resumeInfo').textContent=`${who} · round ${rN}/${rTot}`;
+  }else{ box.style.display='none'; }
+}
+
 function startGame(){
   ac();
   state.timed=document.getElementById('optTimed').checked;
@@ -4088,7 +4147,7 @@ function startGame(){
   state.teams.forEach(t=>t.score=0);
   state.round=0;state.turnIndex=0;state.lap=0;
   state.quizPool=shuffle(QUIZ);state.songPool=buildSongPool();state.wordPool=shuffle(WORDS);
-  _gameRunning=true;
+  _gameRunning=true;clearGameState();
   go('game');renderRoundBar();nextTurn(true);
 }
 function renderRoundBar(){
@@ -4121,6 +4180,7 @@ function nextTurn(first){
     ? `<span style="font-size:20px">🎧 Sfida personale</span>`
     : `<span class="dot" style="display:inline-block;width:16px;height:16px;background:${team.color};color:${team.color};margin-right:8px;vertical-align:middle"></span>${escapeHtml(team.name)}`;
   if(rt==="quiz")renderQuiz(team);else if(rt==="listen")renderListen(team);else if(rt==="mime")renderMime(team);else renderKaraoke(team);
+  saveGameState();
 }
 
 /* ---- QUIZ ---- */
@@ -4290,7 +4350,7 @@ function stopHitAudio(){ try{hitAudio().pause();}catch(e){} }
 
 /* ================= END ================= */
 function endGame(){
-  clearTimer();sfx("win");stopHitAudio();_gameRunning=false;
+  clearTimer();sfx("win");stopHitAudio();_gameRunning=false;clearGameState();
   if(state.solo){
     const sc=state.teams[0].score;
     let best=0; try{best=parseInt(localStorage.getItem('hitmania_solo_best')||'0',10)||0;}catch(e){}
@@ -4338,7 +4398,7 @@ function installApp(){
   const eq=document.getElementById('eq');
   for(let i=0;i<40;i++){const s=document.createElement('span');s.style.animationDelay=(Math.random()*1.1)+'s';s.style.animationDuration=(0.7+Math.random()*0.8)+'s';eq.appendChild(s);}
   state.teams=[{name:"Squadra 1",color:COLORS[0],score:0},{name:"Squadra 2",color:COLORS[1],score:0}];
-  renderTeams();renderChList();updateDiffHint();
+  renderTeams();renderChList();updateDiffHint();maybeShowResume();
   setupPWA();
   // nascondi splash dopo breve intro
   const sp=document.getElementById('splash');
