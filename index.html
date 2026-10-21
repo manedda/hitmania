@@ -4293,7 +4293,8 @@ function clearTimer(){if(timerId){clearInterval(timerId);timerId=null;}}
 let HITAUDIO=null;
 function hitAudio(){ if(!HITAUDIO){HITAUDIO=new Audio();HITAUDIO.preload="none";} return HITAUDIO; }
 const _previewCache={};
-function cleanForSearch(s){ return String(s).replace(/\(.*?\)/g,' ').replace(/ft\.?.*$/i,' ').replace(/feat\.?.*$/i,' ').replace(/\s+/g,' ').trim(); }
+function cleanForSearch(s){ return String(s).replace(/\(.*?\)/g,' ').replace(/\[.*?\]/g,' ').replace(/ft\.?.*$/i,' ').replace(/feat\.?.*$/i,' ').replace(/\s+/g,' ').trim(); }
+function firstArtist(a){ return String(a).split(/ ft\.?| feat\.?|&|,|\//i)[0].trim(); }
 function _pickPreview(data){
   try{ if(data&&data.results){ for(const r of data.results){ if(r.previewUrl)return r.previewUrl; } } }catch(e){}
   return null;
@@ -4309,19 +4310,28 @@ function _itunesJSONP(term,cb){
   s.onerror=()=>{ if(!done){done=true;clearTimeout(to);cb(null);} };
   document.head.appendChild(s);
 }
+function _itunesTry(term){
+  const url=`https://itunes.apple.com/search?term=${encodeURIComponent(term)}&media=music&entity=song&limit=10`;
+  return fetch(url,{mode:'cors'}).then(r=>r.ok?r.json():Promise.reject()).then(d=>_pickPreview(d))
+    .catch(()=>new Promise(res=>_itunesJSONP(encodeURIComponent(term),res)));
+}
 function itunesSearch(title,artist,cb){
   const key=(title+"|"+artist).toLowerCase();
   if(_previewCache[key]!==undefined){ cb(_previewCache[key]); return; }
-  const term=encodeURIComponent(cleanForSearch(title)+" "+cleanForSearch(artist));
-  const url=`https://itunes.apple.com/search?term=${term}&media=music&entity=song&limit=5`;
-  const finish=(u)=>{ _previewCache[key]=u; cb(u); };
-  let settled=false;
-  const guard=setTimeout(()=>{ if(!settled){ settled=true; _itunesJSONP(term,finish); } },8000);
-  // metodo primario: fetch (l'API iTunes invia header CORS) — funziona meglio di JSONP su iOS Safari
-  fetch(url,{mode:'cors'})
-    .then(r=>r.ok?r.json():Promise.reject())
-    .then(data=>{ if(settled)return; settled=true; clearTimeout(guard); const u=_pickPreview(data); if(u)finish(u); else _itunesJSONP(term,finish); })
-    .catch(()=>{ if(settled)return; settled=true; clearTimeout(guard); _itunesJSONP(term,finish); });
+  const t=cleanForSearch(title), a=cleanForSearch(artist), a1=firstArtist(artist);
+  // più tentativi in sequenza: dal più specifico al più permissivo
+  const attempts=[ t+" "+a1, t+" "+a, title+" "+artist, t ];
+  const seen=new Set(); const queue=attempts.filter(x=>{const k=x.toLowerCase().trim(); if(!k||seen.has(k))return false; seen.add(k); return true;});
+  let i=0;
+  function nextTry(){
+    if(i>=queue.length){ _previewCache[key]=null; cb(null); return; }
+    const term=queue[i++];
+    let to=setTimeout(()=>{ /* timeout del singolo tentativo → passa al prossimo */ next(null,true); }, 7000);
+    let advanced=false;
+    function next(u, isTimeout){ if(advanced)return; advanced=true; clearTimeout(to); if(u){ _previewCache[key]=u; cb(u); } else { nextTry(); } }
+    _itunesTry(term).then(u=>next(u)).catch(()=>next(null));
+  }
+  nextTry();
 }
 /* Renderizza un player "al buio" in un contenitore. onReveal opzionale. clipSec=0 => intera preview */
 function mountPlayer(container, song, opts){
@@ -4332,30 +4342,48 @@ function mountPlayer(container, song, opts){
       <div class="pbars" id="pBars"><span></span><span></span><span></span><span></span><span></span><span></span></div>
       <div class="pstatus" id="pStatus">🔎 Carico l'anteprima…</div>
       <button class="pbtn" id="pPlay" disabled style="opacity:.6">⏳ Attendi…</button>
+      <div id="pRevealWrap" style="margin-top:10px">
+        <button class="pbtn" id="pReveal" style="background:rgba(255,210,63,.14);border-color:rgba(255,210,63,.55);box-shadow:0 0 16px rgba(255,210,63,.22);display:none">👁 Rivela brano</button>
+        <div id="pAnswer" style="display:none;margin-top:8px">
+          <div style="font-size:20px;font-weight:900" id="pSong"></div>
+          <div style="color:var(--yellow);font-weight:700;font-size:15px" id="pArtist"></div>
+        </div>
+      </div>
     </div>`;
   const a=hitAudio();
   const disc=container.querySelector('#pDisc'), bars=container.querySelector('#pBars'), st=container.querySelector('#pStatus'), btn=container.querySelector('#pPlay');
-  let url=null, clipTimer=null;
+  const revBtn=container.querySelector('#pReveal'), ansBox=container.querySelector('#pAnswer');
+  let url=null, clipTimer=null, playing=false;
   function stopVisual(){ bars.classList.remove('playing'); disc.classList.remove('spin'); }
   function startVisual(){ bars.classList.add('playing'); disc.classList.add('spin'); }
+  function setBtn(state){ // 'play' | 'pause'
+    if(state==='pause'){ btn.textContent='⏸️ Pausa'; } else { btn.textContent='▶️ Ascolta'; }
+  }
   function doPlay(){
     // chiamato DENTRO il tap (gesto utente) → iOS autorizza la riproduzione
-    try{a.pause();}catch(e){}
-    try{ a.src=url; a.currentTime=0; }catch(e){}
+    try{ if(a.src!==url){ a.src=url; a.currentTime=0; } }catch(e){}
     const pr=a.play();
-    if(pr&&pr.then){ pr.then(()=>{ st.textContent='🎧 In riproduzione… indovina!'; startVisual(); })
+    if(pr&&pr.then){ pr.then(()=>{ playing=true; st.textContent='🎧 In riproduzione… indovina!'; startVisual(); setBtn('pause'); })
       .catch(()=>{ st.textContent='⚠️ Tocca ancora “Ascolta”'; }); }
-    else { st.textContent='🎧 In riproduzione… indovina!'; startVisual(); }
+    else { playing=true; st.textContent='🎧 In riproduzione… indovina!'; startVisual(); setBtn('pause'); }
   }
-  a.onended=()=>{ stopVisual(); st.textContent='Anteprima finita · riascolta o rivela'; };
-  a.onpause=()=>{ stopVisual(); };
+  function doPause(){ try{a.pause();}catch(e){} playing=false; stopVisual(); setBtn('play'); st.textContent='⏸️ In pausa · riprendi quando vuoi'; }
+  a.onended=()=>{ playing=false; stopVisual(); setBtn('play'); st.textContent='Anteprima finita · riascolta o rivela'; };
+  a.onpause=()=>{ if(playing){ /* pausa esterna */ } stopVisual(); };
   // PRE-CARICO l'URL al montaggio: così quando l'utente tocca, play() parte nel gesto (fix iOS)
   itunesSearch(song.t, song.a, (u)=>{
-    if(u){ url=u; btn.disabled=false; btn.style.opacity='1'; btn.textContent='▶️ Ascolta'; st.textContent='Pronto · premi “Ascolta” e indovina'; }
-    else { btn.disabled=true; btn.textContent='🔇 Anteprima assente'; st.textContent='⚠️ Anteprima non disponibile — usa i link qui sotto'; if(opts.onNoPreview)opts.onNoPreview(); }
+    if(u){ url=u; btn.disabled=false; btn.style.opacity='1'; setBtn('play'); st.textContent='Pronto · premi “Ascolta” e indovina'; revBtn.style.display='block'; }
+    else { btn.disabled=true; btn.textContent='🔇 Anteprima assente'; st.textContent='⚠️ Anteprima non disponibile — usa i link qui sotto'; revBtn.style.display='block'; if(opts.onNoPreview)opts.onNoPreview(); }
   });
-  btn.onclick=()=>{ if(url) doPlay(); };
-  return { stop(){ try{a.pause();}catch(e){} if(clipTimer)clearTimeout(clipTimer); stopVisual(); } };
+  btn.onclick=()=>{ if(!url)return; if(playing){ doPause(); } else { doPlay(); } };
+  revBtn.onclick=()=>{
+    container.querySelector('#pSong').textContent=song.t;
+    container.querySelector('#pArtist').textContent=song.a;
+    ansBox.style.display='block';
+    revBtn.style.display='none';
+    if(opts.onReveal)opts.onReveal();
+  };
+  return { stop(){ try{a.pause();}catch(e){} playing=false; if(clipTimer)clearTimeout(clipTimer); stopVisual(); } };
 }
 function stopHitAudio(){ try{hitAudio().pause();}catch(e){} }
 
