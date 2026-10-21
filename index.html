@@ -4284,8 +4284,15 @@ function goSetup(mode){
   const title=document.getElementById('setupTitle'), sub=document.getElementById('setupSub'), teamsCard=document.getElementById('teamsCard');
   const chTitle=document.getElementById('chTitle'), catSub=document.getElementById('catSubLabel');
   if(state.solo){
-    // 1 giocatore con nome/username per salvare i record
-    let nm="Tu"; try{nm=localStorage.getItem('hitmania_solo_name')||"Tu";}catch(e){}
+    // 1 giocatore: chiedi il nome PRIMA di entrare nelle impostazioni (così non si rischia di dimenticarlo)
+    let nm=""; try{nm=localStorage.getItem('hitmania_solo_name')||"";}catch(e){}
+    // suggerisci anche i nomi già usati nei record solo
+    let suggestion=nm;
+    try{ const r=loadRecords(); if(r.solo&&r.solo.length){ const names=[...new Set(r.solo.map(x=>x.name))]; if(!suggestion&&names.length)suggestion=names[0]; } }catch(e){}
+    const input=prompt("🎧 Come ti chiami? (il nome serve per salvare i tuoi record)", suggestion||"");
+    if(input===null){ return; } // annullato: resta sulla home
+    nm=(input.trim()||"Tu");
+    try{localStorage.setItem('hitmania_solo_name',nm);}catch(e){}
     state.teams=[{name:nm,color:COLORS[0],score:0}];
     title.textContent="🎧 Gioca da solo";
     sub.textContent="Sfida personale: quiz e ascolto. Batti il tuo record!";
