@@ -4651,7 +4651,33 @@ function _itunesJSONP(term,cb,country){
   s.onerror=()=>{ if(!done){done=true;clearTimeout(to);_itDiag.jsonpErr++;_itDiag.lastErr='jsonp: onerror';cb(null);} };
   document.head.appendChild(s);
 }
+/* Deezer JSONP fallback — funziona su iPhone (niente blocco ITP). Anteprime MP3 30s. */
+function _deezerJSONP(title,artist,cb){
+  const q=(cleanForSearch(title)+' '+cleanForSearch(firstArtist(artist))).trim();
+  const cbName="dzcb_"+Math.random().toString(36).slice(2);
+  let done=false;
+  const s=document.createElement('script');
+  const to=setTimeout(()=>{ if(!done){done=true;try{delete window[cbName];}catch(e){}s.remove();cb(null);} },5000);
+  window[cbName]=(data)=>{ if(done)return; done=true; clearTimeout(to);
+    let out=null;
+    try{ const arr=(data&&data.data)||[]; const d=arr.find(x=>x.preview); if(d){ out={url:d.preview, art:(d.album&&(d.album.cover_medium||d.album.cover_big||d.album.cover))||''}; } }catch(e){}
+    cb(out); try{delete window[cbName];}catch(e){} s.remove();
+  };
+  s.onerror=()=>{ if(!done){done=true;clearTimeout(to);s.remove();cb(null);} };
+  s.src='https://api.deezer.com/search?q='+encodeURIComponent(q)+'&limit=5&output=jsonp&callback='+cbName;
+  document.head.appendChild(s);
+}
 window._itDiag=window._itDiag||{fetchOk:0,fetchErr:0,jsonpOk:0,jsonpErr:0,lastErr:''};
+/* ===== PREVIEWS PRE-GENERATE (previews.json) — fix anteprime iPhone/ITP ===== */
+window.PREVIEWS=null;
+(function loadPreviews(){
+  try{
+    fetch('previews.json',{cache:'force-cache'})
+      .then(r=>r.ok?r.json():null)
+      .then(d=>{ window.PREVIEWS=d||{}; try{console.log('previews.json caricato:',Object.keys(window.PREVIEWS).length,'brani');}catch(e){} })
+      .catch(()=>{ window.PREVIEWS={}; });
+  }catch(e){ window.PREVIEWS={}; }
+})();
 function _itunesTry(term,country){
   const c=country||'IT';
   const url=`https://itunes.apple.com/search?term=${encodeURIComponent(term)}&media=music&entity=song&country=${c}&limit=10`;
@@ -4667,6 +4693,23 @@ function _itunesTry(term,country){
 function itunesSearch(title,artist,cb){
   const key=(title+"|"+artist).toLowerCase();
   if(_previewCache[key]!==undefined){ cb(_previewCache[key]); return; }
+  /* 1 - Consulta previews.json pre-generato: nessuna chiamata cross-origin, funziona su iPhone */
+  if(window.PREVIEWS && window.PREVIEWS[key] && window.PREVIEWS[key].u){
+    const obj={url:window.PREVIEWS[key].u, art:window.PREVIEWS[key].r||''};
+    _previewCache[key]=obj; cb(obj); return;
+  }
+  /* 2 - Fallback Deezer via JSONP (funziona su iPhone): per i rari brani non in previews.json */
+  if(!window._noDeezerFallback){
+    _deezerJSONP(title,artist,(dz)=>{
+      if(dz && dz.url){ _previewCache[key]=dz; cb(dz); return; }
+      _itunesLiveSearch(title,artist,key,cb); /* 3 - ultima spiaggia: Apple live (desktop) */
+    });
+    return;
+  }
+  _itunesLiveSearch(title,artist,key,cb);
+}
+/* Ricerca Apple live (fetch+JSONP) — estratta come funzione per il fallback a catena */
+function _itunesLiveSearch(title,artist,key,cb){
   const ca1=cleanForSearch(firstArtist(artist)), ca=cleanForSearch(artist), ct=cleanForSearch(title);
   const terms=[ ct+" "+ca1, ct+" "+ca, title+" "+artist, ct ];
   const seenT=new Set(); const tq=terms.filter(x=>{const k=x.toLowerCase().trim(); if(!k||seenT.has(k))return false; seenT.add(k); return true;});
