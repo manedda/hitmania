@@ -4186,6 +4186,15 @@ const SVC={amz:{n:"Amazon Music",cls:"amz",ic:`<svg viewBox="0 0 24 24" width="2
   spo:{n:"Spotify",cls:"spo",ic:`<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#1DB954"/><path d="M17.6 11c-3-1.8-8-2-10.9-1.1a.86.86 0 1 1-.5-1.64C9.5 7.2 15 7.43 18.4 9.46a.86.86 0 1 1-.88 1.48zm-.1 2.64a.72.72 0 0 1-1 .24c-2.5-1.54-6.3-2-9.2-1.1a.72.72 0 1 1-.42-1.37c3.35-1.02 7.5-.5 10.4 1.26.34.2.45.66.22 1zm-1.1 2.55a.57.57 0 0 1-.79.19c-2.18-1.33-4.92-1.63-8.15-.9a.57.57 0 1 1-.26-1.12c3.5-.8 6.56-.45 8.98 1.04.27.16.36.52.22.79z" fill="#000"/></svg>`,url:q=>"https://open.spotify.com/search/"+q},
   yt:{n:"YouTube",cls:"yt",ic:`<svg viewBox="0 0 28 20" width="28" height="20" aria-hidden="true"><rect x="0.5" y="0.5" width="27" height="19" rx="5" fill="#FF0000"/><path d="M11 5.5l7 4.5-7 4.5z" fill="#fff"/></svg>`,url:q=>"https://www.youtube.com/results?search_query="+q}};
 const CAT_NAME={mix:"Mix",ita:"Italiana",int:"Internazionale","60s70s":"Anni 60/70","80s":"Anni 80","90s":"Anni 90","00s":"Anni 2000","10s":"Anni 2010","20s":"Anni 2020",pop:"Pop",rock:"Rock",dance:"Dance/Electro",hiphop:"Hip-Hop/R&B",latin:"Latina",soul:"Soul/Funk",metal:"Metal",indie:"Indie",cantautori:"Cantautori","8090":"Anni 80/90",sanremo:"Sanremo",estate:"Tormentoni estivi",soundtrack:"Colonne sonore",natale:"Natale",disney:"Disney/Animazione",dance00:"Dance anni 2000",onehit:"One-Hit Wonder"};
+/* Gruppo di appartenenza di ogni categoria: OR dentro lo stesso gruppo, AND tra gruppi diversi */
+const CAT_GROUP={ita:"origine",int:"origine","60s70s":"decennio","80s":"decennio","90s":"decennio","00s":"decennio","10s":"decennio","20s":"decennio",pop:"genere",rock:"genere",dance:"genere",hiphop:"genere",latin:"genere",soul:"genere",metal:"genere",indie:"genere",cantautori:"genere",sanremo:"collezione",estate:"collezione",soundtrack:"collezione",natale:"collezione",disney:"collezione",dance00:"collezione",onehit:"collezione"};
+/* Un brano combacia se, per OGNI gruppo selezionato, appartiene ad ALMENO UNA delle categorie scelte in quel gruppo. */
+function catMatch(song, cats){
+  if(!cats || !cats.length) return true;
+  const byGroup={};
+  for(const c of cats){ const g=CAT_GROUP[c]||c; (byGroup[g]=byGroup[g]||[]).push(c); }
+  return Object.values(byGroup).every(group => group.some(c => song.c.includes(c)));
+}
 
 /* ================= CHALLENGE DEFS ================= */
 const CHDEF=[
@@ -4374,7 +4383,7 @@ function buildMimePool(){
   const tier=songTierForDiff(state.difficulty);
   let pool = tier ? SONGS.filter(s=>s.c.includes(tier)) : SONGS.slice();
   if(pool.length<10)pool=SONGS;
-  if(state.cats.length){const f=pool.filter(s=>state.cats.every(c=>s.c.includes(c)));if(f.length>=4)pool=f;}
+  if(state.cats.length){const f=pool.filter(s=>catMatch(s,state.cats));if(f.length>=4)pool=f;}
   return shuffle(pool);
 }
 function buildSongPool(){
@@ -4382,7 +4391,7 @@ function buildSongPool(){
   const tier=songTierForDiff(state.difficulty);
   let pool = tier ? SONGS.filter(s=>s.c.includes(tier)) : SONGS.slice();
   if(pool.length<20)pool=SONGS; // safety
-  if(state.cats.length){const f=pool.filter(s=>state.cats.every(c=>s.c.includes(c)));if(f.length>=4)pool=f;}
+  if(state.cats.length){const f=pool.filter(s=>catMatch(s,state.cats));if(f.length>=4)pool=f;}
   return shuffle(pool);
 }
 function saveGameState(){
