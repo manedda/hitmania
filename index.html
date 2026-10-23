@@ -156,6 +156,9 @@
   .opt.correct{border-color:var(--green);background:rgba(43,255,136,.15)}
   .opt.wrong{border-color:#ff5b6a;background:rgba(255,91,106,.15)}
   .opt:disabled{cursor:default}
+  .lc-opts{display:flex;flex-direction:column;gap:0;margin-top:14px}
+  .opt.opt-correct{border-color:var(--green);background:rgba(43,255,136,.18);box-shadow:0 0 16px rgba(43,255,136,.25)}
+  .opt.opt-wrong{border-color:#ff5b6a;background:rgba(255,91,106,.18)}
 
   .bigcard{text-align:center;padding:24px 16px;border-radius:18px;background:linear-gradient(135deg,rgba(255,46,147,.18),rgba(24,224,255,.14));border:1px dashed var(--cardborder);margin-top:6px}
   .bigcard .lab{color:var(--cyan);font-weight:800;letter-spacing:2px;text-transform:uppercase;font-size:12px}
@@ -271,11 +274,12 @@
 <div id="splash">
   <div class="sp-vinyl"></div>
   <div class="sp-logo">HITMANIA</div>
-  <div class="sp-sub">PARTY GAME MUSICALE</div>
+  <div class="sp-sub" data-i18n="tagline">PARTY GAME MUSICALE</div>
 </div>
 <div class="eq" id="eq"></div>
 <div class="topbtns">
-  <button id="installBtn" onclick="installApp()">⬇ <span>Installa</span></button>
+  <button id="installBtn" onclick="installApp()">⬇ <span data-i18n="install">Installa</span></button>
+  <button id="langBtn" onclick="toggleLang()" title="Lingua / Language">🇮🇹</button>
   <button id="homeTopBtn" onclick="homeTop()" title="Home">🏠</button>
   <button id="sndBtn" onclick="toggleSound()" title="Audio">🔊</button>
 </div>
@@ -286,90 +290,90 @@
   <section class="screen active" id="s-home">
     <div class="brand">
       <div class="vinyl"></div>
-      <div class="logo">HITMANIA<small>PARTY GAME MUSICALE</small></div>
+      <div class="logo">HITMANIA<small data-i18n="tagline">PARTY GAME MUSICALE</small></div>
     </div>
     <div class="card">
-      <h2 class="title">🎵 Pronti a scatenarvi?</h2>
-      <p class="sub">Sfidatevi a colpi di musica: quiz, ascolto, mimo e karaoke. La squadra con più punti alla fine vince!</p>
+      <h2 class="title" data-i18n="home_title">🎵 Pronti a scatenarvi?</h2>
+      <p class="sub" data-i18n="home_sub">Sfidatevi a colpi di musica: quiz, ascolto, mimo e karaoke. La squadra con più punti alla fine vince!</p>
       <div id="resumeBox" style="display:none;margin-bottom:14px;padding:14px;border-radius:14px;background:linear-gradient(135deg,rgba(43,255,136,.15),rgba(24,224,255,.1));border:1.5px solid rgba(43,255,136,.5)">
-        <div style="font-weight:800;margin-bottom:2px">⏸️ Partita in sospeso</div>
+        <div style="font-weight:800;margin-bottom:2px" data-i18n="resume_title">⏸️ Partita in sospeso</div>
         <div class="hint" id="resumeInfo" style="margin:0 0 10px"></div>
         <div class="row" style="display:flex;gap:10px">
-          <button class="btn ok" style="margin-top:0" onclick="resumeGame()">▶️ Riprendi</button>
-          <button class="btn no" style="margin-top:0" onclick="clearGameState();maybeShowResume();sfx('click')">🗑 Scarta</button>
+          <button class="btn ok" style="margin-top:0" onclick="resumeGame()" data-i18n="resume_btn">▶️ Riprendi</button>
+          <button class="btn no" style="margin-top:0" onclick="clearGameState();maybeShowResume();sfx('click')" data-i18n="discard_btn">🗑 Scarta</button>
         </div>
       </div>
-      <button class="btn" onclick="goSetup('team')">▶ GIOCA IN SQUADRE</button>
-      <div class="btnrow"><button class="btn sec" onclick="goSetup('solo')">🎧 GIOCA DA SOLO</button></div>
-      <div class="btnrow"><button class="btn ghost" onclick="go('rules')">📖 Come si gioca</button><button class="btn ghost" onclick="go('records')">🏆 Record</button></div>
+      <button class="btn" onclick="goSetup('team')" data-i18n="play_teams">▶ GIOCA IN SQUADRE</button>
+      <div class="btnrow"><button class="btn sec" onclick="goSetup('solo')" data-i18n="play_solo">🎧 GIOCA DA SOLO</button></div>
+      <div class="btnrow"><button class="btn ghost" onclick="go('rules')" data-i18n="how_to">📖 Come si gioca</button><button class="btn ghost" onclick="go('records')" data-i18n="records">🏆 Record</button></div>
     </div>
     <div class="homefoot">
-      <p>Hitmania è un party game musicale <b>fan-made</b> a scopo di intrattenimento, senza fini di lucro e non affiliato ad Amazon Music, Spotify, YouTube o ad alcun editore musicale. I titoli e gli interpreti citati appartengono ai rispettivi proprietari; il gioco <b>non riproduce testi né registrazioni</b>, ma rimanda ai servizi di streaming per l'ascolto.</p>
-      <p><a href="#" onclick="go('privacy');return false;">Privacy &amp; Cookie Policy</a></p>
+      <p data-i18n="foot_disclaimer">Hitmania è un party game musicale <b>fan-made</b> a scopo di intrattenimento, senza fini di lucro e non affiliato ad Amazon Music, Spotify, YouTube o ad alcun editore musicale. I titoli e gli interpreti citati appartengono ai rispettivi proprietari; il gioco <b>non riproduce testi né registrazioni</b>, ma rimanda ai servizi di streaming per l'ascolto.</p>
+      <p><a href="#" onclick="go('privacy');return false;" data-i18n="privacy_link">Privacy &amp; Cookie Policy</a></p>
     </div>
   </section>
 
   <!-- RULES -->
   <section class="screen" id="s-rules">
-    <h2 class="title">📖 Come si gioca</h2>
-    <p class="sub">Scegli le sfide e quante domande giocare per ciascuna. Ogni risposta esatta vale <b>1 punto</b>: vince chi totalizza più punti!</p>
+    <h2 class="title" data-i18n="rules_title">📖 Come si gioca</h2>
+    <p class="sub" data-i18n="rules_sub">Scegli le sfide e quante domande giocare per ciascuna. Ogni risposta esatta vale <b>1 punto</b>: vince chi totalizza più punti!</p>
     <div class="card">
-      <p style="margin-bottom:12px"><span style="font-size:24px">🧠</span> <b>Quiz musicale</b><br><span class="hint">Domanda a risposta multipla sulla musica (facoltativamente a tempo). Risposta giusta = 1 punto.</span></p>
-      <p style="margin-bottom:12px"><span style="font-size:24px">🎧</span> <b>Ascolto</b><br><span class="hint">Un'anteprima del brano parte "al buio" direttamente nell'app: indovinate <b>titolo</b> e <b>interprete</b>, poi rivelate. 1 punto.</span></p>
-      <p style="margin-bottom:12px"><span style="font-size:24px">🎭</span> <b>Mimo</b><br><span class="hint">Un membro mima la canzone (solo lui la vede), la squadra indovina entro il tempo. 1 punto.</span></p>
-      <p><span style="font-size:24px">🎤</span> <b>Karaoke / Parola segreta</b><br><span class="hint">Viene svelata una parola: cantate una canzone che la contenga entro il tempo. 1 punto.</span></p>
+      <p style="margin-bottom:12px"><span style="font-size:24px">🧠</span> <span data-i18n="rules_quiz"><b>Quiz musicale</b><br><span class="hint">Domanda a risposta multipla sulla musica (facoltativamente a tempo). Risposta giusta = 1 punto.</span></span></p>
+      <p style="margin-bottom:12px"><span style="font-size:24px">🎧</span> <span data-i18n="rules_listen"><b>Ascolto</b><br><span class="hint">Un'anteprima del brano parte "al buio" direttamente nell'app: indovinate <b>titolo</b> e <b>interprete</b>, poi rivelate. 1 punto.</span></span></p>
+      <p style="margin-bottom:12px"><span style="font-size:24px">🎭</span> <span data-i18n="rules_mime"><b>Mimo</b><br><span class="hint">Un membro mima la canzone (solo lui la vede), la squadra indovina entro il tempo. 1 punto.</span></span></p>
+      <p><span style="font-size:24px">🎤</span> <span data-i18n="rules_karaoke"><b>Karaoke / Parola segreta</b><br><span class="hint">Viene svelata una parola: cantate una canzone che la contenga entro il tempo. 1 punto.</span></span></p>
     </div>
     <div class="card">
-      <p class="hint" style="margin:0"><b>🎮 Modalità:</b> gioca <b>in squadre</b> (2-6) o <b>da solo</b> (Quiz e Ascolto). <b>🎚️ Categorie</b> e <b>🎯 difficoltà</b> personalizzabili. I record vengono salvati sul dispositivo.</p>
+      <p class="hint" style="margin:0" data-i18n="rules_modes"><b>🎮 Modalità:</b> gioca <b>in squadre</b> (2-10) o <b>da solo</b> (Quiz e Ascolto). <b>🎚️ Categorie</b> e <b>🎯 difficoltà</b> personalizzabili. I record vengono salvati sul dispositivo.</p>
     </div>
-    <button class="btn" style="margin-top:14px" onclick="go('home')">← Torna alla Home</button>
+    <button class="btn" style="margin-top:14px" onclick="go('home')" data-i18n="back_home">← Torna alla Home</button>
   </section>
 
   <!-- SETUP -->
   <section class="screen" id="s-setup">
-    <h2 class="title" id="setupTitle">👥 Crea le squadre</h2>
-    <p class="sub" id="setupSub">Da 2 a 6 squadre. Date un nome a ciascuna.</p>
+    <h2 class="title" id="setupTitle" data-i18n="setup_title_team">👥 Crea le squadre</h2>
+    <p class="sub" id="setupSub" data-i18n="setup_sub_team">Da 2 a 10 squadre. Date un nome a ciascuna.</p>
     <div class="card" id="teamsCard">
       <div id="teamList"></div>
-      <button class="btn sec small" onclick="addTeam()">＋ Aggiungi squadra</button>
+      <button class="btn sec small" onclick="addTeam()" data-i18n="add_team">＋ Aggiungi squadra</button>
     </div>
 
     <!-- IMPOSTAZIONI PARTITA -->
     <div class="card">
-      <h4 id="chTitle">🏁 Sfide in gioco & punti</h4>
-      <p class="hint" style="margin:-4px 0 10px">Imposta quante <b>domande</b> di ogni categoria riceve ciascuna squadra (0-30). A 0 la categoria è esclusa. Ogni risposta esatta vale <b>1 punto</b>.</p>
+      <h4 id="chTitle" data-i18n="ch_title">🏁 Sfide in gioco & punti</h4>
+      <p class="hint" style="margin:-4px 0 10px" data-i18n="ch_hint">Imposta quante <b>domande</b> di ogni categoria riceve ciascuna squadra (0-30). A 0 la categoria è esclusa. Ogni risposta esatta vale <b>1 punto</b>.</p>
       <div id="chList"></div>
     </div>
 
     <!-- DIFFICOLTÀ -->
     <div class="card">
-      <h4>🎯 Difficoltà</h4>
+      <h4 data-i18n="diff_title">🎯 Difficoltà</h4>
       <div class="modeseg" id="diffSeg" style="flex-wrap:wrap">
-        <div class="m" data-diff="facile" onclick="pickDiff('facile')"><div class="mt">😎 Facile</div><div class="md">solo contenuti facili · più tempo</div></div>
-        <div class="m on" data-diff="medio" onclick="pickDiff('medio')"><div class="mt">🙂 Medio</div><div class="md">solo contenuti medi</div></div>
-        <div class="m" data-diff="difficile" onclick="pickDiff('difficile')"><div class="mt">🔥 Difficile</div><div class="md">solo contenuti difficili · meno tempo</div></div>
-        <div class="m" data-diff="mix" onclick="pickDiff('mix')"><div class="mt">🎲 Mix</div><div class="md">difficoltà casuale per ogni sfida</div></div>
+        <div class="m" data-diff="facile" onclick="pickDiff('facile')"><div class="mt" data-i18n="diff_easy">😎 Facile</div><div class="md" data-i18n="diff_easy_d">solo contenuti facili · più tempo</div></div>
+        <div class="m on" data-diff="medio" onclick="pickDiff('medio')"><div class="mt" data-i18n="diff_med">🙂 Medio</div><div class="md" data-i18n="diff_med_d">solo contenuti medi</div></div>
+        <div class="m" data-diff="difficile" onclick="pickDiff('difficile')"><div class="mt" data-i18n="diff_hard">🔥 Difficile</div><div class="md" data-i18n="diff_hard_d">solo contenuti difficili · meno tempo</div></div>
+        <div class="m" data-diff="mix" onclick="pickDiff('mix')"><div class="mt" data-i18n="diff_mix">🎲 Mix</div><div class="md" data-i18n="diff_mix_d">difficoltà casuale per ogni sfida</div></div>
       </div>
       <div class="hint" id="diffHint" style="margin-top:10px"></div>
     </div>
 
     <!-- CATEGORIE -->
     <div class="card">
-      <h4>🎚️ Categoria brani <span id="catSubLabel" style="color:var(--muted);font-weight:600;text-transform:none;letter-spacing:0">(Ascolto &amp; Mimo)</span></h4>
-      <p class="hint" style="margin:-4px 0 12px">Combina più categorie (es. 🎸 Rock + 📼 Anni 80): verranno usati solo i brani che le soddisfano tutte. Tocca <b>🎵 Mix</b> per azzerare.</p>
+      <h4><span data-i18n="cat_title">🎚️ Categoria brani</span> <span id="catSubLabel" data-i18n="cat_sublabel" style="color:var(--muted);font-weight:600;text-transform:none;letter-spacing:0">(Ascolto &amp; Mimo)</span></h4>
+      <p class="hint" style="margin:-4px 0 12px" data-i18n="cat_hint">Combina più categorie (es. 🎸 Rock + 📼 Anni 80): verranno usati solo i brani che le soddisfano tutte. Tocca <b>🎵 Mix</b> per azzerare.</p>
       <div class="catbox">
         <div class="catrow-top">
-          <div class="chip mixchip on" data-cat="mix" onclick="pickCat('mix')">🎵 Mix <span style="opacity:.7;font-weight:600">· tutti</span></div>
+          <div class="chip mixchip on" data-cat="mix" onclick="pickCat('mix')" data-i18n="cat_mix">🎵 Mix <span style="opacity:.7;font-weight:600">· tutti</span></div>
         </div>
         <div class="catsec">
-          <div class="catgroup">🌍 Origine</div>
+          <div class="catgroup" data-i18n="grp_origin">🌍 Origine</div>
           <div class="chips">
-            <div class="chip" data-cat="ita" onclick="pickCat('ita')">🇮🇹 Italiana</div>
-            <div class="chip" data-cat="int" onclick="pickCat('int')">🌍 Internazionale</div>
+            <div class="chip" data-cat="ita" onclick="pickCat('ita')" data-i18n="cat_ita">🇮🇹 Italiana</div>
+            <div class="chip" data-cat="int" onclick="pickCat('int')" data-i18n="cat_int">🌍 Internazionale</div>
           </div>
         </div>
         <div class="catsec">
-          <div class="catgroup">📆 Decennio</div>
+          <div class="catgroup" data-i18n="grp_decade">📆 Decennio</div>
           <div class="chips">
             <div class="chip" data-cat="60s70s" onclick="pickCat('60s70s')">🕺 60/70</div>
             <div class="chip" data-cat="80s" onclick="pickCat('80s')">📼 80</div>
@@ -380,29 +384,29 @@
           </div>
         </div>
         <div class="catsec">
-          <div class="catgroup">🎸 Genere</div>
+          <div class="catgroup" data-i18n="grp_genre">🎸 Genere</div>
           <div class="chips">
-            <div class="chip" data-cat="pop" onclick="pickCat('pop')">🎤 Pop</div>
-            <div class="chip" data-cat="rock" onclick="pickCat('rock')">🎸 Rock</div>
-            <div class="chip" data-cat="dance" onclick="pickCat('dance')">🪩 Dance</div>
-            <div class="chip" data-cat="hiphop" onclick="pickCat('hiphop')">🎧 Hip-Hop/R&amp;B</div>
-            <div class="chip" data-cat="latin" onclick="pickCat('latin')">💃 Latina</div>
-            <div class="chip" data-cat="soul" onclick="pickCat('soul')">🎷 Soul/Funk</div>
-            <div class="chip" data-cat="metal" onclick="pickCat('metal')">🤘 Metal</div>
-            <div class="chip" data-cat="indie" onclick="pickCat('indie')">🎨 Indie</div>
-            <div class="chip" data-cat="cantautori" onclick="pickCat('cantautori')">✍️ Cantautori</div>
+            <div class="chip" data-cat="pop" onclick="pickCat('pop')" data-i18n="cat_pop">🎤 Pop</div>
+            <div class="chip" data-cat="rock" onclick="pickCat('rock')" data-i18n="cat_rock">🎸 Rock</div>
+            <div class="chip" data-cat="dance" onclick="pickCat('dance')" data-i18n="cat_dance">🪩 Dance</div>
+            <div class="chip" data-cat="hiphop" onclick="pickCat('hiphop')" data-i18n="cat_hiphop">🎧 Hip-Hop/R&amp;B</div>
+            <div class="chip" data-cat="latin" onclick="pickCat('latin')" data-i18n="cat_latin">💃 Latina</div>
+            <div class="chip" data-cat="soul" onclick="pickCat('soul')" data-i18n="cat_soul">🎷 Soul/Funk</div>
+            <div class="chip" data-cat="metal" onclick="pickCat('metal')" data-i18n="cat_metal">🤘 Metal</div>
+            <div class="chip" data-cat="indie" onclick="pickCat('indie')" data-i18n="cat_indie">🎨 Indie</div>
+            <div class="chip" data-cat="cantautori" onclick="pickCat('cantautori')" data-i18n="cat_cant">✍️ Cantautori</div>
           </div>
         </div>
         <div class="catsec">
-          <div class="catgroup">⭐ Collezioni</div>
+          <div class="catgroup" data-i18n="grp_coll">⭐ Collezioni</div>
           <div class="chips">
-            <div class="chip" data-cat="sanremo" onclick="pickCat('sanremo')">🎭 Sanremo</div>
-            <div class="chip" data-cat="estate" onclick="pickCat('estate')">☀️ Estate</div>
-            <div class="chip" data-cat="soundtrack" onclick="pickCat('soundtrack')">🎬 Film</div>
-            <div class="chip" data-cat="natale" onclick="pickCat('natale')">🎄 Natale</div>
-            <div class="chip" data-cat="disney" onclick="pickCat('disney')">🏰 Disney</div>
-            <div class="chip" data-cat="dance00" onclick="pickCat('dance00')">🪩 Dance 2000</div>
-            <div class="chip" data-cat="onehit" onclick="pickCat('onehit')">💫 One-Hit</div>
+            <div class="chip" data-cat="sanremo" onclick="pickCat('sanremo')" data-i18n="cat_sanremo">🎭 Sanremo</div>
+            <div class="chip" data-cat="estate" onclick="pickCat('estate')" data-i18n="cat_estate">☀️ Estate</div>
+            <div class="chip" data-cat="soundtrack" onclick="pickCat('soundtrack')" data-i18n="cat_film">🎬 Film</div>
+            <div class="chip" data-cat="natale" onclick="pickCat('natale')" data-i18n="cat_natale">🎄 Natale</div>
+            <div class="chip" data-cat="disney" onclick="pickCat('disney')" data-i18n="cat_disney">🏰 Disney</div>
+            <div class="chip" data-cat="dance00" onclick="pickCat('dance00')" data-i18n="cat_dance00">🪩 Dance 2000</div>
+            <div class="chip" data-cat="onehit" onclick="pickCat('onehit')" data-i18n="cat_onehit">💫 One-Hit</div>
           </div>
         </div>
       </div>
@@ -410,13 +414,14 @@
 
     <!-- SERVIZIO + OPZIONI -->
     <div class="card">
-      <h4>⚙️ Opzioni</h4>
-      <div class="steprow"><span class="lab2">⚡ Quiz a tempo <small>countdown per rispondere; allo scadere la domanda è persa</small></span><label class="switch"><input type="checkbox" id="optTimed" checked><span class="slider"></span></label></div>
-      <div class="steprow"><span class="lab2">🔊 Effetti sonori</span><label class="switch"><input type="checkbox" id="optSound" checked onchange="syncSound()"><span class="slider"></span></label></div>
+      <h4 data-i18n="opt_title">⚙️ Opzioni</h4>
+      <div class="steprow"><span class="lab2" data-i18n="opt_timed">⚡ Quiz a tempo <small>countdown per rispondere; allo scadere la domanda è persa</small></span><label class="switch"><input type="checkbox" id="optTimed" checked><span class="slider"></span></label></div>
+      <div class="steprow"><span class="lab2" id="optChoiceLab" data-i18n="opt_choice">🎯 Ascolto a scelta multipla <small>mostra 4 titoli tra cui scegliere invece di indovinare a mente</small></span><label class="switch"><input type="checkbox" id="optChoice"><span class="slider"></span></label></div>
+      <div class="steprow"><span class="lab2" data-i18n="opt_sound">🔊 Effetti sonori</span><label class="switch"><input type="checkbox" id="optSound" checked onchange="syncSound()"><span class="slider"></span></label></div>
     </div>
 
-    <button class="btn" style="margin-top:14px" onclick="startGame()">🚀 VIA!</button>
-    <button class="btn ghost" style="margin-top:10px" onclick="go('home')">← Indietro</button>
+    <button class="btn" style="margin-top:14px" onclick="startGame()" data-i18n="go_btn">🚀 VIA!</button>
+    <button class="btn ghost" style="margin-top:10px" onclick="go('home')" data-i18n="back_btn">← Indietro</button>
   </section>
 
   <!-- GAME -->
@@ -429,8 +434,8 @@
     <div class="card" id="challengeBox"></div>
     <div class="mini-score" id="miniScore"></div>
     <div class="btnrow" style="margin-top:18px">
-      <button class="btn ghost" onclick="exitGame('setup')">⚙️ Impostazioni</button>
-      <button class="btn ghost" onclick="exitGame('home')">🏠 Home</button>
+      <button class="btn ghost" onclick="exitGame('setup')" data-i18n="settings_btn">⚙️ Impostazioni</button>
+      <button class="btn ghost" onclick="exitGame('home')" data-i18n="home_btn">🏠 Home</button>
     </div>
   </section>
 
@@ -438,28 +443,28 @@
   <section class="screen" id="s-results">
     <div class="winner">
       <div class="cup">🏆</div>
-      <h2 id="winName">Vincitore</h2>
+      <h2 id="winName" data-i18n="winner">Vincitore</h2>
       <p class="sub" id="winPts"></p>
     </div>
     <div class="card" id="finalBoard"></div>
-    <button class="btn" style="margin-top:16px" onclick="goSetup(state.solo?'solo':'team')">🔁 Rigioca</button>
-    <button class="btn ghost" style="margin-top:10px" onclick="go('home')">🏠 Home</button>
+    <button class="btn" style="margin-top:16px" onclick="goSetup(state.solo?'solo':'team')" data-i18n="replay">🔁 Rigioca</button>
+    <button class="btn ghost" style="margin-top:10px" onclick="go('home')" data-i18n="home_btn">🏠 Home</button>
   </section>
 
   <!-- RECORDS -->
   <section class="screen" id="s-records">
-    <h2 class="title">🏆 Storico Record</h2>
-    <p class="sub">I migliori punteggi salvati su questo dispositivo.</p>
+    <h2 class="title" data-i18n="rec_title">🏆 Storico Record</h2>
+    <p class="sub" data-i18n="rec_sub">I migliori punteggi salvati su questo dispositivo.</p>
     <div id="recordsBox"></div>
-    <button class="btn ghost" style="margin-top:14px" onclick="clearRecords()">🗑 Cancella storico</button>
-    <button class="btn" style="margin-top:10px" onclick="go('home')">🏠 Home</button>
+    <button class="btn ghost" style="margin-top:14px" onclick="clearRecords()" data-i18n="rec_clear">🗑 Cancella storico</button>
+    <button class="btn" style="margin-top:10px" onclick="go('home')" data-i18n="home_btn">🏠 Home</button>
   </section>
 
   <!-- PRIVACY -->
   <section class="screen" id="s-privacy">
-    <h2 class="title">🔒 Privacy &amp; Cookie Policy</h2>
-    <p class="sub">Ultimo aggiornamento: ottobre 2026</p>
-    <div class="card legal">
+    <h2 class="title" data-i18n="priv_title">🔒 Privacy &amp; Cookie Policy</h2>
+    <p class="sub" data-i18n="priv_sub">Ultimo aggiornamento: ottobre 2026</p>
+    <div class="card legal" data-lang-block="it">
       <h4>1. Titolare e natura del sito</h4>
       <p>Hitmania è un gioco musicale <b>fan-made</b> gratuito, a scopo di puro intrattenimento, pubblicato da un privato senza finalità commerciali. Non è affiliato, sponsorizzato o approvato da Amazon Music, Spotify, YouTube o da alcuna etichetta/editore musicale.</p>
 
@@ -488,7 +493,36 @@
       <h4>7. Contatti</h4>
       <p>Per richieste relative a questa policy o segnalazioni (es. rimozione di un contenuto), puoi contattare il gestore del sito tramite il canale indicato nel repository di pubblicazione.</p>
     </div>
-    <button class="btn" style="margin-top:14px" onclick="go('home')">🏠 Torna al gioco</button>
+    
+    <div class="card legal" data-lang-block="en" style="display:none">
+      <h4>1. Site owner and nature</h4>
+      <p>Hitmania is a free <b>fan-made</b> music game, for pure entertainment purposes, published by a private individual with no commercial aim. It is not affiliated with, sponsored or endorsed by Amazon Music, Spotify, YouTube or any music label/publisher.</p>
+
+      <h4>2. No personal data collected</h4>
+      <p>The site is a static page: it <b>does not collect, store or transmit any personal data</b>. There are no forms, registrations, logins, nor any analytics or profiling systems (no Google Analytics, pixels or advertising trackers).</p>
+
+      <h4>3. Cookies and local storage</h4>
+      <p>Hitmania <b>does not use profiling or tracking cookies</b>. It only uses your browser's <b>localStorage</b>, for purely <b>technical/functional</b> purposes, to remember a preference (the interface language). This data stays on your device, is not accessible to third parties, and you can delete it at any time by clearing the site data in your browser.</p>
+      <p>According to privacy authority guidelines and ePrivacy/GDPR rules, <b>no consent banner is required</b> for technical tools only.</p>
+
+      <h4>4. Links to third-party services</h4>
+      <p>In the "Listening" challenge the game opens search links to <b>Amazon Music, Spotify and YouTube</b> to let you play the tracks. When you follow these links you leave Hitmania and access third-party services, which apply <b>their own</b> privacy policies and cookies. We invite you to review them:</p>
+      <ul>
+        <li>Amazon — Privacy Notice</li>
+        <li>Spotify — Privacy Policy</li>
+        <li>YouTube / Google — Privacy Policy</li>
+      </ul>
+      <p>Hitmania does not control and is not responsible for the content or data processing of those services.</p>
+
+      <h4>5. Hosting</h4>
+      <p>The site is hosted on <b>GitHub Pages</b> (GitHub, Inc.). The provider may automatically collect technical connection data (e.g. IP address) in its service logs for security and operational purposes, under its own privacy policy. Hitmania has no access to these logs.</p>
+
+      <h4>6. Intellectual property</h4>
+      <p>Song titles and artist/performer names are cited for identification and entertainment purposes only and remain the property of their respective owners. The game <b>does not reproduce song lyrics or audio recordings</b>. The quiz questions, words and interface content are original material.</p>
+
+      <h4>7. Contact</h4>
+      <p>For requests regarding this policy or reports (e.g. removal of content), you can contact the site manager through the channel indicated in the publishing repository.</p>
+    </div><button class="btn" style="margin-top:14px" onclick="go('home')" data-i18n="priv_back">🏠 Torna al gioco</button>
   </section>
 
 </div>
@@ -496,309 +530,309 @@
 <script>
 /* ================= CONTENT BANKS ================= */
 const QUIZ = [
-  {q:"Quante corde ha una chitarra classica standard?", a:["6","4","8","12"], d:"facile"},
-  {q:"Come si chiama un gruppo di 4 musicisti?", a:["Quartetto","Trio","Quintetto","Duo"], d:"medio"},
-  {q:"Quale strumento ha i tasti bianchi e neri?", a:["Pianoforte","Tromba","Violino","Flauto"], d:"facile"},
-  {q:"Il termine 'a cappella' indica un canto…", a:["senza accompagnamento strumentale","con sola batteria","molto veloce","in latino"], d:"facile"},
-  {q:"Quante note ha la scala musicale di base (do-re-mi…)?", a:["7","5","8","12"], d:"medio"},
-  {q:"Il 'basso' di solito è uno strumento…", a:["a corde","a fiato","a percussione","a tastiera"], d:"medio"},
-  {q:"Quanti musicisti compongono un 'trio'?", a:["3","2","4","5"], d:"facile"},
-  {q:"Lo strumento tipico del flamenco spagnolo è la…", a:["chitarra","fisarmonica","arpa","cornamusa"], d:"medio"},
-  {q:"Il 'BPM' in musica misura…", a:["la velocità (battiti al minuto)","il volume","l'altezza delle note","la durata"], d:"difficile"},
-  {q:"Quale famiglia comprende violino e violoncello?", a:["Archi","Fiati","Percussioni","Tastiere"], d:"medio"},
-  {q:"Quale strumento si suona con un archetto?", a:["Violino","Pianoforte","Tromba","Batteria"], d:"facile"},
-  {q:"La 'batteria' fa parte della famiglia…", a:["percussioni","archi","fiati","tastiere"], d:"facile"},
-  {q:"Quale di questi è uno strumento a fiato?", a:["Sassofono","Violoncello","Arpa","Tamburo"], d:"facile"},
-  {q:"Quanti movimenti ha una misura in 4/4?", a:["4","3","6","2"], d:"difficile"},
-  {q:"Quanti tasti (bianchi+neri) ha un pianoforte standard?", a:["88","76","61","100"], d:"facile"},
-  {q:"Quale strumento NON è a percussione?", a:["Flauto","Timpano","Xilofono","Tamburello"], d:"medio"},
-  {q:"Quante linee ha un pentagramma musicale?", a:["5","4","6","7"], d:"difficile"},
-  {q:"Il 'crescendo' indica un volume che…", a:["aumenta gradualmente","diminuisce","resta fisso","si ferma"], d:"difficile"},
-  {q:"Il 'metronomo' serve a…", a:["scandire il tempo","accordare","amplificare","registrare"], d:"difficile"},
-  {q:"Il 'falsetto' è una tecnica…", a:["vocale","di batteria","di chitarra","di mixaggio"], d:"difficile"},
-  {q:"La 'melodia' è…", a:["una successione di note","il volume","il ritmo della batteria","il testo"], d:"facile"},
-  {q:"Il 'ritornello' è la parte che…", a:["si ripete più volte","si suona una volta sola","apre solo il brano","è senza parole"], d:"facile"},
-  {q:"Quale chiave si usa per le note acute?", a:["Chiave di violino (sol)","Chiave di basso (fa)","Chiave di do","Nessuna"], d:"difficile"},
-  {q:"Quante ottave ha all'incirca un pianoforte standard?", a:["7","3","10","5"], d:"difficile"},
-  {q:"Il 'tempo' in musica indica…", a:["la velocità di esecuzione","il volume","la tonalità","la durata totale"], d:"medio"},
-  {q:"Lo strumento con mantice e tasti è la…", a:["fisarmonica","chitarra","arpa","batteria"], d:"medio"},
-  {q:"Quante corde ha un basso elettrico tradizionale?", a:["4","6","8","3"], d:"medio"},
-  {q:"Il 'diesis' (#) alza una nota di…", a:["un semitono","un tono","un'ottava","niente"], d:"difficile"},
-  {q:"Il 'bemolle' (♭) abbassa una nota di…", a:["un semitono","un tono","un'ottava","due toni"], d:"difficile"},
-  {q:"Lo strumento a fiato più grave dell'orchestra è il…", a:["controfagotto","flauto","oboe","clarinetto piccolo"], d:"facile"},
-  {q:"In quale città nacque la musica reggae?", a:["Kingston (Giamaica)","Rio de Janeiro","New Orleans","Napoli"], d:"difficile"},
-  {q:"Che genere nasce a New Orleans a inizio '900?", a:["Jazz","Techno","Trap","Reggaeton"], d:"difficile"},
-  {q:"Il genere 'blues' nasce negli…", a:["Stati Uniti","Regno Unito","Brasile","Giappone"], d:"medio"},
-  {q:"Quale di questi è un ritmo latino-americano?", a:["Salsa","Valzer","Polka","Mazurka"], d:"medio"},
-  {q:"Il genere 'opera' unisce musica e…", a:["teatro/canto lirico","danza break","rap","elettronica"], d:"medio"},
-  {q:"Il rap è caratterizzato soprattutto da…", a:["parlato ritmico in rima","canto lirico","assoli di violino","yodel"], d:"facile"},
-  {q:"Il 'rock and roll' esplode soprattutto negli anni…", a:["'50","'20","'80","2000"], d:"medio"},
-  {q:"La 'techno' è un genere prevalentemente…", a:["elettronico","acustico","orchestrale","corale"], d:"medio"},
-  {q:"Il 'grunge' nasce nella città di…", a:["Seattle","Londra","Berlino","Parigi"], d:"medio"},
-  {q:"Il genere K-pop proviene dalla…", a:["Corea del Sud","Cina","Giappone","Thailandia"], d:"medio"},
-  {q:"Il flamenco è tradizione di quale paese?", a:["Spagna","Portogallo","Messico","Grecia"], d:"medio"},
-  {q:"Il 'bossa nova' nasce in quale paese?", a:["Brasile","Cuba","Argentina","Colombia"], d:"difficile"},
-  {q:"Il tango è associato soprattutto a…", a:["Argentina","Spagna","Italia","Irlanda"], d:"medio"},
-  {q:"Quale genere usa 'scratch' e giradischi?", a:["Hip hop","Country","Opera","Folk"], d:"medio"},
-  {q:"Il 'punk' si afferma soprattutto negli anni…", a:["'70","'50","'90","2010"], d:"medio"},
-  {q:"Il 'DJ' in una serata si occupa di…", a:["mixare e riprodurre brani","suonare il violino","dirigere l'orchestra","scrivere spartiti"], d:"facile"},
-  {q:"Il termine 'live' riferito a un concerto significa…", a:["dal vivo","registrato","acustico","strumentale"], d:"facile"},
-  {q:"Il 'vinile' è un supporto per…", a:["riprodurre musica","amplificare la voce","accordare","scrivere testi"], d:"facile"},
-  {q:"Il termine 'remix' indica un brano…", a:["rielaborato da una versione esistente","registrato dal vivo","mai pubblicato","strumentale puro"], d:"facile"},
-  {q:"Il 'featuring' (feat.) indica…", a:["la collaborazione di un altro artista","un errore di stampa","un genere","uno strumento"], d:"facile"},
-  {q:"Quale di questi è un formato audio digitale?", a:["MP3","PDF","JPG","DOC"], d:"facile"},
-  {q:"Una 'cover' è…", a:["la reinterpretazione di un brano altrui","un brano inedito","una copertina soltanto","un concerto"], d:"facile"},
-  {q:"Il 'singolo' è…", a:["un brano pubblicato a sé","un intero album","un tour","un premio"], d:"facile"},
-  {q:"Il 'tour' di un artista è…", a:["una serie di concerti","un album doppio","un videoclip","un contratto"], d:"facile"},
-  {q:"La 'hit' è una canzone…", a:["di grande successo","mai pubblicata","solo strumentale","dal vivo"], d:"facile"},
-  {q:"Lo 'streaming' musicale permette di…", a:["ascoltare brani in rete senza scaricarli","solo scaricare file","stampare spartiti","registrare dal vivo"], d:"facile"},
-  {q:"Una 'playlist' è…", a:["un elenco di brani","un singolo brano","un concerto","uno strumento"], d:"facile"},
-  {q:"Il 'tormentone' estivo è un brano…", a:["molto popolare in estate","invernale","classico","strumentale"], d:"medio"},
-  {q:"Il 'mixaggio' in studio serve a…", a:["bilanciare i suoni registrati","vendere i dischi","organizzare i concerti","accordare"], d:"difficile"},
-  {q:"Il 'producer' di un brano è chi…", a:["ne cura la realizzazione in studio","vende i biglietti","balla sul palco","progetta la copertina"], d:"difficile"},
-  {q:"Il Festival della canzone italiana più famoso si tiene a…", a:["Sanremo","Milano","Roma","Firenze"], d:"medio"},
-  {q:"La manifestazione canora europea tra nazioni si chiama…", a:["Eurovision","Champions Music","Euro Song Cup","Music Union"], d:"medio"},
-  {q:"Il 'Woodstock' del 1969 era un grande…", a:["festival musicale","premio discografico","talent show","film"], d:"facile"},
-  {q:"Gli 'MTV' erano noti soprattutto per i…", a:["videoclip musicali","telegiornali","documentari storici","cartoni"], d:"facile"},
-  {q:"Un 'disco di platino' premia…", a:["le alte vendite di un disco","il miglior testo","il concerto più lungo","il video più visto"], d:"facile"},
-  {q:"La 'boy band' è un gruppo composto da…", a:["soli ragazzi","sole ragazze","solo strumentisti","soli direttori"], d:"facile"},
-  {q:"Un 'talent show' musicale serve a…", a:["scoprire nuovi cantanti","vendere strumenti","organizzare tour","produrre film"], d:"facile"},
-  {q:"Il 'karaoke' consiste nel…", a:["cantare su basi strumentali","suonare la chitarra","ballare la salsa","scrivere canzoni"], d:"facile"},
-  {q:"L''unplugged' è un concerto suonato in modo…", a:["acustico","elettronico","orchestrale","a cappella"], d:"difficile"},
-  {q:"Il 'bis' a fine concerto è…", a:["un brano eseguito di nuovo a richiesta","l'intervallo","il soundcheck","la scaletta"], d:"difficile"},
-  {q:"Chi ha cantato «Bohemian Rhapsody»?", a:["Queen","The Beatles","Led Zeppelin","Pink Floyd"], d:"facile"},
-  {q:"Chi ha cantato «Billie Jean»?", a:["Michael Jackson","Prince","Stevie Wonder","Lionel Richie"], d:"facile"},
-  {q:"Chi ha cantato «Like a Prayer»?", a:["Madonna","Cyndi Lauper","Whitney Houston","Tina Turner"], d:"facile"},
-  {q:"Chi ha cantato «Shape of You»?", a:["Ed Sheeran","Justin Bieber","Shawn Mendes","Sam Smith"], d:"facile"},
-  {q:"Chi ha cantato «Rolling in the Deep»?", a:["Adele","Amy Winehouse","Duffy","Sia"], d:"facile"},
-  {q:"Chi ha cantato «Bad Guy»?", a:["Billie Eilish","Dua Lipa","Olivia Rodrigo","Lorde"], d:"facile"},
-  {q:"Chi ha cantato «Blinding Lights»?", a:["The Weeknd","Bruno Mars","Usher","Chris Brown"], d:"facile"},
-  {q:"Chi ha cantato «Shake It Off»?", a:["Taylor Swift","Katy Perry","Selena Gomez","Miley Cyrus"], d:"facile"},
-  {q:"Chi ha cantato «Umbrella»?", a:["Rihanna","Beyoncé","Alicia Keys","Ciara"], d:"facile"},
-  {q:"Chi ha cantato «Poker Face»?", a:["Lady Gaga","Kesha","Katy Perry","Pink"], d:"facile"},
-  {q:"Chi ha cantato «Despacito»?", a:["Luis Fonsi","Enrique Iglesias","Ricky Martin","Marc Anthony"], d:"facile"},
-  {q:"Chi ha cantato «Smells Like Teen Spirit»?", a:["Nirvana","Pearl Jam","Soundgarden","Foo Fighters"], d:"facile"},
-  {q:"Chi ha cantato «Wonderwall»?", a:["Oasis","Blur","The Verve","Radiohead"], d:"facile"},
-  {q:"Chi ha cantato «Viva la Vida»?", a:["Coldplay","Muse","Keane","Snow Patrol"], d:"facile"},
-  {q:"Chi ha cantato «Uptown Funk»?", a:["Mark Ronson ft. Bruno Mars","Pharrell Williams","Justin Timberlake","Daft Punk"], d:"facile"},
-  {q:"Chi ha cantato «Happy»?", a:["Pharrell Williams","will.i.am","Bruno Mars","CeeLo Green"], d:"facile"},
-  {q:"Chi ha cantato «Someone Like You»?", a:["Adele","Sam Smith","Lewis Capaldi","Birdy"], d:"facile"},
-  {q:"Chi ha cantato «Hello» (2015)?", a:["Adele","Beyoncé","Alicia Keys","Rihanna"], d:"facile"},
-  {q:"Chi ha cantato «Thriller»?", a:["Michael Jackson","James Brown","Prince","Lionel Richie"], d:"facile"},
-  {q:"Chi ha cantato «I Will Always Love You» nel film Guardia del corpo?", a:["Whitney Houston","Mariah Carey","Celine Dion","Tina Turner"], d:"facile"},
-  {q:"Chi ha cantato «Albachiara»?", a:["Vasco Rossi","Luciano Ligabue","Zucchero","Eros Ramazzotti"], d:"facile"},
-  {q:"Chi ha cantato «Caruso»?", a:["Lucio Dalla","Lucio Battisti","Riccardo Cocciante","Gino Paoli"], d:"medio"},
-  {q:"Chi ha cantato «La canzone del sole»?", a:["Lucio Battisti","Lucio Dalla","Francesco De Gregori","Antonello Venditti"], d:"medio"},
-  {q:"Chi ha cantato «Nel blu dipinto di blu (Volare)»?", a:["Domenico Modugno","Adriano Celentano","Gianni Morandi","Little Tony"], d:"medio"},
-  {q:"Chi ha cantato «Azzurro»?", a:["Adriano Celentano","Domenico Modugno","Gianni Morandi","Al Bano"], d:"facile"},
-  {q:"Chi ha cantato «Felicità»?", a:["Al Bano & Romina Power","Ricchi e Poveri","Toto Cutugno","Gigliola Cinquetti"], d:"medio"},
-  {q:"Chi ha cantato «Sarà perché ti amo»?", a:["Ricchi e Poveri","Al Bano & Romina Power","Matia Bazar","Pooh"], d:"medio"},
-  {q:"Chi ha cantato «Gloria»?", a:["Umberto Tozzi","Riccardo Cocciante","Pupo","Drupi"], d:"medio"},
-  {q:"Chi ha cantato «Con te partirò»?", a:["Andrea Bocelli","Luciano Pavarotti","Al Bano","Massimo Ranieri"], d:"facile"},
-  {q:"Chi ha cantato «Zitti e buoni»?", a:["Måneskin","Pinguini Tattici Nucleari","Thegiornalisti","Negramaro"], d:"facile"},
-  {q:"Chi ha cantato «Brividi» a Sanremo 2022?", a:["Mahmood & Blanco","Mahmood","Blanco","Marco Mengoni"], d:"medio"},
-  {q:"Chi ha cantato «Soldi»?", a:["Mahmood","Blanco","Ultimo","Irama"], d:"medio"},
-  {q:"Chi ha cantato «Occidentali's Karma»?", a:["Francesco Gabbani","Ermal Meta","Diodato","Lo Stato Sociale"], d:"medio"},
-  {q:"Chi ha cantato «L'essenziale»?", a:["Marco Mengoni","Cesare Cremonini","Tiziano Ferro","Biagio Antonacci"], d:"medio"},
-  {q:"Chi ha cantato «Bello e impossibile»?", a:["Gianna Nannini","Loredana Bertè","Fiorella Mannoia","Anna Oxa"], d:"medio"},
-  {q:"Chi ha cantato «Sei bellissima»?", a:["Loredana Bertè","Gianna Nannini","Patty Pravo","Mia Martini"], d:"medio"},
-  {q:"Chi ha cantato «La solitudine»?", a:["Laura Pausini","Giorgia","Elisa","Alessandra Amoroso"], d:"medio"},
-  {q:"Chi ha cantato «Vivo per lei»?", a:["Andrea Bocelli & Giorgia","Eros Ramazzotti","Zucchero","Biagio Antonacci"], d:"medio"},
-  {q:"Chi ha vinto il Festival di Sanremo 2021?", a:["Måneskin","Francesco Gabbani","Diodato","Mahmood"], d:"difficile"},
-  {q:"Chi ha vinto Sanremo 2024?", a:["Angelina Mango","Geolier","Annalisa","Mahmood"], d:"difficile"},
-  {q:"Chi ha vinto Sanremo 2023?", a:["Marco Mengoni","Ultimo","Lazza","Mr. Rain"], d:"difficile"},
-  {q:"Chi ha vinto Sanremo 2019 con «Soldi»?", a:["Mahmood","Ultimo","Il Volo","Loredana Bertè"], d:"difficile"},
-  {q:"Chi ha vinto Sanremo 2020 con «Fai rumore»?", a:["Diodato","Francesco Gabbani","Piero Pelù","Le Vibrazioni"], d:"difficile"},
-  {q:"Con quale canzone i Måneskin hanno vinto Sanremo 2021?", a:["Zitti e buoni","I Wanna Be Your Slave","Beggin'","Vent'anni"], d:"medio"},
-  {q:"In quale città si tiene il Festival della canzone italiana?", a:["Sanremo","Napoli","Milano","Torino"], d:"facile"},
-  {q:"Chi ha vinto Sanremo 2017 con «Occidentali's Karma»?", a:["Francesco Gabbani","Ermal Meta","Fiorella Mannoia","Sergio Sylvestre"], d:"difficile"},
-  {q:"Quale gruppo italiano ha vinto l'Eurovision 2021?", a:["Måneskin","Il Volo","Mahmood","Negramaro"], d:"medio"},
-  {q:"In quale manifestazione si sfidano i Paesi europei a colpi di canzoni?", a:["Eurovision Song Contest","Sanremo","MTV Awards","Grammy"], d:"facile"},
-  {q:"Quale cantante svedese ha vinto l'Eurovision diventando poi famosissima negli anni '70?", a:["ABBA","Roxette","Ace of Base","Robyn"], d:"difficile"},
-  {q:"Chi era il cantante dei Queen?", a:["Freddie Mercury","Brian May","Roger Taylor","John Deacon"], d:"facile"},
-  {q:"Chi era il frontman dei Nirvana?", a:["Kurt Cobain","Dave Grohl","Krist Novoselic","Eddie Vedder"], d:"medio"},
-  {q:"Chi è il cantante degli U2?", a:["Bono","The Edge","Adam Clayton","Larry Mullen"], d:"medio"},
-  {q:"Chi è il cantante dei Coldplay?", a:["Chris Martin","Jonny Buckland","Guy Berryman","Will Champion"], d:"medio"},
-  {q:"Chi era il leader dei Beatles insieme a Paul McCartney?", a:["John Lennon","George Harrison","Ringo Starr","Pete Best"], d:"facile"},
-  {q:"Chi è il cantante dei Måneskin?", a:["Damiano David","Victoria De Angelis","Thomas Raggi","Ethan Torchio"], d:"medio"},
-  {q:"Quanti erano i Beatles?", a:["4","3","5","2"], d:"facile"},
-  {q:"Di quale band è leader Liam Gallagher insieme al fratello Noel?", a:["Oasis","Blur","The Verve","Stone Roses"], d:"difficile"},
-  {q:"Chi è la cantante dei No Doubt, poi solista?", a:["Gwen Stefani","Pink","Avril Lavigne","Shakira"], d:"difficile"},
-  {q:"Di chi è l'album «The Dark Side of the Moon»?", a:["Pink Floyd","Led Zeppelin","The Who","Genesis"], d:"difficile"},
-  {q:"Di chi è l'album «Thriller», il più venduto di sempre?", a:["Michael Jackson","Prince","Madonna","Whitney Houston"], d:"medio"},
-  {q:"Di chi è l'album «Nevermind» del 1991?", a:["Nirvana","Pearl Jam","Soundgarden","Alice in Chains"], d:"difficile"},
-  {q:"In quale album dei Queen è contenuta «Bohemian Rhapsody»?", a:["A Night at the Opera","News of the World","The Game","Jazz"], d:"difficile"},
-  {q:"«Imagine» è una celebre canzone di...", a:["John Lennon","Paul McCartney","George Harrison","Bob Dylan"], d:"facile"},
-  {q:"Quante corde ha un violino?", a:["4","6","5","7"], d:"medio"},
-  {q:"Quale strumento usa ance doppie?", a:["Oboe","Flauto","Clarinetto","Sassofono"], d:"difficile"},
-  {q:"Il «do» è la prima nota di quale scala?", a:["Scala maggiore di Do","Scala di La minore","Scala di Sol","Scala cromatica"], d:"medio"},
-  {q:"Quante note compongono un accordo di triade?", a:["3","2","4","5"], d:"medio"},
-  {q:"Lo strumento a tastiera tipico delle chiese è...", a:["Organo","Clavicembalo","Fisarmonica","Pianoforte"], d:"medio"},
-  {q:"Come si chiama la bacchetta usata dal direttore d'orchestra?", a:["Bacchetta","Archetto","Plettro","Mazza"], d:"facile"},
-  {q:"Il plettro si usa soprattutto per suonare...", a:["la chitarra","il violino","il flauto","la batteria"], d:"facile"},
-  {q:"In quale decennio esplode la disco music?", a:["Anni '70","Anni '50","Anni '90","Anni 2000"], d:"medio"},
-  {q:"Il punk rock esplode soprattutto in quale paese a metà anni '70?", a:["Regno Unito","Germania","Italia","Giappone"], d:"difficile"},
-  {q:"La Motown, celebre etichetta soul, nasce in quale città USA?", a:["Detroit","New York","Los Angeles","Chicago"], d:"difficile"},
-  {q:"Elvis Presley è soprannominato...", a:["The King","The Boss","The Voice","Mr. Blues"], d:"medio"},
-  {q:"Bob Marley è il più celebre esponente di quale genere?", a:["Reggae","Ska","Blues","Soul"], d:"facile"},
-  {q:"Il «Re del Pop» è un soprannome di...", a:["Michael Jackson","Elvis Presley","Prince","Freddie Mercury"], d:"facile"},
-  {q:"La «Regina del Pop» è un soprannome di...", a:["Madonna","Whitney Houston","Mariah Carey","Cher"], d:"medio"},
-  {q:"Quale genere è associato a Snoop Dogg e Dr. Dre?", a:["Hip hop","Reggae","Jazz","Country"], d:"medio"},
-  {q:"Il flamenco è tipico di quale paese?", a:["Spagna","Portogallo","Messico","Argentina"], d:"facile"},
-  {q:"Il tango è nato soprattutto in quale città?", a:["Buenos Aires","Madrid","Rio de Janeiro","L'Avana"], d:"difficile"},
-  {q:"«My Heart Will Go On» è la colonna sonora di quale film?", a:["Titanic","Ghost","Dirty Dancing","Pretty Woman"], d:"medio"},
-  {q:"Chi canta «Shallow» nel film «A Star Is Born»?", a:["Lady Gaga & Bradley Cooper","Adele","Katy Perry","Beyoncé"], d:"medio"},
-  {q:"«Eye of the Tiger» è legata a quale saga di film?", a:["Rocky","Rambo","Top Gun","Flashdance"], d:"medio"},
-  {q:"Chi canta «Let It Go» nel film «Frozen» (versione originale)?", a:["Idina Menzel","Demi Lovato","Ariana Grande","Kristen Bell"], d:"difficile"},
-  {q:"In una band, chi suona di solito la batteria?", a:["Il batterista","Il bassista","Il chitarrista","Il tastierista"], d:"facile"},
-  {q:"Lo strumento di Jimi Hendrix era...", a:["la chitarra elettrica","il pianoforte","il sassofono","la batteria"], d:"medio"},
-  {q:"Il basso elettrico ha solitamente quante corde?", a:["4","6","5","3"], d:"medio"},
-  {q:"Cosa indica un «featuring» (feat.) in un brano?", a:["La collaborazione di un altro artista","Il produttore","Il genere musicale","Il tono"], d:"facile"},
-  {q:"Cosa è un «singolo»?", a:["Un brano pubblicato a sé","Un intero album","Un concerto","Un tour"], d:"facile"},
-  {q:"Cosa è una «cover»?", a:["La reinterpretazione di un brano altrui","Un brano inedito","La copertina","Un remix"], d:"facile"},
-  {q:"Cosa indica «unplugged»?", a:["Esecuzione acustica","Esecuzione elettronica","Un remix","Un concerto gratuito"], d:"medio"},
-  {q:"Il «BPM» misura...", a:["la velocità del brano","il volume","l'altezza delle note","la durata"], d:"medio"},
-  {q:"Chi ha cantato «Dancing Queen»?", a:["ABBA","Bee Gees","Boney M.","Village People"], d:"medio"},
-  {q:"Chi ha cantato «Stayin' Alive»?", a:["Bee Gees","ABBA","Earth Wind & Fire","Kool & The Gang"], d:"medio"},
-  {q:"Chi ha cantato «Sweet Child o' Mine»?", a:["Guns N' Roses","Bon Jovi","Aerosmith","Def Leppard"], d:"medio"},
-  {q:"Chi ha cantato «Nothing Else Matters»?", a:["Metallica","Iron Maiden","Megadeth","Slayer"], d:"medio"},
-  {q:"Chi ha cantato «Zombie»?", a:["The Cranberries","No Doubt","Garbage","Alanis Morissette"], d:"medio"},
-  {q:"Chi ha cantato «Creep»?", a:["Radiohead","Oasis","Blur","Muse"], d:"difficile"},
-  {q:"Chi ha cantato «Seven Nation Army»?", a:["The White Stripes","The Black Keys","Arctic Monkeys","The Strokes"], d:"difficile"},
-  {q:"Chi ha cantato «Mr. Brightside»?", a:["The Killers","The Strokes","Franz Ferdinand","Kaiser Chiefs"], d:"difficile"},
-  {q:"Chi ha cantato «Take On Me»?", a:["a-ha","Duran Duran","Depeche Mode","Tears for Fears"], d:"medio"},
-  {q:"Chi ha cantato «Sweet Dreams (Are Made of This)»?", a:["Eurythmics","Pet Shop Boys","Soft Cell","Culture Club"], d:"difficile"},
-  {q:"Chi ha cantato «Every Breath You Take»?", a:["The Police","Dire Straits","Genesis","The Cure"], d:"medio"},
-  {q:"Chi ha cantato «With or Without You»?", a:["U2","Coldplay","R.E.M.","Simple Minds"], d:"medio"},
-  {q:"Chi ha cantato «Hotel California»?", a:["Eagles","Fleetwood Mac","Lynyrd Skynyrd","The Doobie Brothers"], d:"medio"},
-  {q:"Chi ha cantato «Stairway to Heaven»?", a:["Led Zeppelin","Deep Purple","Black Sabbath","Rainbow"], d:"medio"},
-  {q:"Chi ha cantato «Back in Black»?", a:["AC/DC","Guns N' Roses","Mötley Crüe","Kiss"], d:"medio"},
-  {q:"Chi ha cantato «Africa»?", a:["Toto","Journey","Foreigner","Boston"], d:"medio"},
-  {q:"Chi ha cantato «Livin' on a Prayer»?", a:["Bon Jovi","Aerosmith","Journey","Europe"], d:"medio"},
-  {q:"Chi ha cantato «The Final Countdown»?", a:["Europe","Survivor","Toto","Asia"], d:"medio"},
-  {q:"Chi ha cantato «I Want It That Way»?", a:["Backstreet Boys","NSYNC","Westlife","Boyzone"], d:"medio"},
-  {q:"Chi ha cantato «...Baby One More Time»?", a:["Britney Spears","Christina Aguilera","Jessica Simpson","Mandy Moore"], d:"medio"},
-  {q:"Chi ha cantato «Toxic»?", a:["Britney Spears","Christina Aguilera","Kylie Minogue","Pink"], d:"medio"},
-  {q:"Chi ha cantato «Hips Don't Lie»?", a:["Shakira","Jennifer Lopez","Beyoncé","Gloria Estefan"], d:"facile"},
-  {q:"Chi ha cantato «Waka Waka»?", a:["Shakira","Jennifer Lopez","Rihanna","Beyoncé"], d:"facile"},
-  {q:"Chi ha cantato «Livin' la Vida Loca»?", a:["Ricky Martin","Enrique Iglesias","Marc Anthony","Luis Fonsi"], d:"medio"},
-  {q:"Chi ha cantato «Macarena»?", a:["Los del Río","Gipsy Kings","Las Ketchup","Lou Bega"], d:"medio"},
-  {q:"Chi ha cantato «Blue (Da Ba Dee)»?", a:["Eiffel 65","Gigi D'Agostino","Cascada","Alice Deejay"], d:"medio"},
-  {q:"Chi ha cantato «Barbie Girl»?", a:["Aqua","Vengaboys","Eiffel 65","Toy-Box"], d:"medio"},
-  {q:"Chi ha cantato «What Is Love»?", a:["Haddaway","Corona","La Bouche","Snap!"], d:"difficile"},
-  {q:"Chi ha cantato «Gangnam Style»?", a:["PSY","BTS","Big Bang","2NE1"], d:"facile"},
-  {q:"Chi ha cantato «Old Town Road»?", a:["Lil Nas X","Post Malone","Travis Scott","Doja Cat"], d:"medio"},
-  {q:"Chi ha cantato «Dance Monkey»?", a:["Tones and I","Sia","Dua Lipa","Lorde"], d:"medio"},
-  {q:"Chi ha cantato «Shivers» e «Bad Habits»?", a:["Ed Sheeran","Shawn Mendes","Charlie Puth","Lewis Capaldi"], d:"medio"},
-  {q:"Chi ha cantato «Levitating»?", a:["Dua Lipa","Doja Cat","Ariana Grande","Rihanna"], d:"medio"},
-  {q:"Chi ha cantato «drivers license»?", a:["Olivia Rodrigo","Billie Eilish","Gracie Abrams","Taylor Swift"], d:"medio"},
-  {q:"Chi ha cantato «As It Was»?", a:["Harry Styles","Shawn Mendes","Niall Horan","Zayn"], d:"medio"},
-  {q:"Chi ha cantato «Flowers» (2023)?", a:["Miley Cyrus","Dua Lipa","Katy Perry","Demi Lovato"], d:"medio"},
-  {q:"Chi ha cantato «Montero (Call Me by Your Name)»?", a:["Lil Nas X","Doja Cat","The Weeknd","Post Malone"], d:"difficile"},
-  {q:"Chi ha cantato «La vita è adesso»?", a:["Claudio Baglioni","Antonello Venditti","Riccardo Cocciante","Eros Ramazzotti"], d:"difficile"},
-  {q:"Chi ha cantato «Vita spericolata»?", a:["Vasco Rossi","Luciano Ligabue","Gianna Nannini","Edoardo Bennato"], d:"medio"},
-  {q:"Chi ha cantato «Certe notti»?", a:["Luciano Ligabue","Vasco Rossi","Zucchero","Cesare Cremonini"], d:"medio"},
-  {q:"Chi ha cantato «Senza una donna»?", a:["Zucchero","Pino Daniele","Eros Ramazzotti","Biagio Antonacci"], d:"medio"},
-  {q:"Chi ha cantato «Terra promessa»?", a:["Eros Ramazzotti","Nek","Tiziano Ferro","Biagio Antonacci"], d:"medio"},
-  {q:"Chi ha cantato «Laura non c'è»?", a:["Nek","Eros Ramazzotti","Max Pezzali","Alex Britti"], d:"medio"},
-  {q:"Chi ha cantato «Hanno ucciso l'Uomo Ragno»?", a:["883","Articolo 31","Jovanotti","Gemelli Diversi"], d:"medio"},
-  {q:"Chi ha cantato «Gli anni»?", a:["883","Max Pezzali","Lùnapop","Thegiornalisti"], d:"medio"},
-  {q:"Chi ha cantato «50 Special»?", a:["Lùnapop","883","Negramaro","Le Vibrazioni"], d:"difficile"},
-  {q:"Chi ha cantato «L'ombelico del mondo»?", a:["Jovanotti","Articolo 31","883","Gemelli Diversi"], d:"medio"},
-  {q:"Chi ha cantato «Napule è»?", a:["Pino Daniele","Eduardo De Crescenzo","Enzo Avitabile","James Senese"], d:"difficile"},
-  {q:"Chi ha cantato «Il cielo in una stanza»?", a:["Gino Paoli","Lucio Battisti","Sergio Endrigo","Luigi Tenco"], d:"difficile"},
-  {q:"Chi ha cantato «La donna cannone»?", a:["Francesco De Gregori","Fabrizio De André","Lucio Dalla","Ivano Fossati"], d:"difficile"},
-  {q:"Chi ha cantato «Bocca di rosa»?", a:["Fabrizio De André","Francesco De Gregori","Edoardo Bennato","Roberto Vecchioni"], d:"difficile"},
-  {q:"Chi ha cantato «Almeno tu nell'universo»?", a:["Mia Martini","Loredana Bertè","Ornella Vanoni","Fiorella Mannoia"], d:"difficile"},
-  {q:"Chi ha cantato «E poi»?", a:["Giorgia","Laura Pausini","Elisa","Alessandra Amoroso"], d:"medio"},
-  {q:"Chi ha cantato «Luce (tramonti a nord est)»?", a:["Elisa","Giorgia","Emma","Alessandra Amoroso"], d:"difficile"},
-  {q:"Chi ha cantato «Due vite» a Sanremo 2023?", a:["Marco Mengoni","Ultimo","Lazza","Tananai"], d:"medio"},
-  {q:"Chi ha cantato «La noia» a Sanremo 2024?", a:["Angelina Mango","Annalisa","Geolier","Alfa"], d:"medio"},
-  {q:"Chi ha cantato «Supereroi»?", a:["Mr. Rain","Irama","Ultimo","Sangiovanni"], d:"difficile"},
-  {q:"Chi ha cantato «Bellissima» (2022)?", a:["Annalisa","Elodie","Emma","Baby K"], d:"medio"},
-  {q:"Chi ha cantato «Ciclone» (tormentone 2022)?", a:["Takagi & Ketra / Elodie","Boomdabash","Rocco Hunt","Fred De Palma"], d:"difficile"},
-  {q:"Chi ha cantato «Nu juorno buono»?", a:["Rocco Hunt","Clementino","Gigi D'Alessio","Geolier"], d:"difficile"},
-  {q:"Chi ha cantato «Italodisco»?", a:["The Kolors","Thegiornalisti","Måneskin","Pinguini Tattici Nucleari"], d:"medio"},
-  {q:"Chi ha cantato «Riccione»?", a:["Thegiornalisti","The Kolors","Calcutta","Coez"], d:"difficile"},
-  {q:"Chi ha cantato «Rockstar» (2018)?", a:["Sfera Ebbasta","Capo Plaza","Ghali","Lazza"], d:"medio"},
-  {q:"Chi ha cantato «Cara Italia»?", a:["Ghali","Mahmood","Sfera Ebbasta","Rkomi"], d:"medio"},
-  {q:"Chi ha cantato «Dove si balla» (2022)?", a:["Dargen D'Amico","Tananai","Rkomi","La Rappresentante di Lista"], d:"difficile"},
-  {q:"Chi ha vinto Sanremo 2018 con «Non mi avete fatto niente»?", a:["Ermal Meta & Fabrizio Moro","Lo Stato Sociale","Annalisa","Il Volo"], d:"difficile"},
-  {q:"Quale big ha vinto Sanremo 2013 con «L'essenziale»?", a:["Marco Mengoni","Elio e le Storie Tese","Raphael Gualazzi","Modà"], d:"difficile"},
-  {q:"Chi ha vinto l'Eurovision 1964 per l'Italia?", a:["Gigliola Cinquetti","Domenico Modugno","Bobby Solo","Rita Pavone"], d:"difficile"},
-  {q:"Quale canzone ha portato i Måneskin all'Eurovision 2021?", a:["Zitti e buoni","I Wanna Be Your Slave","Beggin'","Coraline"], d:"medio"},
-  {q:"Di chi è l'album «La voce del padrone» (1981)?", a:["Franco Battiato","Lucio Battisti","Paolo Conte","Fabrizio De André"], d:"difficile"},
-  {q:"«Creuza de mä» è un celebre album di...", a:["Fabrizio De André","Francesco De Gregori","Lucio Dalla","Ivano Fossati"], d:"difficile"},
-  {q:"Quante note ci sono in un'ottava (do-re-mi-fa-sol-la-si)?", a:["7","5","8","12"], d:"facile"},
-  {q:"Come si chiama il segno musicale che indica una pausa?", a:["Pausa","Legatura","Corona","Stanghetta"], d:"medio"},
-  {q:"Lo strumento con mantice e tastiera è...", a:["La fisarmonica","L'organo","Il clavicembalo","Il bandoneon"], d:"medio"},
-  {q:"Il triangolo è uno strumento a...", a:["percussione","corda","fiato","tastiera"], d:"facile"},
-  {q:"La chitarra elettrica ha bisogno di un... per essere sentita bene", a:["amplificatore","microfono","mixer","equalizzatore"], d:"facile"},
-  {q:"Il sassofono è uno strumento a...", a:["fiato","corda","percussione","tastiera"], d:"facile"},
-  {q:"Quante linee compongono il pentagramma?", a:["5","4","6","7"], d:"medio"},
-  {q:"Il «forte» (f) in uno spartito indica di suonare...", a:["forte","piano","veloce","lento"], d:"medio"},
-  {q:"Il «pianissimo» (pp) indica un volume...", a:["molto basso","molto alto","medio","crescente"], d:"medio"},
-  {q:"Come si chiama l'insieme di musicisti diretti da un direttore?", a:["Orchestra","Coro","Band","Quartetto"], d:"facile"},
-  {q:"Quale festival musicale si è tenuto nel 1969 negli USA, simbolo degli hippie?", a:["Woodstock","Coachella","Glastonbury","Lollapalooza"], d:"difficile"},
-  {q:"Il «karaoke» è nato in quale paese?", a:["Giappone","Corea del Sud","Cina","USA"], d:"medio"},
-  {q:"Quale social è associato ai balletti e ai tormentoni musicali brevi?", a:["TikTok","LinkedIn","Twitch","Pinterest"], d:"facile"},
-  {q:"Come si chiama il premio musicale più importante negli USA?", a:["Grammy Awards","Oscar","Emmy","Tony"], d:"medio"},
-  {q:"Il vinile gira su un apparecchio chiamato...", a:["giradischi","registratore","mixer","juke-box"], d:"facile"},
-  {q:"Quale di questi NON è un servizio di streaming musicale?", a:["Photoshop","Spotify","Apple Music","Amazon Music"], d:"facile"},
-  {q:"Chi ha cantato «Purple Rain»?", a:["Prince","Michael Jackson","Lionel Richie","Stevie Wonder"], d:"medio"},
-  {q:"Chi ha cantato «Girls Just Want to Have Fun»?", a:["Cyndi Lauper","Madonna","Pat Benatar","Belinda Carlisle"], d:"difficile"},
-  {q:"Chi ha cantato «Like a Virgin»?", a:["Madonna","Cyndi Lauper","Whitney Houston","Tina Turner"], d:"medio"},
-  {q:"Chi ha cantato «I Wanna Dance with Somebody»?", a:["Whitney Houston","Tina Turner","Donna Summer","Diana Ross"], d:"medio"},
-  {q:"Chi ha cantato «What's Love Got to Do with It»?", a:["Tina Turner","Aretha Franklin","Gloria Gaynor","Chaka Khan"], d:"difficile"},
-  {q:"Chi ha cantato «I Will Survive»?", a:["Gloria Gaynor","Donna Summer","Diana Ross","Chaka Khan"], d:"medio"},
-  {q:"Chi ha cantato «September»?", a:["Earth, Wind & Fire","Kool & The Gang","The Jackson 5","Chic"], d:"difficile"},
-  {q:"Chi ha cantato «Y.M.C.A.»?", a:["Village People","Bee Gees","Boney M.","Chic"], d:"medio"},
-  {q:"Chi ha cantato «Billie Jean» e «Beat It»?", a:["Michael Jackson","Prince","James Brown","Lionel Richie"], d:"facile"},
-  {q:"Chi ha cantato «Rehab»?", a:["Amy Winehouse","Adele","Duffy","Joss Stone"], d:"difficile"},
-  {q:"Chi ha cantato «Chandelier»?", a:["Sia","Adele","Florence + The Machine","Lorde"], d:"medio"},
-  {q:"Chi ha cantato «Royals»?", a:["Lorde","Lana Del Rey","Billie Eilish","Halsey"], d:"difficile"},
-  {q:"Chi ha cantato «Somebody That I Used to Know»?", a:["Gotye","Passenger","James Blunt","Milky Chance"], d:"difficile"},
-  {q:"Chi ha cantato «Let Her Go»?", a:["Passenger","Ed Sheeran","James Blunt","George Ezra"], d:"difficile"},
-  {q:"Chi ha cantato «Counting Stars»?", a:["OneRepublic","Imagine Dragons","Maroon 5","The Script"], d:"medio"},
-  {q:"Chi ha cantato «Radioactive»?", a:["Imagine Dragons","OneRepublic","Twenty One Pilots","The Killers"], d:"medio"},
-  {q:"Chi ha cantato «Believer»?", a:["Imagine Dragons","OneRepublic","Coldplay","Muse"], d:"medio"},
-  {q:"Chi ha cantato «Sugar» (2015)?", a:["Maroon 5","OneRepublic","Bruno Mars","Charlie Puth"], d:"medio"},
-  {q:"Chi ha cantato «See You Again» (feat. Charlie Puth)?", a:["Wiz Khalifa","Eminem","Drake","Macklemore"], d:"difficile"},
-  {q:"Chi ha cantato «Thrift Shop»?", a:["Macklemore & Ryan Lewis","Flo Rida","Pitbull","will.i.am"], d:"difficile"},
-  {q:"Chi ha cantato «Lose Yourself»?", a:["Eminem","50 Cent","Dr. Dre","Jay-Z"], d:"medio"},
-  {q:"Chi ha cantato «In da Club»?", a:["50 Cent","Eminem","Snoop Dogg","Nelly"], d:"difficile"},
-  {q:"Chi ha cantato «Empire State of Mind» con Alicia Keys?", a:["Jay-Z","Kanye West","Nas","Drake"], d:"difficile"},
-  {q:"Chi ha cantato «God's Plan»?", a:["Drake","Travis Scott","Post Malone","The Weeknd"], d:"medio"},
-  {q:"Chi ha cantato «Sunflower» (con Swae Lee)?", a:["Post Malone","Travis Scott","Juice WRLD","Lil Nas X"], d:"difficile"},
-  {q:"Chi ha cantato «Havana»?", a:["Camila Cabello","Dua Lipa","Rihanna","Selena Gomez"], d:"medio"},
-  {q:"Chi ha cantato «Senorita» con Shawn Mendes?", a:["Camila Cabello","Selena Gomez","Halsey","Normani"], d:"medio"},
-  {q:"Chi ha cantato «New Rules»?", a:["Dua Lipa","Rita Ora","Zara Larsson","Anne-Marie"], d:"medio"},
-  {q:"Chi ha cantato «Titanium» con David Guetta?", a:["Sia","Rihanna","Ellie Goulding","Katy Perry"], d:"difficile"},
-  {q:"Chi ha cantato «Wake Me Up»?", a:["Avicii","Calvin Harris","Kygo","Alan Walker"], d:"medio"},
-  {q:"Chi ha cantato «Faded»?", a:["Alan Walker","Avicii","Kygo","Martin Garrix"], d:"medio"},
-  {q:"Chi ha cantato «Lean On» con Major Lazer?", a:["MØ","Sia","Ellie Goulding","Dua Lipa"], d:"difficile"},
-  {q:"Chi ha cantato «Closer» con i Chainsmokers?", a:["Halsey","Selena Gomez","Camila Cabello","Bebe Rexha"], d:"difficile"},
-  {q:"Chi ha cantato «Firework»?", a:["Katy Perry","Lady Gaga","Kesha","Pink"], d:"medio"},
-  {q:"Chi ha cantato «Roar»?", a:["Katy Perry","Taylor Swift","Demi Lovato","Kelly Clarkson"], d:"medio"},
-  {q:"Chi ha cantato «Diamonds»?", a:["Rihanna","Beyoncé","Sia","Nicki Minaj"], d:"medio"},
-  {q:"Chi ha cantato «Halo»?", a:["Beyoncé","Rihanna","Alicia Keys","Mariah Carey"], d:"medio"},
-  {q:"Chi ha cantato «Crazy in Love»?", a:["Beyoncé","Rihanna","Ciara","Ashanti"], d:"medio"},
-  {q:"Chi ha cantato «Single Ladies»?", a:["Beyoncé","Rihanna","Ciara","Keri Hilson"], d:"facile"},
-  {q:"Chi ha cantato «Hey Jude»?", a:["The Beatles","The Rolling Stones","The Kinks","The Who"], d:"facile"},
-  {q:"Chi ha cantato «(I Can't Get No) Satisfaction»?", a:["The Rolling Stones","The Beatles","The Animals","The Kinks"], d:"difficile"},
-  {q:"Chi ha cantato «Smoke on the Water»?", a:["Deep Purple","Black Sabbath","Led Zeppelin","Rainbow"], d:"difficile"},
-  {q:"Chi ha cantato «Paranoid»?", a:["Black Sabbath","Deep Purple","Judas Priest","Iron Maiden"], d:"difficile"},
-  {q:"Chi ha cantato «Enter Sandman»?", a:["Metallica","Megadeth","Iron Maiden","Pantera"], d:"medio"},
-  {q:"Chi ha cantato «Numb»?", a:["Linkin Park","Limp Bizkit","Papa Roach","Korn"], d:"medio"},
-  {q:"Chi ha cantato «In the End»?", a:["Linkin Park","Evanescence","Papa Roach","Breaking Benjamin"], d:"medio"},
-  {q:"Chi ha cantato «Bring Me to Life»?", a:["Evanescence","Within Temptation","Nightwish","Paramore"], d:"difficile"},
-  {q:"Chi ha cantato «Boulevard of Broken Dreams»?", a:["Green Day","Blink-182","Sum 41","The Offspring"], d:"medio"},
-  {q:"Chi ha cantato «Basket Case»?", a:["Green Day","The Offspring","Blink-182","Sum 41"], d:"difficile"},
-  {q:"Chi ha cantato «All the Small Things»?", a:["Blink-182","Green Day","Sum 41","Good Charlotte"], d:"difficile"},
-  {q:"Chi ha cantato «Smells Like Teen Spirit» e «Come as You Are»?", a:["Nirvana","Pearl Jam","Soundgarden","Stone Temple Pilots"], d:"medio"},
-  {q:"Chi ha cantato «Californication»?", a:["Red Hot Chili Peppers","Foo Fighters","Audioslave","Rage Against the Machine"], d:"medio"},
-  {q:"Chi ha cantato «Under the Bridge»?", a:["Red Hot Chili Peppers","Foo Fighters","Pearl Jam","Soundgarden"], d:"difficile"},
-  {q:"Chi ha cantato «Everlong»?", a:["Foo Fighters","Nirvana","Weezer","Green Day"], d:"difficile"}
+  {q:"Quante corde ha una chitarra classica standard?", a:["6","4","8","12"], d:"facile",o:"int",qen:"How many strings does a standard classical guitar have?",aen:["6","4","8","12"]},
+  {q:"Come si chiama un gruppo di 4 musicisti?", a:["Quartetto","Trio","Quintetto","Duo"], d:"medio",o:"int",qen:"What do you call a group of 4 musicians?",aen:["Quartet","Trio","Quintet","Duo"]},
+  {q:"Quale strumento ha i tasti bianchi e neri?", a:["Pianoforte","Tromba","Violino","Flauto"], d:"facile",o:"int",qen:"Which instrument has black and white keys?",aen:["Piano","Trumpet","Violin","Flute"]},
+  {q:"Il termine 'a cappella' indica un canto…", a:["senza accompagnamento strumentale","con sola batteria","molto veloce","in latino"], d:"facile",o:"int",qen:"The term 'a cappella' refers to singing…",aen:["without instrumental accompaniment","with drums only","very fast","in Latin"]},
+  {q:"Quante note ha la scala musicale di base (do-re-mi…)?", a:["7","5","8","12"], d:"medio",o:"int",qen:"How many notes are in the basic musical scale (do-re-mi…)?",aen:["7","5","8","12"]},
+  {q:"Il 'basso' di solito è uno strumento…", a:["a corde","a fiato","a percussione","a tastiera"], d:"medio",o:"int",qen:"The 'bass' is usually a… instrument",aen:["string","wind","percussion","keyboard"]},
+  {q:"Quanti musicisti compongono un 'trio'?", a:["3","2","4","5"], d:"facile",o:"int",qen:"How many musicians make up a 'trio'?",aen:["3","2","4","5"]},
+  {q:"Lo strumento tipico del flamenco spagnolo è la…", a:["chitarra","fisarmonica","arpa","cornamusa"], d:"medio",o:"int",qen:"The typical instrument of Spanish flamenco is the…",aen:["guitar","accordion","harp","bagpipes"]},
+  {q:"Il 'BPM' in musica misura…", a:["la velocità (battiti al minuto)","il volume","l'altezza delle note","la durata"], d:"difficile",o:"int",qen:"In music, 'BPM' measures…",aen:["speed (beats per minute)","volume","pitch of notes","duration"]},
+  {q:"Quale famiglia comprende violino e violoncello?", a:["Archi","Fiati","Percussioni","Tastiere"], d:"medio",o:"int",qen:"Which family includes violin and cello?",aen:["Strings","Winds","Percussion","Keyboards"]},
+  {q:"Quale strumento si suona con un archetto?", a:["Violino","Pianoforte","Tromba","Batteria"], d:"facile",o:"int",qen:"Which instrument is played with a bow?",aen:["Violin","Piano","Trumpet","Drums"]},
+  {q:"La 'batteria' fa parte della famiglia…", a:["percussioni","archi","fiati","tastiere"], d:"facile",o:"int",qen:"The 'drums' belong to the… family",aen:["percussion","strings","winds","keyboards"]},
+  {q:"Quale di questi è uno strumento a fiato?", a:["Sassofono","Violoncello","Arpa","Tamburo"], d:"facile",o:"int",qen:"Which of these is a wind instrument?",aen:["Saxophone","Cello","Harp","Drum"]},
+  {q:"Quanti movimenti ha una misura in 4/4?", a:["4","3","6","2"], d:"difficile",o:"int",qen:"How many beats are in a 4/4 measure?",aen:["4","3","6","2"]},
+  {q:"Quanti tasti (bianchi+neri) ha un pianoforte standard?", a:["88","76","61","100"], d:"facile",o:"int",qen:"How many keys (white+black) does a standard piano have?",aen:["88","76","61","100"]},
+  {q:"Quale strumento NON è a percussione?", a:["Flauto","Timpano","Xilofono","Tamburello"], d:"medio",o:"int",qen:"Which instrument is NOT percussion?",aen:["Flute","Timpani","Xylophone","Tambourine"]},
+  {q:"Quante linee ha un pentagramma musicale?", a:["5","4","6","7"], d:"difficile",o:"int",qen:"How many lines does a musical staff have?",aen:["5","4","6","7"]},
+  {q:"Il 'crescendo' indica un volume che…", a:["aumenta gradualmente","diminuisce","resta fisso","si ferma"], d:"difficile",o:"int",qen:"'Crescendo' indicates a volume that…",aen:["gradually increases","decreases","stays fixed","stops"]},
+  {q:"Il 'metronomo' serve a…", a:["scandire il tempo","accordare","amplificare","registrare"], d:"difficile",o:"int",qen:"The 'metronome' is used to…",aen:["keep time","tune","amplify","record"]},
+  {q:"Il 'falsetto' è una tecnica…", a:["vocale","di batteria","di chitarra","di mixaggio"], d:"difficile",o:"int",qen:"'Falsetto' is a… technique",aen:["vocal","drumming","guitar","mixing"]},
+  {q:"La 'melodia' è…", a:["una successione di note","il volume","il ritmo della batteria","il testo"], d:"facile",o:"int",qen:"The 'melody' is…",aen:["a succession of notes","the volume","the drum rhythm","the lyrics"]},
+  {q:"Il 'ritornello' è la parte che…", a:["si ripete più volte","si suona una volta sola","apre solo il brano","è senza parole"], d:"facile",o:"int",qen:"The 'chorus' is the part that…",aen:["repeats several times","plays only once","opens the song only","has no words"]},
+  {q:"Quale chiave si usa per le note acute?", a:["Chiave di violino (sol)","Chiave di basso (fa)","Chiave di do","Nessuna"], d:"difficile",o:"int",qen:"Which clef is used for high notes?",aen:["Treble clef (G)","Bass clef (F)","C clef","None"]},
+  {q:"Quante ottave ha all'incirca un pianoforte standard?", a:["7","3","10","5"], d:"difficile",o:"int",qen:"Roughly how many octaves does a standard piano have?",aen:["7","3","10","5"]},
+  {q:"Il 'tempo' in musica indica…", a:["la velocità di esecuzione","il volume","la tonalità","la durata totale"], d:"medio",o:"int",qen:"In music, 'tempo' indicates…",aen:["the speed of performance","the volume","the key","the total duration"]},
+  {q:"Lo strumento con mantice e tasti è la…", a:["fisarmonica","chitarra","arpa","batteria"], d:"medio",o:"int",qen:"The instrument with bellows and keys is the…",aen:["accordion","guitar","harp","drums"]},
+  {q:"Quante corde ha un basso elettrico tradizionale?", a:["4","6","8","3"], d:"medio",o:"int",qen:"How many strings does a traditional electric bass have?",aen:["4","6","8","3"]},
+  {q:"Il 'diesis' (#) alza una nota di…", a:["un semitono","un tono","un'ottava","niente"], d:"difficile",o:"int",qen:"The 'sharp' (#) raises a note by…",aen:["a semitone","a tone","an octave","nothing"]},
+  {q:"Il 'bemolle' (♭) abbassa una nota di…", a:["un semitono","un tono","un'ottava","due toni"], d:"difficile",o:"int",qen:"The 'flat' (♭) lowers a note by…",aen:["a semitone","a tone","an octave","two tones"]},
+  {q:"Lo strumento a fiato più grave dell'orchestra è il…", a:["controfagotto","flauto","oboe","clarinetto piccolo"], d:"facile",o:"int",qen:"The lowest wind instrument in the orchestra is the…",aen:["contrabassoon","flute","oboe","piccolo clarinet"]},
+  {q:"In quale città nacque la musica reggae?", a:["Kingston (Giamaica)","Rio de Janeiro","New Orleans","Napoli"], d:"difficile",o:"int",qen:"In which city was reggae music born?",aen:["Kingston (Jamaica)","Rio de Janeiro","New Orleans","Naples"]},
+  {q:"Che genere nasce a New Orleans a inizio '900?", a:["Jazz","Techno","Trap","Reggaeton"], d:"difficile",o:"int",qen:"Which genre was born in New Orleans in the early 1900s?",aen:["Jazz","Techno","Trap","Reggaeton"]},
+  {q:"Il genere 'blues' nasce negli…", a:["Stati Uniti","Regno Unito","Brasile","Giappone"], d:"medio",o:"int",qen:"The 'blues' genre was born in the…",aen:["United States","United Kingdom","Brazil","Japan"]},
+  {q:"Quale di questi è un ritmo latino-americano?", a:["Salsa","Valzer","Polka","Mazurka"], d:"medio",o:"int",qen:"Which of these is a Latin American rhythm?",aen:["Salsa","Waltz","Polka","Mazurka"]},
+  {q:"Il genere 'opera' unisce musica e…", a:["teatro/canto lirico","danza break","rap","elettronica"], d:"medio",o:"int",qen:"The 'opera' genre combines music and…",aen:["theatre/operatic singing","breakdancing","rap","electronica"]},
+  {q:"Il rap è caratterizzato soprattutto da…", a:["parlato ritmico in rima","canto lirico","assoli di violino","yodel"], d:"facile",o:"int",qen:"Rap is characterized mainly by…",aen:["rhythmic spoken rhyme","operatic singing","violin solos","yodeling"]},
+  {q:"Il 'rock and roll' esplode soprattutto negli anni…", a:["'50","'20","'80","2000"], d:"medio",o:"int",qen:"'Rock and roll' exploded mainly in the…",aen:["'50s","'20s","'80s","2000s"]},
+  {q:"La 'techno' è un genere prevalentemente…", a:["elettronico","acustico","orchestrale","corale"], d:"medio",o:"int",qen:"'Techno' is a predominantly… genre",aen:["electronic","acoustic","orchestral","choral"]},
+  {q:"Il 'grunge' nasce nella città di…", a:["Seattle","Londra","Berlino","Parigi"], d:"medio",o:"int",qen:"'Grunge' was born in the city of…",aen:["Seattle","London","Berlin","Paris"]},
+  {q:"Il genere K-pop proviene dalla…", a:["Corea del Sud","Cina","Giappone","Thailandia"], d:"medio",o:"int",qen:"The K-pop genre comes from…",aen:["South Korea","China","Japan","Thailand"]},
+  {q:"Il flamenco è tradizione di quale paese?", a:["Spagna","Portogallo","Messico","Grecia"], d:"medio",o:"int",qen:"Flamenco is a tradition of which country?",aen:["Spain","Portugal","Mexico","Greece"]},
+  {q:"Il 'bossa nova' nasce in quale paese?", a:["Brasile","Cuba","Argentina","Colombia"], d:"difficile",o:"int",qen:"In which country was 'bossa nova' born?",aen:["Brazil","Cuba","Argentina","Colombia"]},
+  {q:"Il tango è associato soprattutto a…", a:["Argentina","Spagna","Italia","Irlanda"], d:"medio",o:"int",qen:"Tango is mostly associated with…",aen:["Argentina","Spain","Italy","Ireland"]},
+  {q:"Quale genere usa 'scratch' e giradischi?", a:["Hip hop","Country","Opera","Folk"], d:"medio",o:"int",qen:"Which genre uses 'scratch' and turntables?",aen:["Hip hop","Country","Opera","Folk"]},
+  {q:"Il 'punk' si afferma soprattutto negli anni…", a:["'70","'50","'90","2010"], d:"medio",o:"int",qen:"'Punk' established itself mainly in the…",aen:["'70s","'50s","'90s","2010s"]},
+  {q:"Il 'DJ' in una serata si occupa di…", a:["mixare e riprodurre brani","suonare il violino","dirigere l'orchestra","scrivere spartiti"], d:"facile",o:"int",qen:"At a party, the 'DJ' handles…",aen:["mixing and playing tracks","playing the violin","conducting the orchestra","writing scores"]},
+  {q:"Il termine 'live' riferito a un concerto significa…", a:["dal vivo","registrato","acustico","strumentale"], d:"facile",o:"int",qen:"The term 'live' for a concert means…",aen:["in person","recorded","acoustic","instrumental"]},
+  {q:"Il 'vinile' è un supporto per…", a:["riprodurre musica","amplificare la voce","accordare","scrivere testi"], d:"facile",o:"int",qen:"The 'vinyl' is a medium for…",aen:["playing music","amplifying the voice","tuning","writing lyrics"]},
+  {q:"Il termine 'remix' indica un brano…", a:["rielaborato da una versione esistente","registrato dal vivo","mai pubblicato","strumentale puro"], d:"facile",o:"int",qen:"The term 'remix' indicates a track…",aen:["reworked from an existing version","recorded live","never released","purely instrumental"]},
+  {q:"Il 'featuring' (feat.) indica…", a:["la collaborazione di un altro artista","un errore di stampa","un genere","uno strumento"], d:"facile",o:"int",qen:"'Featuring' (feat.) indicates…",aen:["the collaboration of another artist","a misprint","a genre","an instrument"]},
+  {q:"Quale di questi è un formato audio digitale?", a:["MP3","PDF","JPG","DOC"], d:"facile",o:"int",qen:"Which of these is a digital audio format?",aen:["MP3","PDF","JPG","DOC"]},
+  {q:"Una 'cover' è…", a:["la reinterpretazione di un brano altrui","un brano inedito","una copertina soltanto","un concerto"], d:"facile",o:"int",qen:"A 'cover' is…",aen:["a reinterpretation of someone else's song","an original track","just a cover artwork","a concert"]},
+  {q:"Il 'singolo' è…", a:["un brano pubblicato a sé","un intero album","un tour","un premio"], d:"facile",o:"int",qen:"A 'single' is…",aen:["a track released on its own","a whole album","a tour","an award"]},
+  {q:"Il 'tour' di un artista è…", a:["una serie di concerti","un album doppio","un videoclip","un contratto"], d:"facile",o:"int",qen:"An artist's 'tour' is…",aen:["a series of concerts","a double album","a music video","a contract"]},
+  {q:"La 'hit' è una canzone…", a:["di grande successo","mai pubblicata","solo strumentale","dal vivo"], d:"facile",o:"int",qen:"A 'hit' is a song…",aen:["that is very successful","never released","instrumental only","live"]},
+  {q:"Lo 'streaming' musicale permette di…", a:["ascoltare brani in rete senza scaricarli","solo scaricare file","stampare spartiti","registrare dal vivo"], d:"facile",o:"int",qen:"Music 'streaming' lets you…",aen:["listen to tracks online without downloading","only download files","print scores","record live"]},
+  {q:"Una 'playlist' è…", a:["un elenco di brani","un singolo brano","un concerto","uno strumento"], d:"facile",o:"int",qen:"A 'playlist' is…",aen:["a list of tracks","a single track","a concert","an instrument"]},
+  {q:"Il 'tormentone' estivo è un brano…", a:["molto popolare in estate","invernale","classico","strumentale"], d:"medio",o:"int",qen:"A summer 'hit' (tormentone) is a track…",aen:["very popular in summer","wintery","classical","instrumental"]},
+  {q:"Il 'mixaggio' in studio serve a…", a:["bilanciare i suoni registrati","vendere i dischi","organizzare i concerti","accordare"], d:"difficile",o:"int",qen:"'Mixing' in the studio serves to…",aen:["balance the recorded sounds","sell records","organize concerts","tune"]},
+  {q:"Il 'producer' di un brano è chi…", a:["ne cura la realizzazione in studio","vende i biglietti","balla sul palco","progetta la copertina"], d:"difficile",o:"int",qen:"A track's 'producer' is the one who…",aen:["handles its creation in the studio","sells tickets","dances on stage","designs the cover"]},
+  {q:"Il Festival della canzone italiana più famoso si tiene a…", a:["Sanremo","Milano","Roma","Firenze"], d:"medio",o:"ita"},
+  {q:"La manifestazione canora europea tra nazioni si chiama…", a:["Eurovision","Champions Music","Euro Song Cup","Music Union"], d:"medio",o:"int",qen:"The European song contest among nations is called…",aen:["Eurovision","Champions Music","Euro Song Cup","Music Union"]},
+  {q:"Il 'Woodstock' del 1969 era un grande…", a:["festival musicale","premio discografico","talent show","film"], d:"facile",o:"int",qen:"'Woodstock' in 1969 was a great…",aen:["music festival","record award","talent show","film"]},
+  {q:"Gli 'MTV' erano noti soprattutto per i…", a:["videoclip musicali","telegiornali","documentari storici","cartoni"], d:"facile",o:"int",qen:"'MTV' was known mainly for…",aen:["music videos","news broadcasts","historical documentaries","cartoons"]},
+  {q:"Un 'disco di platino' premia…", a:["le alte vendite di un disco","il miglior testo","il concerto più lungo","il video più visto"], d:"facile",o:"int",qen:"A 'platinum record' rewards…",aen:["high sales of a record","the best lyrics","the longest concert","the most-viewed video"]},
+  {q:"La 'boy band' è un gruppo composto da…", a:["soli ragazzi","sole ragazze","solo strumentisti","soli direttori"], d:"facile",o:"int",qen:"A 'boy band' is a group made up of…",aen:["only boys","only girls","only instrumentalists","only conductors"]},
+  {q:"Un 'talent show' musicale serve a…", a:["scoprire nuovi cantanti","vendere strumenti","organizzare tour","produrre film"], d:"facile",o:"int",qen:"A music 'talent show' serves to…",aen:["discover new singers","sell instruments","organize tours","produce films"]},
+  {q:"Il 'karaoke' consiste nel…", a:["cantare su basi strumentali","suonare la chitarra","ballare la salsa","scrivere canzoni"], d:"facile",o:"int",qen:"'Karaoke' consists of…",aen:["singing over instrumental backing tracks","playing guitar","dancing salsa","writing songs"]},
+  {q:"L''unplugged' è un concerto suonato in modo…", a:["acustico","elettronico","orchestrale","a cappella"], d:"difficile",o:"int",qen:"'Unplugged' is a concert played in a… way",aen:["acoustic","electronic","orchestral","a cappella"]},
+  {q:"Il 'bis' a fine concerto è…", a:["un brano eseguito di nuovo a richiesta","l'intervallo","il soundcheck","la scaletta"], d:"difficile",o:"int",qen:"The 'encore' at the end of a concert is…",aen:["a song performed again on request","the intermission","the soundcheck","the setlist"]},
+  {q:"Chi ha cantato «Bohemian Rhapsody»?", a:["Queen","The Beatles","Led Zeppelin","Pink Floyd"], d:"facile",o:"int",qen:"Who sang «Bohemian Rhapsody»?",aen:["Queen","The Beatles","Led Zeppelin","Pink Floyd"]},
+  {q:"Chi ha cantato «Billie Jean»?", a:["Michael Jackson","Prince","Stevie Wonder","Lionel Richie"], d:"facile",o:"int",qen:"Who sang «Billie Jean»?",aen:["Michael Jackson","Prince","Stevie Wonder","Lionel Richie"]},
+  {q:"Chi ha cantato «Like a Prayer»?", a:["Madonna","Cyndi Lauper","Whitney Houston","Tina Turner"], d:"facile",o:"int",qen:"Who sang «Like a Prayer»?",aen:["Madonna","Cyndi Lauper","Whitney Houston","Tina Turner"]},
+  {q:"Chi ha cantato «Shape of You»?", a:["Ed Sheeran","Justin Bieber","Shawn Mendes","Sam Smith"], d:"facile",o:"int",qen:"Who sang «Shape of You»?",aen:["Ed Sheeran","Justin Bieber","Shawn Mendes","Sam Smith"]},
+  {q:"Chi ha cantato «Rolling in the Deep»?", a:["Adele","Amy Winehouse","Duffy","Sia"], d:"facile",o:"int",qen:"Who sang «Rolling in the Deep»?",aen:["Adele","Amy Winehouse","Duffy","Sia"]},
+  {q:"Chi ha cantato «Bad Guy»?", a:["Billie Eilish","Dua Lipa","Olivia Rodrigo","Lorde"], d:"facile",o:"int",qen:"Who sang «Bad Guy»?",aen:["Billie Eilish","Dua Lipa","Olivia Rodrigo","Lorde"]},
+  {q:"Chi ha cantato «Blinding Lights»?", a:["The Weeknd","Bruno Mars","Usher","Chris Brown"], d:"facile",o:"int",qen:"Who sang «Blinding Lights»?",aen:["The Weeknd","Bruno Mars","Usher","Chris Brown"]},
+  {q:"Chi ha cantato «Shake It Off»?", a:["Taylor Swift","Katy Perry","Selena Gomez","Miley Cyrus"], d:"facile",o:"int",qen:"Who sang «Shake It Off»?",aen:["Taylor Swift","Katy Perry","Selena Gomez","Miley Cyrus"]},
+  {q:"Chi ha cantato «Umbrella»?", a:["Rihanna","Beyoncé","Alicia Keys","Ciara"], d:"facile",o:"int",qen:"Who sang «Umbrella»?",aen:["Rihanna","Beyoncé","Alicia Keys","Ciara"]},
+  {q:"Chi ha cantato «Poker Face»?", a:["Lady Gaga","Kesha","Katy Perry","Pink"], d:"facile",o:"int",qen:"Who sang «Poker Face»?",aen:["Lady Gaga","Kesha","Katy Perry","Pink"]},
+  {q:"Chi ha cantato «Despacito»?", a:["Luis Fonsi","Enrique Iglesias","Ricky Martin","Marc Anthony"], d:"facile",o:"int",qen:"Who sang «Despacito»?",aen:["Luis Fonsi","Enrique Iglesias","Ricky Martin","Marc Anthony"]},
+  {q:"Chi ha cantato «Smells Like Teen Spirit»?", a:["Nirvana","Pearl Jam","Soundgarden","Foo Fighters"], d:"facile",o:"int",qen:"Who sang «Smells Like Teen Spirit»?",aen:["Nirvana","Pearl Jam","Soundgarden","Foo Fighters"]},
+  {q:"Chi ha cantato «Wonderwall»?", a:["Oasis","Blur","The Verve","Radiohead"], d:"facile",o:"int",qen:"Who sang «Wonderwall»?",aen:["Oasis","Blur","The Verve","Radiohead"]},
+  {q:"Chi ha cantato «Viva la Vida»?", a:["Coldplay","Muse","Keane","Snow Patrol"], d:"facile",o:"int",qen:"Who sang «Viva la Vida»?",aen:["Coldplay","Muse","Keane","Snow Patrol"]},
+  {q:"Chi ha cantato «Uptown Funk»?", a:["Mark Ronson ft. Bruno Mars","Pharrell Williams","Justin Timberlake","Daft Punk"], d:"facile",o:"int",qen:"Who sang «Uptown Funk»?",aen:["Mark Ronson ft. Bruno Mars","Pharrell Williams","Justin Timberlake","Daft Punk"]},
+  {q:"Chi ha cantato «Happy»?", a:["Pharrell Williams","will.i.am","Bruno Mars","CeeLo Green"], d:"facile",o:"int",qen:"Who sang «Happy»?",aen:["Pharrell Williams","will.i.am","Bruno Mars","CeeLo Green"]},
+  {q:"Chi ha cantato «Someone Like You»?", a:["Adele","Sam Smith","Lewis Capaldi","Birdy"], d:"facile",o:"int",qen:"Who sang «Someone Like You»?",aen:["Adele","Sam Smith","Lewis Capaldi","Birdy"]},
+  {q:"Chi ha cantato «Hello» (2015)?", a:["Adele","Beyoncé","Alicia Keys","Rihanna"], d:"facile",o:"int",qen:"Who sang «Hello» (2015)?",aen:["Adele","Beyoncé","Alicia Keys","Rihanna"]},
+  {q:"Chi ha cantato «Thriller»?", a:["Michael Jackson","James Brown","Prince","Lionel Richie"], d:"facile",o:"int",qen:"Who sang «Thriller»?",aen:["Michael Jackson","James Brown","Prince","Lionel Richie"]},
+  {q:"Chi ha cantato «I Will Always Love You» nel film Guardia del corpo?", a:["Whitney Houston","Mariah Carey","Celine Dion","Tina Turner"], d:"facile",o:"int",qen:"Who sang «I Will Always Love You» in the film The Bodyguard?",aen:["Whitney Houston","Mariah Carey","Celine Dion","Tina Turner"]},
+  {q:"Chi ha cantato «Albachiara»?", a:["Vasco Rossi","Luciano Ligabue","Zucchero","Eros Ramazzotti"], d:"facile",o:"ita"},
+  {q:"Chi ha cantato «Caruso»?", a:["Lucio Dalla","Lucio Battisti","Riccardo Cocciante","Gino Paoli"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «La canzone del sole»?", a:["Lucio Battisti","Lucio Dalla","Francesco De Gregori","Antonello Venditti"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Nel blu dipinto di blu (Volare)»?", a:["Domenico Modugno","Adriano Celentano","Gianni Morandi","Little Tony"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Azzurro»?", a:["Adriano Celentano","Domenico Modugno","Gianni Morandi","Al Bano"], d:"facile",o:"ita"},
+  {q:"Chi ha cantato «Felicità»?", a:["Al Bano & Romina Power","Ricchi e Poveri","Toto Cutugno","Gigliola Cinquetti"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Sarà perché ti amo»?", a:["Ricchi e Poveri","Al Bano & Romina Power","Matia Bazar","Pooh"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Gloria»?", a:["Umberto Tozzi","Riccardo Cocciante","Pupo","Drupi"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Con te partirò»?", a:["Andrea Bocelli","Luciano Pavarotti","Al Bano","Massimo Ranieri"], d:"facile",o:"ita"},
+  {q:"Chi ha cantato «Zitti e buoni»?", a:["Måneskin","Pinguini Tattici Nucleari","Thegiornalisti","Negramaro"], d:"facile",o:"ita"},
+  {q:"Chi ha cantato «Brividi» a Sanremo 2022?", a:["Mahmood & Blanco","Mahmood","Blanco","Marco Mengoni"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Soldi»?", a:["Mahmood","Blanco","Ultimo","Irama"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Occidentali's Karma»?", a:["Francesco Gabbani","Ermal Meta","Diodato","Lo Stato Sociale"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «L'essenziale»?", a:["Marco Mengoni","Cesare Cremonini","Tiziano Ferro","Biagio Antonacci"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Bello e impossibile»?", a:["Gianna Nannini","Loredana Bertè","Fiorella Mannoia","Anna Oxa"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Sei bellissima»?", a:["Loredana Bertè","Gianna Nannini","Patty Pravo","Mia Martini"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «La solitudine»?", a:["Laura Pausini","Giorgia","Elisa","Alessandra Amoroso"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Vivo per lei»?", a:["Andrea Bocelli & Giorgia","Eros Ramazzotti","Zucchero","Biagio Antonacci"], d:"medio",o:"ita"},
+  {q:"Chi ha vinto il Festival di Sanremo 2021?", a:["Måneskin","Francesco Gabbani","Diodato","Mahmood"], d:"difficile",o:"ita"},
+  {q:"Chi ha vinto Sanremo 2024?", a:["Angelina Mango","Geolier","Annalisa","Mahmood"], d:"difficile",o:"ita"},
+  {q:"Chi ha vinto Sanremo 2023?", a:["Marco Mengoni","Ultimo","Lazza","Mr. Rain"], d:"difficile",o:"ita"},
+  {q:"Chi ha vinto Sanremo 2019 con «Soldi»?", a:["Mahmood","Ultimo","Il Volo","Loredana Bertè"], d:"difficile",o:"ita"},
+  {q:"Chi ha vinto Sanremo 2020 con «Fai rumore»?", a:["Diodato","Francesco Gabbani","Piero Pelù","Le Vibrazioni"], d:"difficile",o:"ita"},
+  {q:"Con quale canzone i Måneskin hanno vinto Sanremo 2021?", a:["Zitti e buoni","I Wanna Be Your Slave","Beggin'","Vent'anni"], d:"medio",o:"ita"},
+  {q:"In quale città si tiene il Festival della canzone italiana?", a:["Sanremo","Napoli","Milano","Torino"], d:"facile",o:"ita"},
+  {q:"Chi ha vinto Sanremo 2017 con «Occidentali's Karma»?", a:["Francesco Gabbani","Ermal Meta","Fiorella Mannoia","Sergio Sylvestre"], d:"difficile",o:"ita"},
+  {q:"Quale gruppo italiano ha vinto l'Eurovision 2021?", a:["Måneskin","Il Volo","Mahmood","Negramaro"], d:"medio",o:"ita"},
+  {q:"In quale manifestazione si sfidano i Paesi europei a colpi di canzoni?", a:["Eurovision Song Contest","Sanremo","MTV Awards","Grammy"], d:"facile",o:"int",qen:"In which event do European countries compete with songs?",aen:["Eurovision Song Contest","Sanremo","MTV Awards","Grammy"]},
+  {q:"Quale cantante svedese ha vinto l'Eurovision diventando poi famosissima negli anni '70?", a:["ABBA","Roxette","Ace of Base","Robyn"], d:"difficile",o:"int",qen:"Which Swedish act won Eurovision and became hugely famous in the '70s?",aen:["ABBA","Roxette","Ace of Base","Robyn"]},
+  {q:"Chi era il cantante dei Queen?", a:["Freddie Mercury","Brian May","Roger Taylor","John Deacon"], d:"facile",o:"int",qen:"Who was the lead singer of Queen?",aen:["Freddie Mercury","Brian May","Roger Taylor","John Deacon"]},
+  {q:"Chi era il frontman dei Nirvana?", a:["Kurt Cobain","Dave Grohl","Krist Novoselic","Eddie Vedder"], d:"medio",o:"int",qen:"Who was the frontman of Nirvana?",aen:["Kurt Cobain","Dave Grohl","Krist Novoselic","Eddie Vedder"]},
+  {q:"Chi è il cantante degli U2?", a:["Bono","The Edge","Adam Clayton","Larry Mullen"], d:"medio",o:"int",qen:"Who is the singer of U2?",aen:["Bono","The Edge","Adam Clayton","Larry Mullen"]},
+  {q:"Chi è il cantante dei Coldplay?", a:["Chris Martin","Jonny Buckland","Guy Berryman","Will Champion"], d:"medio",o:"int",qen:"Who is the singer of Coldplay?",aen:["Chris Martin","Jonny Buckland","Guy Berryman","Will Champion"]},
+  {q:"Chi era il leader dei Beatles insieme a Paul McCartney?", a:["John Lennon","George Harrison","Ringo Starr","Pete Best"], d:"facile",o:"int",qen:"Who was the leader of the Beatles alongside Paul McCartney?",aen:["John Lennon","George Harrison","Ringo Starr","Pete Best"]},
+  {q:"Chi è il cantante dei Måneskin?", a:["Damiano David","Victoria De Angelis","Thomas Raggi","Ethan Torchio"], d:"medio",o:"ita"},
+  {q:"Quanti erano i Beatles?", a:["4","3","5","2"], d:"facile",o:"int",qen:"How many Beatles were there?",aen:["4","3","5","2"]},
+  {q:"Di quale band è leader Liam Gallagher insieme al fratello Noel?", a:["Oasis","Blur","The Verve","Stone Roses"], d:"difficile",o:"int",qen:"Which band does Liam Gallagher lead with his brother Noel?",aen:["Oasis","Blur","The Verve","Stone Roses"]},
+  {q:"Chi è la cantante dei No Doubt, poi solista?", a:["Gwen Stefani","Pink","Avril Lavigne","Shakira"], d:"difficile",o:"int",qen:"Who is the singer of No Doubt, later a solo artist?",aen:["Gwen Stefani","Pink","Avril Lavigne","Shakira"]},
+  {q:"Di chi è l'album «The Dark Side of the Moon»?", a:["Pink Floyd","Led Zeppelin","The Who","Genesis"], d:"difficile",o:"int",qen:"Whose album is «The Dark Side of the Moon»?",aen:["Pink Floyd","Led Zeppelin","The Who","Genesis"]},
+  {q:"Di chi è l'album «Thriller», il più venduto di sempre?", a:["Michael Jackson","Prince","Madonna","Whitney Houston"], d:"medio",o:"int",qen:"Whose album is «Thriller», the best-selling of all time?",aen:["Michael Jackson","Prince","Madonna","Whitney Houston"]},
+  {q:"Di chi è l'album «Nevermind» del 1991?", a:["Nirvana","Pearl Jam","Soundgarden","Alice in Chains"], d:"difficile",o:"int",qen:"Whose album is «Nevermind» (1991)?",aen:["Nirvana","Pearl Jam","Soundgarden","Alice in Chains"]},
+  {q:"In quale album dei Queen è contenuta «Bohemian Rhapsody»?", a:["A Night at the Opera","News of the World","The Game","Jazz"], d:"difficile",o:"int",qen:"On which Queen album is «Bohemian Rhapsody»?",aen:["A Night at the Opera","News of the World","The Game","Jazz"]},
+  {q:"«Imagine» è una celebre canzone di...", a:["John Lennon","Paul McCartney","George Harrison","Bob Dylan"], d:"facile",o:"int",qen:"«Imagine» is a famous song by...",aen:["John Lennon","Paul McCartney","George Harrison","Bob Dylan"]},
+  {q:"Quante corde ha un violino?", a:["4","6","5","7"], d:"medio",o:"int",qen:"How many strings does a violin have?",aen:["4","6","5","7"]},
+  {q:"Quale strumento usa ance doppie?", a:["Oboe","Flauto","Clarinetto","Sassofono"], d:"difficile",o:"int",qen:"Which instrument uses double reeds?",aen:["Oboe","Flute","Clarinet","Saxophone"]},
+  {q:"Il «do» è la prima nota di quale scala?", a:["Scala maggiore di Do","Scala di La minore","Scala di Sol","Scala cromatica"], d:"medio",o:"int",qen:"«Do» (C) is the first note of which scale?",aen:["C major scale","A minor scale","G scale","Chromatic scale"]},
+  {q:"Quante note compongono un accordo di triade?", a:["3","2","4","5"], d:"medio",o:"int",qen:"How many notes make up a triad chord?",aen:["3","2","4","5"]},
+  {q:"Lo strumento a tastiera tipico delle chiese è...", a:["Organo","Clavicembalo","Fisarmonica","Pianoforte"], d:"medio",o:"int",qen:"The keyboard instrument typical of churches is...",aen:["Organ","Harpsichord","Accordion","Piano"]},
+  {q:"Come si chiama la bacchetta usata dal direttore d'orchestra?", a:["Bacchetta","Archetto","Plettro","Mazza"], d:"facile",o:"int",qen:"What is the baton used by the orchestra conductor called?",aen:["Baton","Bow","Plectrum","Mallet"]},
+  {q:"Il plettro si usa soprattutto per suonare...", a:["la chitarra","il violino","il flauto","la batteria"], d:"facile",o:"int",qen:"The plectrum is mainly used to play...",aen:["the guitar","the violin","the flute","the drums"]},
+  {q:"In quale decennio esplode la disco music?", a:["Anni '70","Anni '50","Anni '90","Anni 2000"], d:"medio",o:"int",qen:"In which decade did disco music explode?",aen:["The '70s","The '50s","The '90s","The 2000s"]},
+  {q:"Il punk rock esplode soprattutto in quale paese a metà anni '70?", a:["Regno Unito","Germania","Italia","Giappone"], d:"difficile",o:"int",qen:"Punk rock exploded mainly in which country in the mid-'70s?",aen:["United Kingdom","Germany","Italy","Japan"]},
+  {q:"La Motown, celebre etichetta soul, nasce in quale città USA?", a:["Detroit","New York","Los Angeles","Chicago"], d:"difficile",o:"int",qen:"Motown, the famous soul label, was born in which US city?",aen:["Detroit","New York","Los Angeles","Chicago"]},
+  {q:"Elvis Presley è soprannominato...", a:["The King","The Boss","The Voice","Mr. Blues"], d:"medio",o:"int",qen:"Elvis Presley is nicknamed...",aen:["The King","The Boss","The Voice","Mr. Blues"]},
+  {q:"Bob Marley è il più celebre esponente di quale genere?", a:["Reggae","Ska","Blues","Soul"], d:"facile",o:"int",qen:"Bob Marley is the most famous exponent of which genre?",aen:["Reggae","Ska","Blues","Soul"]},
+  {q:"Il «Re del Pop» è un soprannome di...", a:["Michael Jackson","Elvis Presley","Prince","Freddie Mercury"], d:"facile",o:"int",qen:"The «King of Pop» is a nickname for...",aen:["Michael Jackson","Elvis Presley","Prince","Freddie Mercury"]},
+  {q:"La «Regina del Pop» è un soprannome di...", a:["Madonna","Whitney Houston","Mariah Carey","Cher"], d:"medio",o:"int",qen:"The «Queen of Pop» is a nickname for...",aen:["Madonna","Whitney Houston","Mariah Carey","Cher"]},
+  {q:"Quale genere è associato a Snoop Dogg e Dr. Dre?", a:["Hip hop","Reggae","Jazz","Country"], d:"medio",o:"int",qen:"Which genre is associated with Snoop Dogg and Dr. Dre?",aen:["Hip hop","Reggae","Jazz","Country"]},
+  {q:"Il flamenco è tipico di quale paese?", a:["Spagna","Portogallo","Messico","Argentina"], d:"facile",o:"int",qen:"Flamenco is typical of which country?",aen:["Spain","Portugal","Mexico","Argentina"]},
+  {q:"Il tango è nato soprattutto in quale città?", a:["Buenos Aires","Madrid","Rio de Janeiro","L'Avana"], d:"difficile",o:"int",qen:"Tango was mainly born in which city?",aen:["Buenos Aires","Madrid","Rio de Janeiro","Havana"]},
+  {q:"«My Heart Will Go On» è la colonna sonora di quale film?", a:["Titanic","Ghost","Dirty Dancing","Pretty Woman"], d:"medio",o:"int",qen:"«My Heart Will Go On» is the soundtrack of which film?",aen:["Titanic","Ghost","Dirty Dancing","Pretty Woman"]},
+  {q:"Chi canta «Shallow» nel film «A Star Is Born»?", a:["Lady Gaga & Bradley Cooper","Adele","Katy Perry","Beyoncé"], d:"medio",o:"int",qen:"Who sings «Shallow» in the film «A Star Is Born»?",aen:["Lady Gaga & Bradley Cooper","Adele","Katy Perry","Beyoncé"]},
+  {q:"«Eye of the Tiger» è legata a quale saga di film?", a:["Rocky","Rambo","Top Gun","Flashdance"], d:"medio",o:"int",qen:"«Eye of the Tiger» is linked to which film saga?",aen:["Rocky","Rambo","Top Gun","Flashdance"]},
+  {q:"Chi canta «Let It Go» nel film «Frozen» (versione originale)?", a:["Idina Menzel","Demi Lovato","Ariana Grande","Kristen Bell"], d:"difficile",o:"int",qen:"Who sings «Let It Go» in «Frozen» (original version)?",aen:["Idina Menzel","Demi Lovato","Ariana Grande","Kristen Bell"]},
+  {q:"In una band, chi suona di solito la batteria?", a:["Il batterista","Il bassista","Il chitarrista","Il tastierista"], d:"facile",o:"int",qen:"In a band, who usually plays the drums?",aen:["The drummer","The bassist","The guitarist","The keyboardist"]},
+  {q:"Lo strumento di Jimi Hendrix era...", a:["la chitarra elettrica","il pianoforte","il sassofono","la batteria"], d:"medio",o:"int",qen:"Jimi Hendrix's instrument was...",aen:["the electric guitar","the piano","the saxophone","the drums"]},
+  {q:"Il basso elettrico ha solitamente quante corde?", a:["4","6","5","3"], d:"medio",o:"int",qen:"The electric bass usually has how many strings?",aen:["4","6","5","3"]},
+  {q:"Cosa indica un «featuring» (feat.) in un brano?", a:["La collaborazione di un altro artista","Il produttore","Il genere musicale","Il tono"], d:"facile",o:"int",qen:"What does a «featuring» (feat.) indicate in a track?",aen:["The collaboration of another artist","The producer","The music genre","The key"]},
+  {q:"Cosa è un «singolo»?", a:["Un brano pubblicato a sé","Un intero album","Un concerto","Un tour"], d:"facile",o:"int",qen:"What is a «single»?",aen:["A track released on its own","A whole album","A concert","A tour"]},
+  {q:"Cosa è una «cover»?", a:["La reinterpretazione di un brano altrui","Un brano inedito","La copertina","Un remix"], d:"facile",o:"int",qen:"What is a «cover»?",aen:["A reinterpretation of someone else's song","An original track","The cover artwork","A remix"]},
+  {q:"Cosa indica «unplugged»?", a:["Esecuzione acustica","Esecuzione elettronica","Un remix","Un concerto gratuito"], d:"medio",o:"int",qen:"What does «unplugged» mean?",aen:["Acoustic performance","Electronic performance","A remix","A free concert"]},
+  {q:"Il «BPM» misura...", a:["la velocità del brano","il volume","l'altezza delle note","la durata"], d:"medio",o:"int",qen:"The «BPM» measures...",aen:["the speed of the track","the volume","the pitch of notes","the duration"]},
+  {q:"Chi ha cantato «Dancing Queen»?", a:["ABBA","Bee Gees","Boney M.","Village People"], d:"medio",o:"int",qen:"Who sang «Dancing Queen»?",aen:["ABBA","Bee Gees","Boney M.","Village People"]},
+  {q:"Chi ha cantato «Stayin' Alive»?", a:["Bee Gees","ABBA","Earth Wind & Fire","Kool & The Gang"], d:"medio",o:"int",qen:"Who sang «Stayin' Alive»?",aen:["Bee Gees","ABBA","Earth Wind & Fire","Kool & The Gang"]},
+  {q:"Chi ha cantato «Sweet Child o' Mine»?", a:["Guns N' Roses","Bon Jovi","Aerosmith","Def Leppard"], d:"medio",o:"int",qen:"Who sang «Sweet Child o' Mine»?",aen:["Guns N' Roses","Bon Jovi","Aerosmith","Def Leppard"]},
+  {q:"Chi ha cantato «Nothing Else Matters»?", a:["Metallica","Iron Maiden","Megadeth","Slayer"], d:"medio",o:"int",qen:"Who sang «Nothing Else Matters»?",aen:["Metallica","Iron Maiden","Megadeth","Slayer"]},
+  {q:"Chi ha cantato «Zombie»?", a:["The Cranberries","No Doubt","Garbage","Alanis Morissette"], d:"medio",o:"int",qen:"Who sang «Zombie»?",aen:["The Cranberries","No Doubt","Garbage","Alanis Morissette"]},
+  {q:"Chi ha cantato «Creep»?", a:["Radiohead","Oasis","Blur","Muse"], d:"difficile",o:"int",qen:"Who sang «Creep»?",aen:["Radiohead","Oasis","Blur","Muse"]},
+  {q:"Chi ha cantato «Seven Nation Army»?", a:["The White Stripes","The Black Keys","Arctic Monkeys","The Strokes"], d:"difficile",o:"int",qen:"Who sang «Seven Nation Army»?",aen:["The White Stripes","The Black Keys","Arctic Monkeys","The Strokes"]},
+  {q:"Chi ha cantato «Mr. Brightside»?", a:["The Killers","The Strokes","Franz Ferdinand","Kaiser Chiefs"], d:"difficile",o:"int",qen:"Who sang «Mr. Brightside»?",aen:["The Killers","The Strokes","Franz Ferdinand","Kaiser Chiefs"]},
+  {q:"Chi ha cantato «Take On Me»?", a:["a-ha","Duran Duran","Depeche Mode","Tears for Fears"], d:"medio",o:"int",qen:"Who sang «Take On Me»?",aen:["a-ha","Duran Duran","Depeche Mode","Tears for Fears"]},
+  {q:"Chi ha cantato «Sweet Dreams (Are Made of This)»?", a:["Eurythmics","Pet Shop Boys","Soft Cell","Culture Club"], d:"difficile",o:"int",qen:"Who sang «Sweet Dreams (Are Made of This)»?",aen:["Eurythmics","Pet Shop Boys","Soft Cell","Culture Club"]},
+  {q:"Chi ha cantato «Every Breath You Take»?", a:["The Police","Dire Straits","Genesis","The Cure"], d:"medio",o:"int",qen:"Who sang «Every Breath You Take»?",aen:["The Police","Dire Straits","Genesis","The Cure"]},
+  {q:"Chi ha cantato «With or Without You»?", a:["U2","Coldplay","R.E.M.","Simple Minds"], d:"medio",o:"int",qen:"Who sang «With or Without You»?",aen:["U2","Coldplay","R.E.M.","Simple Minds"]},
+  {q:"Chi ha cantato «Hotel California»?", a:["Eagles","Fleetwood Mac","Lynyrd Skynyrd","The Doobie Brothers"], d:"medio",o:"int",qen:"Who sang «Hotel California»?",aen:["Eagles","Fleetwood Mac","Lynyrd Skynyrd","The Doobie Brothers"]},
+  {q:"Chi ha cantato «Stairway to Heaven»?", a:["Led Zeppelin","Deep Purple","Black Sabbath","Rainbow"], d:"medio",o:"int",qen:"Who sang «Stairway to Heaven»?",aen:["Led Zeppelin","Deep Purple","Black Sabbath","Rainbow"]},
+  {q:"Chi ha cantato «Back in Black»?", a:["AC/DC","Guns N' Roses","Mötley Crüe","Kiss"], d:"medio",o:"int",qen:"Who sang «Back in Black»?",aen:["AC/DC","Guns N' Roses","Mötley Crüe","Kiss"]},
+  {q:"Chi ha cantato «Africa»?", a:["Toto","Journey","Foreigner","Boston"], d:"medio",o:"int",qen:"Who sang «Africa»?",aen:["Toto","Journey","Foreigner","Boston"]},
+  {q:"Chi ha cantato «Livin' on a Prayer»?", a:["Bon Jovi","Aerosmith","Journey","Europe"], d:"medio",o:"int",qen:"Who sang «Livin' on a Prayer»?",aen:["Bon Jovi","Aerosmith","Journey","Europe"]},
+  {q:"Chi ha cantato «The Final Countdown»?", a:["Europe","Survivor","Toto","Asia"], d:"medio",o:"int",qen:"Who sang «The Final Countdown»?",aen:["Europe","Survivor","Toto","Asia"]},
+  {q:"Chi ha cantato «I Want It That Way»?", a:["Backstreet Boys","NSYNC","Westlife","Boyzone"], d:"medio",o:"int",qen:"Who sang «I Want It That Way»?",aen:["Backstreet Boys","NSYNC","Westlife","Boyzone"]},
+  {q:"Chi ha cantato «...Baby One More Time»?", a:["Britney Spears","Christina Aguilera","Jessica Simpson","Mandy Moore"], d:"medio",o:"int",qen:"Who sang «...Baby One More Time»?",aen:["Britney Spears","Christina Aguilera","Jessica Simpson","Mandy Moore"]},
+  {q:"Chi ha cantato «Toxic»?", a:["Britney Spears","Christina Aguilera","Kylie Minogue","Pink"], d:"medio",o:"int",qen:"Who sang «Toxic»?",aen:["Britney Spears","Christina Aguilera","Kylie Minogue","Pink"]},
+  {q:"Chi ha cantato «Hips Don't Lie»?", a:["Shakira","Jennifer Lopez","Beyoncé","Gloria Estefan"], d:"facile",o:"int",qen:"Who sang «Hips Don't Lie»?",aen:["Shakira","Jennifer Lopez","Beyoncé","Gloria Estefan"]},
+  {q:"Chi ha cantato «Waka Waka»?", a:["Shakira","Jennifer Lopez","Rihanna","Beyoncé"], d:"facile",o:"int",qen:"Who sang «Waka Waka»?",aen:["Shakira","Jennifer Lopez","Rihanna","Beyoncé"]},
+  {q:"Chi ha cantato «Livin' la Vida Loca»?", a:["Ricky Martin","Enrique Iglesias","Marc Anthony","Luis Fonsi"], d:"medio",o:"int",qen:"Who sang «Livin' la Vida Loca»?",aen:["Ricky Martin","Enrique Iglesias","Marc Anthony","Luis Fonsi"]},
+  {q:"Chi ha cantato «Macarena»?", a:["Los del Río","Gipsy Kings","Las Ketchup","Lou Bega"], d:"medio",o:"int",qen:"Who sang «Macarena»?",aen:["Los del Río","Gipsy Kings","Las Ketchup","Lou Bega"]},
+  {q:"Chi ha cantato «Blue (Da Ba Dee)»?", a:["Eiffel 65","Gigi D'Agostino","Cascada","Alice Deejay"], d:"medio",o:"int",qen:"Who sang «Blue (Da Ba Dee)»?",aen:["Eiffel 65","Gigi D'Agostino","Cascada","Alice Deejay"]},
+  {q:"Chi ha cantato «Barbie Girl»?", a:["Aqua","Vengaboys","Eiffel 65","Toy-Box"], d:"medio",o:"int",qen:"Who sang «Barbie Girl»?",aen:["Aqua","Vengaboys","Eiffel 65","Toy-Box"]},
+  {q:"Chi ha cantato «What Is Love»?", a:["Haddaway","Corona","La Bouche","Snap!"], d:"difficile",o:"int",qen:"Who sang «What Is Love»?",aen:["Haddaway","Corona","La Bouche","Snap!"]},
+  {q:"Chi ha cantato «Gangnam Style»?", a:["PSY","BTS","Big Bang","2NE1"], d:"facile",o:"int",qen:"Who sang «Gangnam Style»?",aen:["PSY","BTS","Big Bang","2NE1"]},
+  {q:"Chi ha cantato «Old Town Road»?", a:["Lil Nas X","Post Malone","Travis Scott","Doja Cat"], d:"medio",o:"int",qen:"Who sang «Old Town Road»?",aen:["Lil Nas X","Post Malone","Travis Scott","Doja Cat"]},
+  {q:"Chi ha cantato «Dance Monkey»?", a:["Tones and I","Sia","Dua Lipa","Lorde"], d:"medio",o:"int",qen:"Who sang «Dance Monkey»?",aen:["Tones and I","Sia","Dua Lipa","Lorde"]},
+  {q:"Chi ha cantato «Shivers» e «Bad Habits»?", a:["Ed Sheeran","Shawn Mendes","Charlie Puth","Lewis Capaldi"], d:"medio",o:"int",qen:"Who sang «Shivers» e «Bad Habits»?",aen:["Ed Sheeran","Shawn Mendes","Charlie Puth","Lewis Capaldi"]},
+  {q:"Chi ha cantato «Levitating»?", a:["Dua Lipa","Doja Cat","Ariana Grande","Rihanna"], d:"medio",o:"int",qen:"Who sang «Levitating»?",aen:["Dua Lipa","Doja Cat","Ariana Grande","Rihanna"]},
+  {q:"Chi ha cantato «drivers license»?", a:["Olivia Rodrigo","Billie Eilish","Gracie Abrams","Taylor Swift"], d:"medio",o:"int",qen:"Who sang «drivers license»?",aen:["Olivia Rodrigo","Billie Eilish","Gracie Abrams","Taylor Swift"]},
+  {q:"Chi ha cantato «As It Was»?", a:["Harry Styles","Shawn Mendes","Niall Horan","Zayn"], d:"medio",o:"int",qen:"Who sang «As It Was»?",aen:["Harry Styles","Shawn Mendes","Niall Horan","Zayn"]},
+  {q:"Chi ha cantato «Flowers» (2023)?", a:["Miley Cyrus","Dua Lipa","Katy Perry","Demi Lovato"], d:"medio",o:"int",qen:"Who sang «Flowers» (2023)?",aen:["Miley Cyrus","Dua Lipa","Katy Perry","Demi Lovato"]},
+  {q:"Chi ha cantato «Montero (Call Me by Your Name)»?", a:["Lil Nas X","Doja Cat","The Weeknd","Post Malone"], d:"difficile",o:"int",qen:"Who sang «Montero (Call Me by Your Name)»?",aen:["Lil Nas X","Doja Cat","The Weeknd","Post Malone"]},
+  {q:"Chi ha cantato «La vita è adesso»?", a:["Claudio Baglioni","Antonello Venditti","Riccardo Cocciante","Eros Ramazzotti"], d:"difficile",o:"ita"},
+  {q:"Chi ha cantato «Vita spericolata»?", a:["Vasco Rossi","Luciano Ligabue","Gianna Nannini","Edoardo Bennato"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Certe notti»?", a:["Luciano Ligabue","Vasco Rossi","Zucchero","Cesare Cremonini"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Senza una donna»?", a:["Zucchero","Pino Daniele","Eros Ramazzotti","Biagio Antonacci"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Terra promessa»?", a:["Eros Ramazzotti","Nek","Tiziano Ferro","Biagio Antonacci"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Laura non c'è»?", a:["Nek","Eros Ramazzotti","Max Pezzali","Alex Britti"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Hanno ucciso l'Uomo Ragno»?", a:["883","Articolo 31","Jovanotti","Gemelli Diversi"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Gli anni»?", a:["883","Max Pezzali","Lùnapop","Thegiornalisti"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «50 Special»?", a:["Lùnapop","883","Negramaro","Le Vibrazioni"], d:"difficile",o:"ita"},
+  {q:"Chi ha cantato «L'ombelico del mondo»?", a:["Jovanotti","Articolo 31","883","Gemelli Diversi"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Napule è»?", a:["Pino Daniele","Eduardo De Crescenzo","Enzo Avitabile","James Senese"], d:"difficile",o:"int",qen:"Who sang «Napule è»?",aen:["Pino Daniele","Eduardo De Crescenzo","Enzo Avitabile","James Senese"]},
+  {q:"Chi ha cantato «Il cielo in una stanza»?", a:["Gino Paoli","Lucio Battisti","Sergio Endrigo","Luigi Tenco"], d:"difficile",o:"ita"},
+  {q:"Chi ha cantato «La donna cannone»?", a:["Francesco De Gregori","Fabrizio De André","Lucio Dalla","Ivano Fossati"], d:"difficile",o:"ita"},
+  {q:"Chi ha cantato «Bocca di rosa»?", a:["Fabrizio De André","Francesco De Gregori","Edoardo Bennato","Roberto Vecchioni"], d:"difficile",o:"ita"},
+  {q:"Chi ha cantato «Almeno tu nell'universo»?", a:["Mia Martini","Loredana Bertè","Ornella Vanoni","Fiorella Mannoia"], d:"difficile",o:"ita"},
+  {q:"Chi ha cantato «E poi»?", a:["Giorgia","Laura Pausini","Elisa","Alessandra Amoroso"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Luce (tramonti a nord est)»?", a:["Elisa","Giorgia","Emma","Alessandra Amoroso"], d:"difficile",o:"ita"},
+  {q:"Chi ha cantato «Due vite» a Sanremo 2023?", a:["Marco Mengoni","Ultimo","Lazza","Tananai"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «La noia» a Sanremo 2024?", a:["Angelina Mango","Annalisa","Geolier","Alfa"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Supereroi»?", a:["Mr. Rain","Irama","Ultimo","Sangiovanni"], d:"difficile",o:"ita"},
+  {q:"Chi ha cantato «Bellissima» (2022)?", a:["Annalisa","Elodie","Emma","Baby K"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Ciclone» (tormentone 2022)?", a:["Takagi & Ketra / Elodie","Boomdabash","Rocco Hunt","Fred De Palma"], d:"difficile",o:"int",qen:"Who sang «Ciclone» (tormentone 2022)?",aen:["Takagi & Ketra / Elodie","Boomdabash","Rocco Hunt","Fred De Palma"]},
+  {q:"Chi ha cantato «Nu juorno buono»?", a:["Rocco Hunt","Clementino","Gigi D'Alessio","Geolier"], d:"difficile",o:"ita"},
+  {q:"Chi ha cantato «Italodisco»?", a:["The Kolors","Thegiornalisti","Måneskin","Pinguini Tattici Nucleari"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Riccione»?", a:["Thegiornalisti","The Kolors","Calcutta","Coez"], d:"difficile",o:"int",qen:"Who sang «Riccione»?",aen:["Thegiornalisti","The Kolors","Calcutta","Coez"]},
+  {q:"Chi ha cantato «Rockstar» (2018)?", a:["Sfera Ebbasta","Capo Plaza","Ghali","Lazza"], d:"medio",o:"int",qen:"Who sang «Rockstar» (2018)?",aen:["Sfera Ebbasta","Capo Plaza","Ghali","Lazza"]},
+  {q:"Chi ha cantato «Cara Italia»?", a:["Ghali","Mahmood","Sfera Ebbasta","Rkomi"], d:"medio",o:"ita"},
+  {q:"Chi ha cantato «Dove si balla» (2022)?", a:["Dargen D'Amico","Tananai","Rkomi","La Rappresentante di Lista"], d:"difficile",o:"int",qen:"Who sang «Dove si balla» (2022)?",aen:["Dargen D'Amico","Tananai","Rkomi","La Rappresentante di Lista"]},
+  {q:"Chi ha vinto Sanremo 2018 con «Non mi avete fatto niente»?", a:["Ermal Meta & Fabrizio Moro","Lo Stato Sociale","Annalisa","Il Volo"], d:"difficile",o:"ita"},
+  {q:"Quale big ha vinto Sanremo 2013 con «L'essenziale»?", a:["Marco Mengoni","Elio e le Storie Tese","Raphael Gualazzi","Modà"], d:"difficile",o:"ita"},
+  {q:"Chi ha vinto l'Eurovision 1964 per l'Italia?", a:["Gigliola Cinquetti","Domenico Modugno","Bobby Solo","Rita Pavone"], d:"difficile",o:"ita"},
+  {q:"Quale canzone ha portato i Måneskin all'Eurovision 2021?", a:["Zitti e buoni","I Wanna Be Your Slave","Beggin'","Coraline"], d:"medio",o:"ita"},
+  {q:"Di chi è l'album «La voce del padrone» (1981)?", a:["Franco Battiato","Lucio Battisti","Paolo Conte","Fabrizio De André"], d:"difficile",o:"ita"},
+  {q:"«Creuza de mä» è un celebre album di...", a:["Fabrizio De André","Francesco De Gregori","Lucio Dalla","Ivano Fossati"], d:"difficile",o:"ita"},
+  {q:"Quante note ci sono in un'ottava (do-re-mi-fa-sol-la-si)?", a:["7","5","8","12"], d:"facile",o:"int",qen:"How many notes are in an octave (do-re-mi-fa-sol-la-si)?",aen:["7","5","8","12"]},
+  {q:"Come si chiama il segno musicale che indica una pausa?", a:["Pausa","Legatura","Corona","Stanghetta"], d:"medio",o:"int",qen:"What is the musical sign that indicates a rest called?",aen:["Rest","Tie","Fermata","Bar line"]},
+  {q:"Lo strumento con mantice e tastiera è...", a:["La fisarmonica","L'organo","Il clavicembalo","Il bandoneon"], d:"medio",o:"int",qen:"The instrument with bellows and keyboard is...",aen:["The accordion","The organ","The harpsichord","The bandoneon"]},
+  {q:"Il triangolo è uno strumento a...", a:["percussione","corda","fiato","tastiera"], d:"facile",o:"int",qen:"The triangle is a… instrument",aen:["percussion","string","wind","keyboard"]},
+  {q:"La chitarra elettrica ha bisogno di un... per essere sentita bene", a:["amplificatore","microfono","mixer","equalizzatore"], d:"facile",o:"int",qen:"The electric guitar needs a... to be heard well",aen:["amplifier","microphone","mixer","equalizer"]},
+  {q:"Il sassofono è uno strumento a...", a:["fiato","corda","percussione","tastiera"], d:"facile",o:"int",qen:"The saxophone is a… instrument",aen:["wind","string","percussion","keyboard"]},
+  {q:"Quante linee compongono il pentagramma?", a:["5","4","6","7"], d:"medio",o:"int",qen:"How many lines make up the staff?",aen:["5","4","6","7"]},
+  {q:"Il «forte» (f) in uno spartito indica di suonare...", a:["forte","piano","veloce","lento"], d:"medio",o:"int",qen:"«Forte» (f) in a score means to play...",aen:["loud","soft","fast","slow"]},
+  {q:"Il «pianissimo» (pp) indica un volume...", a:["molto basso","molto alto","medio","crescente"], d:"medio",o:"int",qen:"«Pianissimo» (pp) indicates a… volume",aen:["very low","very high","medium","increasing"]},
+  {q:"Come si chiama l'insieme di musicisti diretti da un direttore?", a:["Orchestra","Coro","Band","Quartetto"], d:"facile",o:"int",qen:"What is the group of musicians led by a conductor called?",aen:["Orchestra","Choir","Band","Quartet"]},
+  {q:"Quale festival musicale si è tenuto nel 1969 negli USA, simbolo degli hippie?", a:["Woodstock","Coachella","Glastonbury","Lollapalooza"], d:"difficile",o:"int",qen:"Which music festival took place in 1969 in the USA, a symbol of the hippies?",aen:["Woodstock","Coachella","Glastonbury","Lollapalooza"]},
+  {q:"Il «karaoke» è nato in quale paese?", a:["Giappone","Corea del Sud","Cina","USA"], d:"medio",o:"int",qen:"In which country was «karaoke» born?",aen:["Japan","South Korea","China","USA"]},
+  {q:"Quale social è associato ai balletti e ai tormentoni musicali brevi?", a:["TikTok","LinkedIn","Twitch","Pinterest"], d:"facile",o:"int",qen:"Which social network is associated with dances and short music trends?",aen:["TikTok","LinkedIn","Twitch","Pinterest"]},
+  {q:"Come si chiama il premio musicale più importante negli USA?", a:["Grammy Awards","Oscar","Emmy","Tony"], d:"medio",o:"int",qen:"What is the most important music award in the USA called?",aen:["Grammy Awards","Oscar","Emmy","Tony"]},
+  {q:"Il vinile gira su un apparecchio chiamato...", a:["giradischi","registratore","mixer","juke-box"], d:"facile",o:"int",qen:"Vinyl spins on a device called a...",aen:["turntable","recorder","mixer","juke-box"]},
+  {q:"Quale di questi NON è un servizio di streaming musicale?", a:["Photoshop","Spotify","Apple Music","Amazon Music"], d:"facile",o:"int",qen:"Which of these is NOT a music streaming service?",aen:["Photoshop","Spotify","Apple Music","Amazon Music"]},
+  {q:"Chi ha cantato «Purple Rain»?", a:["Prince","Michael Jackson","Lionel Richie","Stevie Wonder"], d:"medio",o:"int",qen:"Who sang «Purple Rain»?",aen:["Prince","Michael Jackson","Lionel Richie","Stevie Wonder"]},
+  {q:"Chi ha cantato «Girls Just Want to Have Fun»?", a:["Cyndi Lauper","Madonna","Pat Benatar","Belinda Carlisle"], d:"difficile",o:"int",qen:"Who sang «Girls Just Want to Have Fun»?",aen:["Cyndi Lauper","Madonna","Pat Benatar","Belinda Carlisle"]},
+  {q:"Chi ha cantato «Like a Virgin»?", a:["Madonna","Cyndi Lauper","Whitney Houston","Tina Turner"], d:"medio",o:"int",qen:"Who sang «Like a Virgin»?",aen:["Madonna","Cyndi Lauper","Whitney Houston","Tina Turner"]},
+  {q:"Chi ha cantato «I Wanna Dance with Somebody»?", a:["Whitney Houston","Tina Turner","Donna Summer","Diana Ross"], d:"medio",o:"int",qen:"Who sang «I Wanna Dance with Somebody»?",aen:["Whitney Houston","Tina Turner","Donna Summer","Diana Ross"]},
+  {q:"Chi ha cantato «What's Love Got to Do with It»?", a:["Tina Turner","Aretha Franklin","Gloria Gaynor","Chaka Khan"], d:"difficile",o:"int",qen:"Who sang «What's Love Got to Do with It»?",aen:["Tina Turner","Aretha Franklin","Gloria Gaynor","Chaka Khan"]},
+  {q:"Chi ha cantato «I Will Survive»?", a:["Gloria Gaynor","Donna Summer","Diana Ross","Chaka Khan"], d:"medio",o:"int",qen:"Who sang «I Will Survive»?",aen:["Gloria Gaynor","Donna Summer","Diana Ross","Chaka Khan"]},
+  {q:"Chi ha cantato «September»?", a:["Earth, Wind & Fire","Kool & The Gang","The Jackson 5","Chic"], d:"difficile",o:"int",qen:"Who sang «September»?",aen:["Earth, Wind & Fire","Kool & The Gang","The Jackson 5","Chic"]},
+  {q:"Chi ha cantato «Y.M.C.A.»?", a:["Village People","Bee Gees","Boney M.","Chic"], d:"medio",o:"int",qen:"Who sang «Y.M.C.A.»?",aen:["Village People","Bee Gees","Boney M.","Chic"]},
+  {q:"Chi ha cantato «Billie Jean» e «Beat It»?", a:["Michael Jackson","Prince","James Brown","Lionel Richie"], d:"facile",o:"int",qen:"Who sang «Billie Jean» e «Beat It»?",aen:["Michael Jackson","Prince","James Brown","Lionel Richie"]},
+  {q:"Chi ha cantato «Rehab»?", a:["Amy Winehouse","Adele","Duffy","Joss Stone"], d:"difficile",o:"int",qen:"Who sang «Rehab»?",aen:["Amy Winehouse","Adele","Duffy","Joss Stone"]},
+  {q:"Chi ha cantato «Chandelier»?", a:["Sia","Adele","Florence + The Machine","Lorde"], d:"medio",o:"int",qen:"Who sang «Chandelier»?",aen:["Sia","Adele","Florence + The Machine","Lorde"]},
+  {q:"Chi ha cantato «Royals»?", a:["Lorde","Lana Del Rey","Billie Eilish","Halsey"], d:"difficile",o:"int",qen:"Who sang «Royals»?",aen:["Lorde","Lana Del Rey","Billie Eilish","Halsey"]},
+  {q:"Chi ha cantato «Somebody That I Used to Know»?", a:["Gotye","Passenger","James Blunt","Milky Chance"], d:"difficile",o:"int",qen:"Who sang «Somebody That I Used to Know»?",aen:["Gotye","Passenger","James Blunt","Milky Chance"]},
+  {q:"Chi ha cantato «Let Her Go»?", a:["Passenger","Ed Sheeran","James Blunt","George Ezra"], d:"difficile",o:"int",qen:"Who sang «Let Her Go»?",aen:["Passenger","Ed Sheeran","James Blunt","George Ezra"]},
+  {q:"Chi ha cantato «Counting Stars»?", a:["OneRepublic","Imagine Dragons","Maroon 5","The Script"], d:"medio",o:"int",qen:"Who sang «Counting Stars»?",aen:["OneRepublic","Imagine Dragons","Maroon 5","The Script"]},
+  {q:"Chi ha cantato «Radioactive»?", a:["Imagine Dragons","OneRepublic","Twenty One Pilots","The Killers"], d:"medio",o:"int",qen:"Who sang «Radioactive»?",aen:["Imagine Dragons","OneRepublic","Twenty One Pilots","The Killers"]},
+  {q:"Chi ha cantato «Believer»?", a:["Imagine Dragons","OneRepublic","Coldplay","Muse"], d:"medio",o:"int",qen:"Who sang «Believer»?",aen:["Imagine Dragons","OneRepublic","Coldplay","Muse"]},
+  {q:"Chi ha cantato «Sugar» (2015)?", a:["Maroon 5","OneRepublic","Bruno Mars","Charlie Puth"], d:"medio",o:"int",qen:"Who sang «Sugar» (2015)?",aen:["Maroon 5","OneRepublic","Bruno Mars","Charlie Puth"]},
+  {q:"Chi ha cantato «See You Again» (feat. Charlie Puth)?", a:["Wiz Khalifa","Eminem","Drake","Macklemore"], d:"difficile",o:"int",qen:"Who sang «See You Again» (feat. Charlie Puth)?",aen:["Wiz Khalifa","Eminem","Drake","Macklemore"]},
+  {q:"Chi ha cantato «Thrift Shop»?", a:["Macklemore & Ryan Lewis","Flo Rida","Pitbull","will.i.am"], d:"difficile",o:"int",qen:"Who sang «Thrift Shop»?",aen:["Macklemore & Ryan Lewis","Flo Rida","Pitbull","will.i.am"]},
+  {q:"Chi ha cantato «Lose Yourself»?", a:["Eminem","50 Cent","Dr. Dre","Jay-Z"], d:"medio",o:"int",qen:"Who sang «Lose Yourself»?",aen:["Eminem","50 Cent","Dr. Dre","Jay-Z"]},
+  {q:"Chi ha cantato «In da Club»?", a:["50 Cent","Eminem","Snoop Dogg","Nelly"], d:"difficile",o:"int",qen:"Who sang «In da Club»?",aen:["50 Cent","Eminem","Snoop Dogg","Nelly"]},
+  {q:"Chi ha cantato «Empire State of Mind» con Alicia Keys?", a:["Jay-Z","Kanye West","Nas","Drake"], d:"difficile",o:"int",qen:"Who sang «Empire State of Mind» con Alicia Keys?",aen:["Jay-Z","Kanye West","Nas","Drake"]},
+  {q:"Chi ha cantato «God's Plan»?", a:["Drake","Travis Scott","Post Malone","The Weeknd"], d:"medio",o:"int",qen:"Who sang «God's Plan»?",aen:["Drake","Travis Scott","Post Malone","The Weeknd"]},
+  {q:"Chi ha cantato «Sunflower» (con Swae Lee)?", a:["Post Malone","Travis Scott","Juice WRLD","Lil Nas X"], d:"difficile",o:"int",qen:"Who sang «Sunflower» (con Swae Lee)?",aen:["Post Malone","Travis Scott","Juice WRLD","Lil Nas X"]},
+  {q:"Chi ha cantato «Havana»?", a:["Camila Cabello","Dua Lipa","Rihanna","Selena Gomez"], d:"medio",o:"int",qen:"Who sang «Havana»?",aen:["Camila Cabello","Dua Lipa","Rihanna","Selena Gomez"]},
+  {q:"Chi ha cantato «Senorita» con Shawn Mendes?", a:["Camila Cabello","Selena Gomez","Halsey","Normani"], d:"medio",o:"int",qen:"Who sang «Senorita» con Shawn Mendes?",aen:["Camila Cabello","Selena Gomez","Halsey","Normani"]},
+  {q:"Chi ha cantato «New Rules»?", a:["Dua Lipa","Rita Ora","Zara Larsson","Anne-Marie"], d:"medio",o:"int",qen:"Who sang «New Rules»?",aen:["Dua Lipa","Rita Ora","Zara Larsson","Anne-Marie"]},
+  {q:"Chi ha cantato «Titanium» con David Guetta?", a:["Sia","Rihanna","Ellie Goulding","Katy Perry"], d:"difficile",o:"int",qen:"Who sang «Titanium» con David Guetta?",aen:["Sia","Rihanna","Ellie Goulding","Katy Perry"]},
+  {q:"Chi ha cantato «Wake Me Up»?", a:["Avicii","Calvin Harris","Kygo","Alan Walker"], d:"medio",o:"int",qen:"Who sang «Wake Me Up»?",aen:["Avicii","Calvin Harris","Kygo","Alan Walker"]},
+  {q:"Chi ha cantato «Faded»?", a:["Alan Walker","Avicii","Kygo","Martin Garrix"], d:"medio",o:"int",qen:"Who sang «Faded»?",aen:["Alan Walker","Avicii","Kygo","Martin Garrix"]},
+  {q:"Chi ha cantato «Lean On» con Major Lazer?", a:["MØ","Sia","Ellie Goulding","Dua Lipa"], d:"difficile",o:"int",qen:"Who sang «Lean On» con Major Lazer?",aen:["MØ","Sia","Ellie Goulding","Dua Lipa"]},
+  {q:"Chi ha cantato «Closer» con i Chainsmokers?", a:["Halsey","Selena Gomez","Camila Cabello","Bebe Rexha"], d:"difficile",o:"int",qen:"Who sang «Closer» con i Chainsmokers?",aen:["Halsey","Selena Gomez","Camila Cabello","Bebe Rexha"]},
+  {q:"Chi ha cantato «Firework»?", a:["Katy Perry","Lady Gaga","Kesha","Pink"], d:"medio",o:"int",qen:"Who sang «Firework»?",aen:["Katy Perry","Lady Gaga","Kesha","Pink"]},
+  {q:"Chi ha cantato «Roar»?", a:["Katy Perry","Taylor Swift","Demi Lovato","Kelly Clarkson"], d:"medio",o:"int",qen:"Who sang «Roar»?",aen:["Katy Perry","Taylor Swift","Demi Lovato","Kelly Clarkson"]},
+  {q:"Chi ha cantato «Diamonds»?", a:["Rihanna","Beyoncé","Sia","Nicki Minaj"], d:"medio",o:"int",qen:"Who sang «Diamonds»?",aen:["Rihanna","Beyoncé","Sia","Nicki Minaj"]},
+  {q:"Chi ha cantato «Halo»?", a:["Beyoncé","Rihanna","Alicia Keys","Mariah Carey"], d:"medio",o:"int",qen:"Who sang «Halo»?",aen:["Beyoncé","Rihanna","Alicia Keys","Mariah Carey"]},
+  {q:"Chi ha cantato «Crazy in Love»?", a:["Beyoncé","Rihanna","Ciara","Ashanti"], d:"medio",o:"int",qen:"Who sang «Crazy in Love»?",aen:["Beyoncé","Rihanna","Ciara","Ashanti"]},
+  {q:"Chi ha cantato «Single Ladies»?", a:["Beyoncé","Rihanna","Ciara","Keri Hilson"], d:"facile",o:"int",qen:"Who sang «Single Ladies»?",aen:["Beyoncé","Rihanna","Ciara","Keri Hilson"]},
+  {q:"Chi ha cantato «Hey Jude»?", a:["The Beatles","The Rolling Stones","The Kinks","The Who"], d:"facile",o:"int",qen:"Who sang «Hey Jude»?",aen:["The Beatles","The Rolling Stones","The Kinks","The Who"]},
+  {q:"Chi ha cantato «(I Can't Get No) Satisfaction»?", a:["The Rolling Stones","The Beatles","The Animals","The Kinks"], d:"difficile",o:"int",qen:"Who sang «(I Can't Get No) Satisfaction»?",aen:["The Rolling Stones","The Beatles","The Animals","The Kinks"]},
+  {q:"Chi ha cantato «Smoke on the Water»?", a:["Deep Purple","Black Sabbath","Led Zeppelin","Rainbow"], d:"difficile",o:"int",qen:"Who sang «Smoke on the Water»?",aen:["Deep Purple","Black Sabbath","Led Zeppelin","Rainbow"]},
+  {q:"Chi ha cantato «Paranoid»?", a:["Black Sabbath","Deep Purple","Judas Priest","Iron Maiden"], d:"difficile",o:"int",qen:"Who sang «Paranoid»?",aen:["Black Sabbath","Deep Purple","Judas Priest","Iron Maiden"]},
+  {q:"Chi ha cantato «Enter Sandman»?", a:["Metallica","Megadeth","Iron Maiden","Pantera"], d:"medio",o:"int",qen:"Who sang «Enter Sandman»?",aen:["Metallica","Megadeth","Iron Maiden","Pantera"]},
+  {q:"Chi ha cantato «Numb»?", a:["Linkin Park","Limp Bizkit","Papa Roach","Korn"], d:"medio",o:"int",qen:"Who sang «Numb»?",aen:["Linkin Park","Limp Bizkit","Papa Roach","Korn"]},
+  {q:"Chi ha cantato «In the End»?", a:["Linkin Park","Evanescence","Papa Roach","Breaking Benjamin"], d:"medio",o:"int",qen:"Who sang «In the End»?",aen:["Linkin Park","Evanescence","Papa Roach","Breaking Benjamin"]},
+  {q:"Chi ha cantato «Bring Me to Life»?", a:["Evanescence","Within Temptation","Nightwish","Paramore"], d:"difficile",o:"int",qen:"Who sang «Bring Me to Life»?",aen:["Evanescence","Within Temptation","Nightwish","Paramore"]},
+  {q:"Chi ha cantato «Boulevard of Broken Dreams»?", a:["Green Day","Blink-182","Sum 41","The Offspring"], d:"medio",o:"int",qen:"Who sang «Boulevard of Broken Dreams»?",aen:["Green Day","Blink-182","Sum 41","The Offspring"]},
+  {q:"Chi ha cantato «Basket Case»?", a:["Green Day","The Offspring","Blink-182","Sum 41"], d:"difficile",o:"int",qen:"Who sang «Basket Case»?",aen:["Green Day","The Offspring","Blink-182","Sum 41"]},
+  {q:"Chi ha cantato «All the Small Things»?", a:["Blink-182","Green Day","Sum 41","Good Charlotte"], d:"difficile",o:"int",qen:"Who sang «All the Small Things»?",aen:["Blink-182","Green Day","Sum 41","Good Charlotte"]},
+  {q:"Chi ha cantato «Smells Like Teen Spirit» e «Come as You Are»?", a:["Nirvana","Pearl Jam","Soundgarden","Stone Temple Pilots"], d:"medio",o:"int",qen:"Who sang «Smells Like Teen Spirit» e «Come as You Are»?",aen:["Nirvana","Pearl Jam","Soundgarden","Stone Temple Pilots"]},
+  {q:"Chi ha cantato «Californication»?", a:["Red Hot Chili Peppers","Foo Fighters","Audioslave","Rage Against the Machine"], d:"medio",o:"int",qen:"Who sang «Californication»?",aen:["Red Hot Chili Peppers","Foo Fighters","Audioslave","Rage Against the Machine"]},
+  {q:"Chi ha cantato «Under the Bridge»?", a:["Red Hot Chili Peppers","Foo Fighters","Pearl Jam","Soundgarden"], d:"difficile",o:"int",qen:"Who sang «Under the Bridge»?",aen:["Red Hot Chili Peppers","Foo Fighters","Pearl Jam","Soundgarden"]},
+  {q:"Chi ha cantato «Everlong»?", a:["Foo Fighters","Nirvana","Weezer","Green Day"], d:"difficile",o:"int",qen:"Who sang «Everlong»?",aen:["Foo Fighters","Nirvana","Weezer","Green Day"]}
 ];
 // c = categorie: ita / int / 8090 / rock
 const SONGS = [
@@ -4181,11 +4215,13 @@ const SONGS = [
 ];
 const WORDS = [{w:"amore",d:"facile"},{w:"cuore",d:"facile"},{w:"notte",d:"facile"},{w:"sole",d:"facile"},{w:"mare",d:"facile"},{w:"stella",d:"facile"},{w:"ballare",d:"facile"},{w:"libertà",d:"difficile"},{w:"strada",d:"medio"},{w:"cielo",d:"facile"},{w:"fuoco",d:"difficile"},{w:"tempo",d:"facile"},{w:"sogno",d:"facile"},{w:"luce",d:"facile"},{w:"vita",d:"facile"},{w:"baciare",d:"facile"},{w:"domani",d:"medio"},{w:"pioggia",d:"medio"},{w:"città",d:"medio"},{w:"mano",d:"medio"},{w:"occhi",d:"medio"},{w:"vento",d:"difficile"},{w:"ballo",d:"medio"},{w:"musica",d:"medio"},{w:"estate",d:"medio"},{w:"felicità",d:"medio"},{w:"viaggio",d:"difficile"},{w:"casa",d:"facile"},{w:"sabato",d:"medio"},{w:"dolce",d:"medio"},{w:"luna",d:"facile"},{w:"fiore",d:"medio"},{w:"treno",d:"difficile"},{w:"montagna",d:"difficile"},{w:"angelo",d:"difficile"},{w:"bacio",d:"medio"},{w:"inverno",d:"difficile"},{w:"primavera",d:"difficile"},{w:"sorriso",d:"difficile"},{w:"nome",d:"medio"},{w:"mille",d:"difficile"},{w:"giorno",d:"medio"},{w:"anima",d:"difficile"},{w:"strade",d:"medio"},{w:"respiro",d:"difficile"}];
 
-const COLORS=["#ff2e93","#18e0ff","#ffd23f","#2bff88","#b06bff","#ff8a3d"];
+const COLORS=["#ff2e93","#18e0ff","#ffd23f","#2bff88","#b06bff","#ff8a3d","#ff3b3b","#3b7bff","#ff6be6","#c6ff3b"];
 const SVC={amz:{n:"Amazon Music",cls:"amz",ic:`<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><defs><linearGradient id="amg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4FD4F0"/><stop offset="1" stop-color="#17255A"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#amg)"/><ellipse cx="9.6" cy="13.6" rx="2.1" ry="1.6" fill="#fff"/><rect x="11.4" y="6.4" width="1.25" height="7.2" fill="#fff"/><path d="M12.65 6.4c1.7.15 2.9.95 3.3 2.15-.85-.65-1.95-.95-3.3-1z" fill="#fff"/><path d="M6.4 18.3c3.4 1.9 7.8 1.9 11.2 0" stroke="#fff" stroke-width="1.3" fill="none" stroke-linecap="round" opacity=".9"/></svg>`,url:q=>"https://music.amazon.com/search/"+q},
   spo:{n:"Spotify",cls:"spo",ic:`<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#1DB954"/><path d="M17.6 11c-3-1.8-8-2-10.9-1.1a.86.86 0 1 1-.5-1.64C9.5 7.2 15 7.43 18.4 9.46a.86.86 0 1 1-.88 1.48zm-.1 2.64a.72.72 0 0 1-1 .24c-2.5-1.54-6.3-2-9.2-1.1a.72.72 0 1 1-.42-1.37c3.35-1.02 7.5-.5 10.4 1.26.34.2.45.66.22 1zm-1.1 2.55a.57.57 0 0 1-.79.19c-2.18-1.33-4.92-1.63-8.15-.9a.57.57 0 1 1-.26-1.12c3.5-.8 6.56-.45 8.98 1.04.27.16.36.52.22.79z" fill="#000"/></svg>`,url:q=>"https://open.spotify.com/search/"+q},
   yt:{n:"YouTube",cls:"yt",ic:`<svg viewBox="0 0 28 20" width="28" height="20" aria-hidden="true"><rect x="0.5" y="0.5" width="27" height="19" rx="5" fill="#FF0000"/><path d="M11 5.5l7 4.5-7 4.5z" fill="#fff"/></svg>`,url:q=>"https://www.youtube.com/results?search_query="+q}};
 const CAT_NAME={mix:"Mix",ita:"Italiana",int:"Internazionale","60s70s":"Anni 60/70","80s":"Anni 80","90s":"Anni 90","00s":"Anni 2000","10s":"Anni 2010","20s":"Anni 2020",pop:"Pop",rock:"Rock",dance:"Dance/Electro",hiphop:"Hip-Hop/R&B",latin:"Latina",soul:"Soul/Funk",metal:"Metal",indie:"Indie",cantautori:"Cantautori","8090":"Anni 80/90",sanremo:"Sanremo",estate:"Tormentoni estivi",soundtrack:"Colonne sonore",natale:"Natale",disney:"Disney/Animazione",dance00:"Dance anni 2000",onehit:"One-Hit Wonder"};
+const CAT_NAME_EN={mix:"Mix",ita:"Italian",int:"International","60s70s":"60s/70s","80s":"80s","90s":"90s","00s":"2000s","10s":"2010s","20s":"2020s",pop:"Pop",rock:"Rock",dance:"Dance/Electro",hiphop:"Hip-Hop/R&B",latin:"Latin",soul:"Soul/Funk",metal:"Metal",indie:"Indie",cantautori:"Singer-songwriters","8090":"80s/90s",sanremo:"Sanremo",estate:"Summer hits",soundtrack:"Soundtracks",natale:"Christmas",disney:"Disney/Animation",dance00:"2000s Dance",onehit:"One-Hit Wonder"};
+function catName(c){ const m=(LANG==='en'?CAT_NAME_EN:CAT_NAME); return m[c]||CAT_NAME[c]||c; }
 /* Gruppo di appartenenza di ogni categoria: OR dentro lo stesso gruppo, AND tra gruppi diversi */
 const CAT_GROUP={ita:"origine",int:"origine","60s70s":"decennio","80s":"decennio","90s":"decennio","00s":"decennio","10s":"decennio","20s":"decennio",pop:"genere",rock:"genere",dance:"genere",hiphop:"genere",latin:"genere",soul:"genere",metal:"genere",indie:"genere",cantautori:"genere",sanremo:"collezione",estate:"collezione",soundtrack:"collezione",natale:"collezione",disney:"collezione",dance00:"collezione",onehit:"collezione"};
 /* Un brano combacia se, per OGNI gruppo selezionato, appartiene ad ALMENO UNA delle categorie scelte in quel gruppo. */
@@ -4206,8 +4242,54 @@ const CHDEF=[
 const CNT_MIN=0, CNT_MAX=30;
 const CH_BY=Object.fromEntries(CHDEF.map(c=>[c.id,c]));
 
+/* ================= I18N ENGINE ================= */
+const I18N={it:{"tagline": "PARTY GAME MUSICALE", "install": "Installa", "home_title": "🎵 Pronti a scatenarvi?", "home_sub": "Sfidatevi a colpi di musica: quiz, ascolto, mimo e karaoke. La squadra con più punti alla fine vince!", "resume_title": "⏸️ Partita in sospeso", "resume_btn": "▶️ Riprendi", "discard_btn": "🗑 Scarta", "play_teams": "▶ GIOCA IN SQUADRE", "play_solo": "🎧 GIOCA DA SOLO", "how_to": "📖 Come si gioca", "records": "🏆 Record", "foot_disclaimer": "Hitmania è un party game musicale <b>fan-made</b> a scopo di intrattenimento, senza fini di lucro e non affiliato ad Amazon Music, Spotify, YouTube o ad alcun editore musicale. I titoli e gli interpreti citati appartengono ai rispettivi proprietari; il gioco <b>non riproduce testi né registrazioni</b>, ma rimanda ai servizi di streaming per l'ascolto.", "privacy_link": "Privacy &amp; Cookie Policy", "rules_title": "📖 Come si gioca", "rules_sub": "Scegli le sfide e quante domande giocare per ciascuna. Ogni risposta esatta vale <b>1 punto</b>: vince chi totalizza più punti!", "rules_quiz": "<b>Quiz musicale</b><br><span class=\"hint\">Domanda a risposta multipla sulla musica (facoltativamente a tempo). Risposta giusta = 1 punto.</span>", "rules_listen": "<b>Ascolto</b><br><span class=\"hint\">Un'anteprima del brano parte \"al buio\" direttamente nell'app: indovinate <b>titolo</b> e <b>interprete</b>, poi rivelate. 1 punto.</span>", "rules_mime": "<b>Mimo</b><br><span class=\"hint\">Un membro mima la canzone (solo lui la vede), la squadra indovina entro il tempo. 1 punto.</span>", "rules_karaoke": "<b>Karaoke / Parola segreta</b><br><span class=\"hint\">Viene svelata una parola: cantate una canzone che la contenga entro il tempo. 1 punto.</span>", "rules_modes": "<b>🎮 Modalità:</b> gioca <b>in squadre</b> (2-10) o <b>da solo</b> (Quiz e Ascolto). <b>🎚️ Categorie</b> e <b>🎯 difficoltà</b> personalizzabili. I record vengono salvati sul dispositivo.", "back_home": "← Torna alla Home", "setup_title_team": "👥 Crea le squadre", "setup_sub_team": "Da 2 a 10 squadre. Date un nome a ciascuna.", "add_team": "＋ Aggiungi squadra", "ch_title": "🏁 Sfide in gioco & punti", "ch_hint": "Imposta quante <b>domande</b> di ogni categoria riceve ciascuna squadra (0-30). A 0 la categoria è esclusa. Ogni risposta esatta vale <b>1 punto</b>.", "diff_title": "🎯 Difficoltà", "diff_easy": "😎 Facile", "diff_easy_d": "solo contenuti facili · più tempo", "diff_med": "🙂 Medio", "diff_med_d": "solo contenuti medi", "diff_hard": "🔥 Difficile", "diff_hard_d": "solo contenuti difficili · meno tempo", "diff_mix": "🎲 Mix", "diff_mix_d": "difficoltà casuale per ogni sfida", "cat_title": "🎚️ Categoria brani", "cat_sublabel": "(Ascolto &amp; Mimo)", "cat_hint": "Combina più categorie (es. 🎸 Rock + 📼 Anni 80): verranno usati solo i brani che le soddisfano tutte. Tocca <b>🎵 Mix</b> per azzerare.", "cat_mix": "🎵 Mix <span style=\"opacity:.7;font-weight:600\">· tutti</span>", "grp_origin": "🌍 Origine", "cat_ita": "🇮🇹 Italiana", "cat_int": "🌍 Internazionale", "grp_decade": "📆 Decennio", "grp_genre": "🎸 Genere", "cat_pop": "🎤 Pop", "cat_rock": "🎸 Rock", "cat_dance": "🪩 Dance", "cat_hiphop": "🎧 Hip-Hop/R&amp;B", "cat_latin": "💃 Latina", "cat_soul": "🎷 Soul/Funk", "cat_metal": "🤘 Metal", "cat_indie": "🎨 Indie", "cat_cant": "✍️ Cantautori", "grp_coll": "⭐ Collezioni", "cat_sanremo": "🎭 Sanremo", "cat_estate": "☀️ Estate", "cat_film": "🎬 Film", "cat_natale": "🎄 Natale", "cat_disney": "🏰 Disney", "cat_dance00": "🪩 Dance 2000", "cat_onehit": "💫 One-Hit", "opt_title": "⚙️ Opzioni", "opt_timed": "⚡ Quiz a tempo <small>countdown per rispondere; allo scadere la domanda è persa</small>", "opt_choice": "🎯 Ascolto a scelta multipla <small>mostra 4 titoli tra cui scegliere invece di indovinare a mente</small>", "opt_sound": "🔊 Effetti sonori", "go_btn": "🚀 VIA!", "back_btn": "← Indietro", "settings_btn": "⚙️ Impostazioni", "home_btn": "🏠 Home", "winner": "Vincitore", "replay": "🔁 Rigioca", "rec_title": "🏆 Storico Record", "rec_sub": "I migliori punteggi salvati su questo dispositivo.", "rec_clear": "🗑 Cancella storico", "priv_title": "🔒 Privacy &amp; Cookie Policy", "priv_sub": "Ultimo aggiornamento: ottobre 2026", "priv_back": "🏠 Torna al gioco", "ask_name": "🎧 Come ti chiami? (il nome serve per salvare i tuoi record)", "solo_title": "🎧 Gioca da solo", "solo_sub": "Sfida personale: quiz e ascolto. Batti il tuo record!", "solo_name_ph": "Il tuo nome o username", "cat_label_listen": "(Ascolto)", "cat_label_listen_mime": "(Ascolto & Mimo)", "team_default": "Squadra", "need_one_q": "Imposta almeno 1 domanda!", "round": "ROUND", "quiz_head": "Testa o Musica", "quiz_answer": "Rispondi", "point": "punto", "points": "punti", "wrong": "Sbagliato 😬", "time_up": "⏰ Tempo scaduto!", "listen_head": "Indovina la Hit", "listen_guess": "Indovinate titolo e interprete", "listen_guess_sub": "La squadra indovina titolo e interprete", "listen_choose": "Ascoltate e scegliete il brano giusto", "mystery_song": "🎧 Brano misterioso", "prep_song": "Preparo il brano…", "searching": "🔎 Cerco un brano con anteprima…", "guessed": "✓ Indovinato (+1)", "missed": "✗ Sbagliato", "category": "categoria", "wait": "⏳ Attendi…", "reveal_song": "👁 Rivela brano", "listen_btn": "▶️ Ascolta", "pause_btn": "⏸️ Pausa", "tap_again": "⚠️ Tocca ancora “Ascolta”", "ready_listen": "Pronto · premi “Ascolta” e indovina", "playing_guess": "🎧 In riproduzione… indovina!", "paused_resume": "⏸️ In pausa · riprendi quando vuoi", "preview_over": "Anteprima finita · riascolta o rivela", "no_preview": "⚠️ Anteprima non disponibile", "no_preview_short": "🔇 Anteprima assente", "mime_head": "Mima la Hit", "mime_desc": "Un membro mima la canzone · la squadra indovina", "mime_hint": "Solo chi mima guarda la carta. Premi per rivelarla, poi avvia il timer!", "mime_card": "🎭 Canzone da mimare", "reveal_card": "👁 Rivela la carta", "guessed2": "✓ Indovinato (+1)", "not_guessed": "✗ Non indovinato", "kar_head": "Parola & Canzone", "kar_desc": "Cantate una canzone che contenga la parola", "kar_secret": "🎤 Parola segreta", "kar_hint": "La squadra deve cantare (almeno un verso di) una canzone che contenga questa parola, entro il tempo!", "kar_start": "⏱ Avvia timer", "kar_sung": "✓ Cantata! (+1)", "kar_timeout": "✗ Tempo scaduto", "next_turn": "→ Turno successivo", "toast_plus1": "+1 🎉", "toast_wrong": "Sbagliato!", "draw": "Pareggio!", "new_record": "🏆 Nuovo record!", "your_score": "Il tuo punteggio", "no_records": "Nessun record ancora. Gioca una partita!", "confirm_clear_rec": "Vuoi cancellare tutto lo storico dei record?", "confirm_discard": "Scartare la partita in sospeso?", "solo_best": "Record personale", "resume_info": "Riprendi da dove avevi lasciato", "diffhint_facile": "Solo contenuti facili: brani e domande più noti, più tempo per rispondere.", "diffhint_medio": "Contenuti di media difficoltà.", "diffhint_difficile": "Solo contenuti difficili: brani e domande più ricercati, meno tempo.", "diffhint_mix": "Difficoltà casuale per ogni sfida.","ch_quiz_n":"Testa o Musica","ch_quiz_d":"domande a risposta multipla","ch_listen_n":"Indovina la Hit","ch_listen_d":"indovina titolo e interprete","ch_mime_n":"Mima la Hit","ch_mime_d":"mima e fai indovinare","ch_karaoke_n":"Parola & Canzone","ch_karaoke_d":"parola segreta cantata","ch_title_solo":"🏁 Sfide & punti","pop_facile":"facili / famosissimi","pop_medio":"di media difficoltà","pop_difficile":"difficili / di nicchia","pop_mix":"misto casuale","resp_time":"Tempo risposta","songs_lbl":"Brani","lbl_quiz":"Quiz","lbl_mime":"Mimo","lbl_karaoke":"Karaoke","confirm_exit":"Vuoi uscire dalla partita in corso? Il punteggio attuale andrà perso.","game_over":"🎵 Partita finita","pts_suffix":"punti","tie":"Pareggio!","wins":"vince!","tie_at":"Parimerito a","personal_best":"Record personale","your_score_row":"Il tuo punteggio","rec_solo":"Record — Giocatore singolo","rec_team":"Record — Squadre","no_rec_card":"Nessun record ancora. Gioca una partita!","game_1":"partita","game_n":"partite","last_lbl":"ultimo","loading_preview":"🔎 Carico l'anteprima…","confirm_home":"Vuoi tornare alla Home? La partita in corso andrà persa.","anon":"Anonimo"},en:{"tagline": "MUSIC PARTY GAME", "install": "Install", "home_title": "🎵 Ready to rock?", "home_sub": "Challenge each other with music: quiz, listening, charades and karaoke. The team with the most points wins!", "resume_title": "⏸️ Game paused", "resume_btn": "▶️ Resume", "discard_btn": "🗑 Discard", "play_teams": "▶ PLAY IN TEAMS", "play_solo": "🎧 PLAY SOLO", "how_to": "📖 How to play", "records": "🏆 Records", "foot_disclaimer": "Hitmania is a <b>fan-made</b> musical party game for entertainment purposes, non-profit and not affiliated with Amazon Music, Spotify, YouTube or any music publisher. The titles and performers mentioned belong to their respective owners; the game <b>does not reproduce lyrics or recordings</b>, but links to streaming services for listening.", "privacy_link": "Privacy &amp; Cookie Policy", "rules_title": "📖 How to play", "rules_sub": "Choose the challenges and how many questions to play for each. Every correct answer is worth <b>1 point</b>: whoever scores the most points wins!", "rules_quiz": "<b>Music quiz</b><br><span class=\"hint\">Multiple-choice music question (optionally timed). Correct answer = 1 point.</span>", "rules_listen": "<b>Listening</b><br><span class=\"hint\">A song preview plays \"blind\" right in the app: guess the <b>title</b> and <b>artist</b>, then reveal. 1 point.</span>", "rules_mime": "<b>Charades</b><br><span class=\"hint\">One member mimes the song (only they see it), the team guesses within the time. 1 point.</span>", "rules_karaoke": "<b>Karaoke / Secret word</b><br><span class=\"hint\">A word is revealed: sing a song that contains it within the time. 1 point.</span>", "rules_modes": "<b>🎮 Modes:</b> play <b>in teams</b> (2-10) or <b>solo</b> (Quiz and Listening). Customizable <b>🎚️ categories</b> and <b>🎯 difficulty</b>. Records are saved on your device.", "back_home": "← Back to Home", "setup_title_team": "👥 Create the teams", "setup_sub_team": "From 2 to 10 teams. Give each one a name.", "add_team": "＋ Add team", "ch_title": "🏁 Challenges in play & points", "ch_hint": "Set how many <b>questions</b> of each category each team gets (0-30). At 0 the category is excluded. Every correct answer is worth <b>1 point</b>.", "diff_title": "🎯 Difficulty", "diff_easy": "😎 Easy", "diff_easy_d": "easy content only · more time", "diff_med": "🙂 Medium", "diff_med_d": "medium content only", "diff_hard": "🔥 Hard", "diff_hard_d": "hard content only · less time", "diff_mix": "🎲 Mix", "diff_mix_d": "random difficulty for each challenge", "cat_title": "🎚️ Song category", "cat_sublabel": "(Listening &amp; Charades)", "cat_hint": "Combine multiple categories (e.g. 🎸 Rock + 📼 80s): only songs matching all of them will be used. Tap <b>🎵 Mix</b> to reset.", "cat_mix": "🎵 Mix <span style=\"opacity:.7;font-weight:600\">· all</span>", "grp_origin": "🌍 Origin", "cat_ita": "🇮🇹 Italian", "cat_int": "🌍 International", "grp_decade": "📆 Decade", "grp_genre": "🎸 Genre", "cat_pop": "🎤 Pop", "cat_rock": "🎸 Rock", "cat_dance": "🪩 Dance", "cat_hiphop": "🎧 Hip-Hop/R&amp;B", "cat_latin": "💃 Latin", "cat_soul": "🎷 Soul/Funk", "cat_metal": "🤘 Metal", "cat_indie": "🎨 Indie", "cat_cant": "✍️ Singer-songwriters", "grp_coll": "⭐ Collections", "cat_sanremo": "🎭 Sanremo", "cat_estate": "☀️ Summer", "cat_film": "🎬 Movies", "cat_natale": "🎄 Christmas", "cat_disney": "🏰 Disney", "cat_dance00": "🪩 2000s Dance", "cat_onehit": "💫 One-Hit", "opt_title": "⚙️ Options", "opt_timed": "⚡ Timed quiz <small>countdown to answer; when it runs out the question is lost</small>", "opt_choice": "🎯 Multiple-choice listening <small>shows 4 titles to choose from instead of guessing</small>", "opt_sound": "🔊 Sound effects", "go_btn": "🚀 GO!", "back_btn": "← Back", "settings_btn": "⚙️ Settings", "home_btn": "🏠 Home", "winner": "Winner", "replay": "🔁 Play again", "rec_title": "🏆 Records history", "rec_sub": "The best scores saved on this device.", "rec_clear": "🗑 Clear history", "priv_title": "🔒 Privacy &amp; Cookie Policy", "priv_sub": "Last updated: October 2026", "priv_back": "🏠 Back to game", "ask_name": "🎧 What's your name? (used to save your records)", "solo_title": "🎧 Play solo", "solo_sub": "Personal challenge: quiz and listening. Beat your record!", "solo_name_ph": "Your name or username", "cat_label_listen": "(Listening)", "cat_label_listen_mime": "(Listening & Charades)", "team_default": "Team", "need_one_q": "Set at least 1 question!", "round": "ROUND", "quiz_head": "Brain & Beat", "quiz_answer": "Answer", "point": "point", "points": "points", "wrong": "Wrong 😬", "time_up": "⏰ Time's up!", "listen_head": "Guess the Hit", "listen_guess": "Guess the title and artist", "listen_guess_sub": "The team guesses the title and artist", "listen_choose": "Listen and choose the right song", "mystery_song": "🎧 Mystery song", "prep_song": "Preparing the song…", "searching": "🔎 Looking for a song with preview…", "guessed": "✓ Guessed (+1)", "missed": "✗ Wrong", "category": "category", "wait": "⏳ Wait…", "reveal_song": "👁 Reveal song", "listen_btn": "▶️ Listen", "pause_btn": "⏸️ Pause", "tap_again": "⚠️ Tap “Listen” again", "ready_listen": "Ready · press “Listen” and guess", "playing_guess": "🎧 Playing… guess!", "paused_resume": "⏸️ Paused · resume anytime", "preview_over": "Preview finished · replay or reveal", "no_preview": "⚠️ Preview not available", "no_preview_short": "🔇 No preview", "mime_head": "Mime the Hit", "mime_desc": "One member mimes the song · the team guesses", "mime_hint": "Only the mime looks at the card. Tap to reveal it, then start the timer!", "mime_card": "🎭 Song to mime", "reveal_card": "👁 Reveal the card", "guessed2": "✓ Guessed (+1)", "not_guessed": "✗ Not guessed", "kar_head": "Sing the Word", "kar_desc": "Sing a song that contains the word", "kar_secret": "🎤 Secret word", "kar_hint": "The team must sing (at least one verse of) a song containing this word, within the time!", "kar_start": "⏱ Start timer", "kar_sung": "✓ Sung it! (+1)", "kar_timeout": "✗ Time's up", "next_turn": "→ Next turn", "toast_plus1": "+1 🎉", "toast_wrong": "Wrong!", "draw": "Draw!", "new_record": "🏆 New record!", "your_score": "Your score", "no_records": "No records yet. Play a game!", "confirm_clear_rec": "Do you want to clear all records history?", "confirm_discard": "Discard the paused game?", "solo_best": "Personal best", "resume_info": "Resume where you left off", "diffhint_facile": "Easy content only: better-known songs and questions, more time to answer.", "diffhint_medio": "Medium-difficulty content.", "diffhint_difficile": "Hard content only: more obscure songs and questions, less time.", "diffhint_mix": "Random difficulty for each challenge.","ch_quiz_n":"Brain & Beat","ch_quiz_d":"multiple-choice questions","ch_listen_n":"Guess the Hit","ch_listen_d":"guess title and artist","ch_mime_n":"Mime the Hit","ch_mime_d":"mime and make them guess","ch_karaoke_n":"Sing the Word","ch_karaoke_d":"secret word to sing","ch_title_solo":"🏁 Challenges & points","pop_facile":"easy / super famous","pop_medio":"medium difficulty","pop_difficile":"hard / niche","pop_mix":"random mix","resp_time":"Answer time","songs_lbl":"Songs","lbl_quiz":"Quiz","lbl_mime":"Charades","lbl_karaoke":"Karaoke","confirm_exit":"Leave the current game? The current score will be lost.","game_over":"🎵 Game over","pts_suffix":"points","tie":"Draw!","wins":"wins!","tie_at":"Tied at","personal_best":"Personal best","your_score_row":"Your score","rec_solo":"Records — Solo player","rec_team":"Records — Teams","no_rec_card":"No records yet. Play a game!","game_1":"game","game_n":"games","last_lbl":"last","loading_preview":"🔎 Loading preview…","confirm_home":"Return to Home? The current game will be lost.","anon":"Anonymous"}};
+let LANG = (function(){ try{ return localStorage.getItem('hitmania_lang') || 'it'; }catch(e){ return 'it'; } })();
+function t(key){ const d=I18N[LANG]||I18N.it; return (d && d[key]!==undefined) ? d[key] : (I18N.it[key]!==undefined?I18N.it[key]:key); }
+function applyLang(){
+  document.documentElement.lang = LANG;
+  // elementi statici con data-i18n (innerHTML)
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n'); const v=t(k); if(v!==undefined) el.innerHTML=v;
+  });
+  // placeholder
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+    const k=el.getAttribute('data-i18n-ph'); const v=t(k); if(v!==undefined) el.setAttribute('placeholder',v);
+  });
+  // aggiorna pulsante lingua
+  const lb=document.getElementById('langBtn'); if(lb) lb.textContent = (LANG==='it'?'🇮🇹':'🇬🇧');
+  // mostra il blocco lingua corretto (es. testo privacy esteso)
+  document.querySelectorAll('[data-lang-block]').forEach(el=>{
+    el.style.display = (el.getAttribute('data-lang-block')===LANG) ? '' : 'none';
+  });
+  // ri-renderizza viste dinamiche se presenti
+  try{ if(typeof renderChList==='function') renderChList(); }catch(e){}
+  try{ if(typeof updateDiffHint==='function') updateDiffHint(); }catch(e){}
+  try{ if(typeof renderTeams==='function') renderTeams(); }catch(e){}
+  // se una partita è in corso, ridisegna la sfida corrente nella nuova lingua
+  try{ if(typeof gameActive==='function' && gameActive()){ playStep(false); } }catch(e){}
+}
+function setLang(l){
+  LANG=l; try{localStorage.setItem('hitmania_lang',l);}catch(e){}
+  // EN -> forza categoria internazionale, esclude italiano
+  if(l==='en'){
+    if(!state.cats.includes('int')) state.cats.push('int');
+    state.cats = state.cats.filter(c=>c!=='ita');
+    try{ syncCatChips(); }catch(e){}
+  }
+  applyLang();
+}
+function toggleLang(){ setLang(LANG==='it'?'en':'it'); sfx&&sfx('click'); }
+/* sincronizza lo stato visivo dei chip categoria con state.cats */
+function syncCatChips(){
+  document.querySelectorAll('.chip[data-cat]').forEach(e=>{
+    const d=e.dataset.cat;
+    e.classList.toggle('on', d==='mix' ? state.cats.length===0 : state.cats.includes(d));
+  });
+}
+
 /* ================= STATE ================= */
-let state={teams:[],cats:[],timed:true,difficulty:"medio",solo:false,
+let state={teams:[],cats:[],timed:true,difficulty:"medio",solo:false,listenChoice:false,
   counts:{quiz:5,listen:5,mime:5,karaoke:5},
   round:0,turnIndex:0,lap:0,plan:[],roundTypes:[],
   quizPool:[],songPool:[],wordPool:[]};
@@ -4237,7 +4319,7 @@ function sfx(name){if(!soundOn)return;
   }}
 function homeTop(){
   if(typeof _gameRunning!=="undefined" && _gameRunning && currentScreen==="game"){
-    if(!confirm("Vuoi tornare alla Home? La partita in corso andrà persa.")) return;
+    if(!confirm(t('confirm_home'))) return;
     clearTimer(); stopHitAudio(); _gameRunning=false; clearGameState();
   }
   go("home");
@@ -4262,7 +4344,7 @@ window.addEventListener('popstate',(ev)=>{
   const target=(ev.state&&ev.state.screen)||'home';
   // se sto giocando e torno indietro, chiedo conferma per non perdere la partita
   if(gameActive() && target!=='game'){
-    const ok=confirm('Vuoi uscire dalla partita in corso? Il punteggio attuale andrà perso.');
+    const ok=confirm(t('confirm_exit'));
     if(!ok){ try{history.pushState({screen:'game'},'', '#game'); }catch(e){} return; }
     clearTimer(); stopHitAudio(); _gameRunning=false;
   }
@@ -4276,17 +4358,17 @@ window.addEventListener('beforeunload',(e)=>{ if(gameActive()){ e.preventDefault
 /* ================= SETUP ================= */
 
 function pickCat(c){if(c==="mix"){state.cats=[];}else{const i=state.cats.indexOf(c);if(i>=0)state.cats.splice(i,1);else state.cats.push(c);}document.querySelectorAll('.chip[data-cat]').forEach(e=>{const d=e.dataset.cat;e.classList.toggle('on',d==="mix"?state.cats.length===0:state.cats.includes(d));});sfx("click");}
-function catLabel(){return state.cats.length?state.cats.map(c=>CAT_NAME[c]||c).join(" + "):CAT_NAME["mix"];}
+function catLabel(){return state.cats.length?state.cats.map(c=>catName(c)).join(" + "):catName("mix");}
 const DIFF={facile:{quiz:30,mime:90,kar:45},medio:{quiz:20,mime:60,kar:30},difficile:{quiz:12,mime:40,kar:20},mix:{quiz:20,mime:60,kar:30}};
 function curDiff(){return DIFF[state.difficulty]||DIFF.medio;}
 function pickDiff(d){state.difficulty=d;document.querySelectorAll('#diffSeg .m').forEach(e=>e.classList.toggle('on',e.dataset.diff===d));updateDiffHint();sfx("click");}
-function updateDiffHint(){const h=document.getElementById('diffHint');if(!h)return;const x=curDiff();const pop={facile:'facili / famosissimi',medio:'di media difficoltà',difficile:'difficili / di nicchia',mix:'misto casuale'}[state.difficulty]||'';
+function updateDiffHint(){const h=document.getElementById('diffHint');if(!h)return;const x=curDiff();const pop={facile:t('pop_facile'),medio:t('pop_medio'),difficile:t('pop_difficile'),mix:t('pop_mix')}[state.difficulty]||'';
   const parts=[];
-  if((state.counts.quiz||0)>0) parts.push(`Quiz <b>${x.quiz}s</b>`);
-  if((state.counts.mime||0)>0) parts.push(`Mimo <b>${x.mime}s</b>`);
-  if((state.counts.karaoke||0)>0) parts.push(`Karaoke <b>${x.kar}s</b>`);
-  const timers = parts.length?`⏱ Tempo risposta — ${parts.join(' · ')}<br>`:'';
-  h.innerHTML=`${timers}🎵 Brani: <b>${pop}</b>`;}
+  if((state.counts.quiz||0)>0) parts.push(`${t('lbl_quiz')} <b>${x.quiz}s</b>`);
+  if((state.counts.mime||0)>0) parts.push(`${t('lbl_mime')} <b>${x.mime}s</b>`);
+  if((state.counts.karaoke||0)>0) parts.push(`${t('lbl_karaoke')} <b>${x.kar}s</b>`);
+  const timers = parts.length?`⏱ ${t('resp_time')} — ${parts.join(' · ')}<br>`:'';
+  h.innerHTML=`${timers}🎵 ${t('songs_lbl')}: <b>${pop}</b>`;}
 
 function goSetup(mode){
   state.solo = (mode==="solo");
@@ -4298,27 +4380,27 @@ function goSetup(mode){
     // suggerisci anche i nomi già usati nei record solo
     let suggestion=nm;
     try{ const r=loadRecords(); if(r.solo&&r.solo.length){ const names=[...new Set(r.solo.map(x=>x.name))]; if(!suggestion&&names.length)suggestion=names[0]; } }catch(e){}
-    const input=prompt("🎧 Come ti chiami? (il nome serve per salvare i tuoi record)", suggestion||"");
+    const input=prompt(t('ask_name'), suggestion||"");
     if(input===null){ return; } // annullato: resta sulla home
     nm=(input.trim()||"Tu");
     try{localStorage.setItem('hitmania_solo_name',nm);}catch(e){}
     state.teams=[{name:nm,color:COLORS[0],score:0}];
-    title.textContent="🎧 Gioca da solo";
-    sub.textContent="Sfida personale: quiz e ascolto. Batti il tuo record!";
+    title.textContent=t('solo_title');
+    sub.textContent=t('solo_sub');
     teamsCard.style.display="";
-    chTitle.textContent="🏁 Sfide & punti";
-    if(catSub)catSub.textContent="(Ascolto)";
+    chTitle.textContent=t('ch_title_solo');
+    if(catSub)catSub.textContent=t('cat_label_listen');
     // in solo: solo quiz+ascolto (azzera mimo/karaoke)
     state.counts.mime=0; state.counts.karaoke=0;
     if((state.counts.quiz||0)===0)state.counts.quiz=5;
     if((state.counts.listen||0)===0)state.counts.listen=5;
   }else{
-    if(!state.teams.length || state.teams.length<2){ state.teams=[{name:"Squadra 1",color:COLORS[0],score:0},{name:"Squadra 2",color:COLORS[1],score:0}]; }
-    title.textContent="👥 Crea le squadre";
-    sub.textContent="Da 2 a 6 squadre. Date un nome a ciascuna.";
+    if(!state.teams.length || state.teams.length<2){ state.teams=[{name:t('team_default')+" 1",color:COLORS[0],score:0},{name:t('team_default')+" 2",color:COLORS[1],score:0}]; }
+    title.textContent=t('setup_title_team');
+    sub.textContent=t('setup_sub_team');
     teamsCard.style.display="";
-    chTitle.textContent="🏁 Sfide in gioco & punti";
-    if(catSub)catSub.textContent="(Ascolto & Mimo)";
+    chTitle.textContent=t('ch_title');
+    if(catSub)catSub.textContent=t('cat_label_listen_mime');
   }
   renderTeams();renderChList();updateDiffHint();
   go('setup');
@@ -4331,7 +4413,7 @@ function renderChList(){
     const n=state.counts[ch.id]||0;
     const row=document.createElement('div');row.className='chrow'+(n>0?'':' off');
     row.innerHTML=`<span class="ci">${ch.ic}</span>
-      <div class="cn">${ch.n}<small>${ch.desc}</small></div>
+      <div class="cn">${t('ch_'+ch.id+'_n')}<small>${t('ch_'+ch.id+'_d')}</small></div>
       <div class="ptsbox"><button>−</button><span>${n}</span><button>+</button></div>
       <label class="switch"><input type="checkbox" ${n>0?'checked':''}><span class="slider"></span></label>`;
     const [minus,plus]=row.querySelectorAll('.ptsbox button');
@@ -4351,7 +4433,7 @@ function renderTeams(){
     if(addBtn)addBtn.style.display='none';
     const d=document.createElement('div');d.className='team-item';
     d.innerHTML=`<span class="dot" style="background:${state.teams[0].color};color:${state.teams[0].color}"></span>
-      <input type="text" placeholder="Il tuo nome o username" value="${(state.teams[0].name==='Tu'?'':state.teams[0].name).replace(/"/g,'&quot;')}" oninput="state.teams[0].name=this.value||'Tu';try{localStorage.setItem('hitmania_solo_name',state.teams[0].name);}catch(e){}">`;
+      <input type="text" placeholder="${t('solo_name_ph')}" value="${(state.teams[0].name==='Tu'?'':state.teams[0].name).replace(/"/g,'&quot;')}" oninput="state.teams[0].name=this.value||'Tu';try{localStorage.setItem('hitmania_solo_name',state.teams[0].name);}catch(e){}">`;
     el.appendChild(d);
     return;
   }
@@ -4364,7 +4446,7 @@ function renderTeams(){
     el.appendChild(d);
   });
 }
-function addTeam(){if(state.teams.length>=6)return;const i=state.teams.length;state.teams.push({name:"Squadra "+(i+1),color:COLORS[i%COLORS.length],score:0});renderTeams();sfx("click");}
+function addTeam(){if(state.teams.length>=10)return;const i=state.teams.length;state.teams.push({name:t('team_default')+" "+(i+1),color:COLORS[i%COLORS.length],score:0});renderTeams();sfx("click");}
 function removeTeam(i){state.teams.splice(i,1);renderTeams();}
 
 /* ================= GAME ================= */
@@ -4377,6 +4459,17 @@ function filterByDiff(arr, getD){
   const want=state.difficulty;
   const f=arr.filter(x=>getD(x)===want);
   return f.length>=4 ? f : arr.slice(); // fallback se troppo pochi
+}
+/* Filtro ORIGINE per il quiz: se è selezionato solo 'ita' o solo 'int', filtra di conseguenza.
+   Se entrambi o nessuno sono selezionati, usa l'intero archivio. */
+function filterQuizByOrigin(arr){
+  // In inglese si mostrano SOLO le domande internazionali (le italiane sono Italia-specifiche)
+  if(LANG==='en'){ const fe=arr.filter(q=>q.o==="int"); return fe.length?fe:arr.slice(); }
+  const hasIta=state.cats.includes("ita"), hasInt=state.cats.includes("int");
+  if(hasIta===hasInt) return arr.slice();      // entrambi o nessuno -> tutto
+  const want = hasIta ? "ita" : "int";
+  const f=arr.filter(q=>q.o===want);
+  return f.length>=4 ? f : arr.slice();         // fallback se troppo poche
 }
 function buildMimePool(){
   // Mimo: filtra i brani per difficoltà (tier di notorietà) come l'ascolto, mix=tutti
@@ -4437,7 +4530,7 @@ function maybeShowResume(){
 
 function exitGame(dest){
   if(_gameRunning){
-    const ok=confirm('Vuoi uscire dalla partita in corso? Il punteggio attuale andrà perso.');
+    const ok=confirm(t('confirm_exit'));
     if(!ok) return;
   }
   clearTimer(); stopHitAudio(); _gameRunning=false; clearGameState();
@@ -4457,13 +4550,14 @@ function buildPlan(){
 function startGame(){
   ac();
   state.timed=document.getElementById('optTimed').checked;
+  { const oc=document.getElementById('optChoice'); state.listenChoice = oc? oc.checked : false; }
   soundOn=document.getElementById('optSound').checked;
   document.getElementById('sndBtn').textContent=soundOn?"🔊":"🔇";
   if(state.solo && !state.teams.length){ state.teams=[{name:"Tu",color:COLORS[0],score:0}]; }
   state.teams.forEach(t=>t.score=0);
   state.plan=buildPlan(); state.step=0;
-  if(!state.plan.length){ showToast("Imposta almeno 1 domanda!",false); return; }
-  state.quizPool=shuffle(filterByDiff(QUIZ,q=>q.d));state.songPool=buildSongPool();state.mimePool=buildMimePool();state.wordPool=shuffle(filterByDiff(WORDS,w=>w.d));
+  if(!state.plan.length){ showToast(t('need_one_q'),false); return; }
+  state.quizPool=shuffle(filterByDiff(filterQuizByOrigin(QUIZ),q=>q.d));state.songPool=buildSongPool();state.mimePool=buildMimePool();state.wordPool=shuffle(filterByDiff(WORDS,w=>w.d));
   _gameRunning=true;clearGameState();
   go('game');renderRoundBar();playStep(true);
 }
@@ -4503,7 +4597,7 @@ function playStep(first){
   const totCat=(state.counts[rt]||0)*state.teams.length;
   const doneCat=state.plan.slice(0,state.step).filter(s=>s.rt===rt).length;
   const catTxt=` · ${doneCat+1}/${totCat}`;
-  document.getElementById('roundPill').textContent=`${m.n.toUpperCase()}${catTxt}`;
+  document.getElementById('roundPill').textContent=`${(t('ch_'+rt+'_n')||m.n).toUpperCase()}${catTxt}`;
   document.getElementById('turnWho').innerHTML = state.solo
     ? `<span style="font-size:22px;font-weight:900"><span class="dot" style="display:inline-block;width:14px;height:14px;background:${team.color};color:${team.color};margin-right:8px;vertical-align:middle"></span>${escapeHtml(team.name)}</span>`
     : `<span class="dot" style="display:inline-block;width:16px;height:16px;background:${team.color};color:${team.color};margin-right:8px;vertical-align:middle"></span>${escapeHtml(team.name)}`;
@@ -4515,20 +4609,23 @@ function playStep(first){
 function renderQuiz(team){
   const box=document.getElementById('challengeBox');
   const q=state.quizPool[state.step%state.quizPool.length];
-  const correct=q.a[0],opts=shuffle(q.a),letters=["A","B","C","D"];
+  const useEn=(LANG==='en' && q.qen && q.aen);
+  const qText=useEn?q.qen:q.q;
+  const aArr=useEn?q.aen:q.a;
+  const correct=aArr[0],opts=shuffle(aArr),letters=["A","B","C","D"];
   const _d=curDiff();const QTIME=_d.quiz;
   box.innerHTML=`
-    <div class="challenge-type"><span class="ic">🧠</span><h3>Quiz Musicale</h3><p>Rispondi · <b>1 punto</b></p></div>
+    <div class="challenge-type"><span class="ic">🧠</span><h3>${t('quiz_head')}</h3><p>${t('quiz_answer')} · <b>1 ${t('point')}</b></p></div>
     ${state.timed?`<div class="tbar"><div class="fill" id="qfill"></div></div><div class="timer" id="qtimer" style="font-size:26px">${QTIME}</div>`:''}
-    <p style="font-size:20px;font-weight:800;text-align:center;margin:10px 0 6px">${escapeHtml(q.q)}</p>
+    <p style="font-size:20px;font-weight:800;text-align:center;margin:10px 0 6px">${escapeHtml(qText)}</p>
     <div id="opts"></div>`;
   const oc=box.querySelector('#opts');let answered=false,remaining=QTIME;
   function settle(chosen){
     if(answered)return;answered=true;clearTimer();
     oc.querySelectorAll('.opt').forEach(x=>{x.disabled=true;if(x.dataset.v===correct)x.classList.add('correct');});
-    if(chosen===correct){award(team,1);sfx("correct");showToast("+1 🎉");}
-    else if(chosen!==null){const el=[...oc.querySelectorAll('.opt')].find(x=>x.dataset.v===chosen);if(el)el.classList.add('wrong');sfx("wrong");showToast("Sbagliato 😬",false);}
-    else{sfx("wrong");showToast("⏰ Tempo scaduto!",false);}
+    if(chosen===correct){award(team,1);sfx("correct");showToast(t('toast_plus1'));}
+    else if(chosen!==null){const el=[...oc.querySelectorAll('.opt')].find(x=>x.dataset.v===chosen);if(el)el.classList.add('wrong');sfx("wrong");showToast(t('wrong'),false);}
+    else{sfx("wrong");showToast(t('time_up'),false);}
     showNext();
   }
   opts.forEach((o,i)=>{const b=document.createElement('button');b.className='opt';b.dataset.v=o;b.innerHTML=`<span class="k">${letters[i]}</span><span>${escapeHtml(o)}</span>`;b.onclick=()=>settle(o);oc.appendChild(b);});
@@ -4552,27 +4649,103 @@ function findPlayableSong(maxTries, cb){
   attempt();
 }
 
+/* Costruisce 3 distrattori plausibili per la scelta multipla: brani diversi che
+   condividono almeno un tag di decennio o genere (se possibile), stesso bacino. */
+function buildListenDistractors(correct, n){
+  const decades=["60s70s","80s","90s","00s","10s","20s"];
+  const genres=["pop","rock","dance","hiphop","latin","soul","metal","indie","cantautori"];
+  const cDec=correct.c.filter(c=>decades.includes(c));
+  const cGen=correct.c.filter(c=>genres.includes(c));
+  const sameKey=(s)=> (s.t+"|"+s.a).toLowerCase()===(correct.t+"|"+correct.a).toLowerCase();
+  // ORIGINE del brano corretto: i distrattori DEVONO essere della stessa origine (ita con ita, int con int)
+  const corrOrigin = correct.c.includes("ita") ? "ita" : (correct.c.includes("int") ? "int" : null);
+  const sameOrigin=(s)=> corrOrigin ? s.c.includes(corrOrigin) : true;
+  const out=[];
+  const used=new Set();
+  const take=(s)=>{ const k=(s.t+"|"+s.a).toLowerCase(); if(used.has(k)||sameKey(s))return false; used.add(k); out.push(s); return true; };
+
+  // [1] Includi 1-2 brani dello STESSO artista (titoli diversi) per alzare la difficoltà
+  let sameArtist=SONGS.filter(s=>!sameKey(s) && s.a===correct.a && sameOrigin(s));
+  sameArtist=shuffle(sameArtist);
+  const wantSameArtist=Math.min(2, sameArtist.length, n-1); // almeno 1 distrattore "diverso"
+  for(let i=0;i<wantSameArtist;i++){ take(sameArtist[i]); if(out.length>=n) break; }
+
+  // [2] Riempi con brani SIMILI di stessa origine (stesso decennio o genere), artisti diversi
+  let similar=SONGS.filter(s=>!sameKey(s) && s.a!==correct.a && sameOrigin(s) &&
+    ( s.c.some(c=>cDec.includes(c)) || s.c.some(c=>cGen.includes(c)) ));
+  similar=shuffle(similar);
+  const seenArt=new Set([correct.a, ...out.map(s=>s.a)]);
+  for(const s of similar){ if(out.length>=n) break; if(seenArt.has(s.a)) continue; seenArt.add(s.a); take(s); }
+
+  // [3] Fallback: qualsiasi brano di stessa origine (artisti diversi)
+  if(out.length<n){
+    let sameOrig=shuffle(SONGS.filter(s=>!sameKey(s) && s.a!==correct.a && sameOrigin(s)));
+    for(const s of sameOrig){ if(out.length>=n) break; if(seenArt.has(s.a)) continue; seenArt.add(s.a); take(s); }
+  }
+  // [4] Ultimo fallback: ignora il vincolo origine (evita pool vuoto)
+  if(out.length<n){
+    let any=shuffle(SONGS.filter(s=>!sameKey(s) && s.a!==correct.a));
+    for(const s of any){ if(out.length>=n) break; take(s); }
+  }
+  return out.slice(0,n);
+}
+
 function renderListen(team){
   const box=document.getElementById('challengeBox');
   // schermata di preparazione: cerca un brano CON anteprima garantita
   box.innerHTML=`
-    <div class="challenge-type"><span class="ic">🎧</span><h3>Ascolto</h3><p>Preparo il brano…</p></div>
-    <div class="bigcard"><div class="player"><div class="pdisc spin" style="margin:2px auto 10px"></div><div class="pstatus">🔎 Cerco un brano con anteprima…</div></div></div>`;
+    <div class="challenge-type"><span class="ic">🎧</span><h3>${t('listen_head')}</h3><p>${t('prep_song')}</p></div>
+    <div class="bigcard"><div class="player"><div class="pdisc spin" style="margin:2px auto 10px"></div><div class="pstatus">${t('searching')}</div></div></div>`;
   findPlayableSong(12, (song, preview)=>{
-    box.innerHTML=`
-      <div class="challenge-type"><span class="ic">🎧</span><h3>Ascolto</h3><p>Indovinate titolo e interprete · <b>1 punto</b></p></div>
-      <div class="bigcard">
-        <div class="lab">🎧 Brano misterioso</div>
-        <div class="song" style="font-size:16px;color:var(--muted)">La squadra indovina titolo e interprete</div>
-        <div id="listenPlayer"></div>
-        <div class="catlabel">categoria: ${catLabel()}</div>
-      </div>
-      <div class="btnrow">
-        <button class="btn ok" onclick="award(state.teams[state.plan[state.step].team],1);sfx('correct');showToast('+1 🎉');stopHitAudio();nextTurn()">✓ Indovinato (+1)</button>
-        <button class="btn no" onclick="sfx('wrong');stopHitAudio();nextTurn()">✗ Sbagliato</button>
-      </div>`;
-    mountPlayer(document.getElementById('listenPlayer'), song, {});
+    const ti=state.plan[state.step].team;
+    if(state.listenChoice){
+      // --- MODALITÀ SCELTA MULTIPLA ---
+      const distr=buildListenDistractors(song,3);
+      const opts=shuffle([song].concat(distr));
+      const optsHtml=opts.map((o,idx)=>{
+        const correct = (o.t+"|"+o.a).toLowerCase()===(song.t+"|"+song.a).toLowerCase();
+        return `<button class="opt lc-opt" data-correct="${correct?1:0}" onclick="listenChoose(this,${ti})"><span class="k">${String.fromCharCode(65+idx)}</span><span><b>${escapeHtml(o.t)}</b><br><small style="color:var(--muted)">${escapeHtml(o.a)}</small></span></button>`;
+      }).join('');
+      box.innerHTML=`
+        <div class="challenge-type"><span class="ic">🎧</span><h3>${t('listen_head')}</h3><p>${t('listen_choose')} · <b>1 ${t('point')}</b></p></div>
+        <div class="bigcard">
+          <div class="lab">${t('mystery_song')}</div>
+          <div id="listenPlayer"></div>
+          <div class="catlabel">${t('category')}: ${catLabel()}</div>
+        </div>
+        <div class="opts lc-opts">${optsHtml}</div>`;
+      mountPlayer(document.getElementById('listenPlayer'), song, {});
+    } else {
+      // --- MODALITÀ CLASSICA (indovina a mente) ---
+      box.innerHTML=`
+        <div class="challenge-type"><span class="ic">🎧</span><h3>${t('listen_head')}</h3><p>${t('listen_guess')} · <b>1 ${t('point')}</b></p></div>
+        <div class="bigcard">
+          <div class="lab">${t('mystery_song')}</div>
+          <div class="song" style="font-size:16px;color:var(--muted)">${t('listen_guess_sub')}</div>
+          <div id="listenPlayer"></div>
+          <div class="catlabel">${t('category')}: ${catLabel()}</div>
+        </div>
+        <div class="btnrow">
+          <button class="btn ok" onclick="award(state.teams[state.plan[state.step].team],1);sfx('correct');showToast(t('toast_plus1'));stopHitAudio();nextTurn()">${t('guessed')}</button>
+          <button class="btn no" onclick="sfx('wrong');stopHitAudio();nextTurn()">${t('missed')}</button>
+        </div>`;
+      mountPlayer(document.getElementById('listenPlayer'), song, {});
+    }
   });
+}
+
+/* Gestisce il click su un'opzione nell'ascolto a scelta multipla */
+function listenChoose(btn, ti){
+  const box=document.getElementById('challengeBox');
+  const all=box.querySelectorAll('.lc-opt');
+  all.forEach(b=>{ b.disabled=true; b.style.pointerEvents='none'; if(b.dataset.correct==='1') b.classList.add('opt-correct'); });
+  const ok = btn.dataset.correct==='1';
+  if(ok){ btn.classList.add('opt-correct'); award(state.teams[ti],1); sfx('correct'); showToast(t('toast_plus1')); }
+  else { btn.classList.add('opt-wrong'); sfx('wrong'); showToast(t('toast_wrong'),false); }
+  stopHitAudio();
+  const wrap=document.createElement('div'); wrap.className='btnrow'; wrap.style.marginTop='14px';
+  wrap.innerHTML=`<button class="btn" onclick="nextTurn()">${t('next_turn')}</button>`;
+  box.appendChild(wrap);
 }
 
 /* ---- MIME ---- */
@@ -4581,21 +4754,21 @@ function renderMime(team){
   const song=(state.mimePool&&state.mimePool.length)?state.mimePool.shift():buildMimePool()[0];
   const ti=state.plan[state.step].team;
   box.innerHTML=`
-    <div class="challenge-type"><span class="ic">🎭</span><h3>Mimo</h3><p>Un membro mima la canzone · la squadra indovina · <b>1 punto</b></p></div>
-    <p class="hint" style="text-align:center">Solo chi mima guarda la carta. Premi per rivelarla, poi avvia il timer!</p>
+    <div class="challenge-type"><span class="ic">🎭</span><h3>${t('mime_head')}</h3><p>${t('mime_desc')} · <b>1 ${t('point')}</b></p></div>
+    <p class="hint" style="text-align:center">${t('mime_hint')}</p>
     <div class="bigcard">
-      <div class="lab">🎭 Canzone da mimare</div>
+      <div class="lab">${t('mime_card')}</div>
       <div class="song reveal-hidden" id="mimeSong">${escapeHtml(song.t)}</div>
       <div class="artist reveal-hidden" id="mimeArt">${escapeHtml(song.a)}</div>
-      <div class="catlabel">categoria: ${catLabel()}</div>
+      <div class="catlabel">${t('category')}: ${catLabel()}</div>
     </div>
-    <div class="btnrow"><button class="btn sec" id="revBtn" onclick="revealMime()">👁 Rivela la carta</button></div>
+    <div class="btnrow"><button class="btn sec" id="revBtn" onclick="revealMime()">${t('reveal_card')}</button></div>
     <div id="mimeTimerWrap" style="display:none">
       <div class="tbar"><div class="fill" id="mimeFill"></div></div>
       <div class="timer" id="mimeTimer">${curDiff().mime}</div>
       <div class="btnrow">
-        <button class="btn ok" onclick="award(state.teams[${ti}],1);sfx('correct');showToast('+1 🎉');clearTimer();nextTurn()">✓ Indovinato (+1)</button>
-        <button class="btn no" onclick="sfx('wrong');clearTimer();nextTurn()">✗ Non indovinato</button>
+        <button class="btn ok" onclick="award(state.teams[${ti}],1);sfx('correct');showToast(t('toast_plus1'));clearTimer();nextTurn()">${t('guessed2')}</button>
+        <button class="btn no" onclick="sfx('wrong');clearTimer();nextTurn()">${t('not_guessed')}</button>
       </div>
     </div>`;
 }
@@ -4608,25 +4781,25 @@ function renderKaraoke(team){
   const word=(wordObj&&wordObj.w)?wordObj.w:wordObj;
   const ti=state.plan[state.step].team;
   box.innerHTML=`
-    <div class="challenge-type"><span class="ic">🎤</span><h3>Karaoke · Parola Segreta</h3><p>Cantate una canzone che contenga la parola · <b>1 punto</b></p></div>
+    <div class="challenge-type"><span class="ic">🎤</span><h3>${t('kar_head')}</h3><p>${t('kar_desc')} · <b>1 ${t('point')}</b></p></div>
     <div class="bigcard">
-      <div class="lab">🎤 Parola segreta</div>
+      <div class="lab">${t('kar_secret')}</div>
       <div class="word">${escapeHtml(word.toUpperCase())}</div>
-      <div class="hint">La squadra deve cantare (almeno un verso di) una canzone che contenga questa parola, entro il tempo!</div>
+      <div class="hint">${t('kar_hint')}</div>
     </div>
     <div class="tbar"><div class="fill" id="karFill"></div></div>
     <div class="timer" id="karTimer">${curDiff().kar}</div>
-    <div class="btnrow"><button class="btn sec" onclick="startBarTimer(curDiff().kar,'karTimer','karFill')">⏱ Avvia timer</button></div>
+    <div class="btnrow"><button class="btn sec" onclick="startBarTimer(curDiff().kar,'karTimer','karFill')">${t('kar_start')}</button></div>
     <div class="btnrow">
-      <button class="btn ok" onclick="award(state.teams[${ti}],1);sfx('correct');showToast('+1 🎉');clearTimer();nextTurn()">✓ Cantata! (+1)</button>
-      <button class="btn no" onclick="sfx('wrong');clearTimer();nextTurn()">✗ Tempo scaduto</button>
+      <button class="btn ok" onclick="award(state.teams[${ti}],1);sfx('correct');showToast(t('toast_plus1'));clearTimer();nextTurn()">${t('kar_sung')}</button>
+      <button class="btn no" onclick="sfx('wrong');clearTimer();nextTurn()">${t('kar_timeout')}</button>
     </div>`;
 }
 
 /* ================= SCORING / TIMER / TOAST ================= */
 function award(team,pts){team.score+=pts;renderMiniScore();}
 function showToast(msg,good=true){const t=document.getElementById('toast');t.textContent=msg;t.style.background=good?'linear-gradient(90deg,var(--green),#13b85d)':'linear-gradient(90deg,#ff5b6a,#c21d3a)';t.style.color=good?'#032616':'#fff';t.classList.remove('show');void t.offsetWidth;t.classList.add('show');}
-function showNext(){const box=document.getElementById('challengeBox');if(!box.querySelector('#nextBtn')){const b=document.createElement('button');b.id='nextBtn';b.className='btn';b.style.marginTop='14px';b.textContent='→ Turno successivo';b.onclick=()=>nextTurn();box.appendChild(b);}}
+function showNext(){const box=document.getElementById('challengeBox');if(!box.querySelector('#nextBtn')){const b=document.createElement('button');b.id='nextBtn';b.className='btn';b.style.marginTop='14px';b.textContent=t('next_turn');b.onclick=()=>nextTurn();box.appendChild(b);}}
 function startBarTimer(sec,elId,fillId){clearTimer();let t=sec;const el=document.getElementById(elId),fill=document.getElementById(fillId);if(el){el.textContent=t;el.classList.remove('low');}if(fill)fill.style.width='100%';timerId=setInterval(()=>{t--;if(el)el.textContent=t<=0?"⏰":t;if(fill)fill.style.width=Math.max(0,100*t/sec)+'%';if(t<=5&&t>0){if(el)el.classList.add('low');sfx("tick");}if(t<=0){clearTimer();sfx("wrong");}},1000);}
 function clearTimer(){if(timerId){clearInterval(timerId);timerId=null;}}
 
@@ -4743,10 +4916,10 @@ function mountPlayer(container, song, opts){
       <div class="pdisc" id="pDisc"></div>
       <div class="pbars" id="pBars"><span></span><span></span><span></span><span></span><span></span><span></span></div>
       <div class="pprog" id="pProg"><div class="pprog-fill" id="pProgFill"></div></div>
-      <div class="pstatus" id="pStatus">🔎 Carico l'anteprima…</div>
-      <button class="pbtn" id="pPlay" disabled style="opacity:.6">⏳ Attendi…</button>
+      <div class="pstatus" id="pStatus">${t('loading_preview')}</div>
+      <button class="pbtn" id="pPlay" disabled style="opacity:.6">${t('wait')}</button>
       <div id="pRevealWrap" style="margin-top:10px">
-        <button class="pbtn" id="pReveal" style="background:rgba(255,210,63,.14);border-color:rgba(255,210,63,.55);box-shadow:0 0 16px rgba(255,210,63,.22);display:none">👁 Rivela brano</button>
+        <button class="pbtn" id="pReveal" style="background:rgba(255,210,63,.14);border-color:rgba(255,210,63,.55);box-shadow:0 0 16px rgba(255,210,63,.22);display:none">${t('reveal_song')}</button>
         <div id="pAnswer" style="display:none;margin-top:10px">
           <img id="pArt" alt="" style="display:none;width:120px;height:120px;border-radius:12px;margin:0 auto 10px;box-shadow:0 8px 24px rgba(0,0,0,.5)">
           <div style="font-size:20px;font-weight:900" id="pSong"></div>
@@ -4761,7 +4934,7 @@ function mountPlayer(container, song, opts){
   let url=null, art=null, clipTimer=null, playing=false, rafId=null;
   function stopVisual(){ bars.classList.remove('playing'); disc.classList.remove('spin'); }
   function startVisual(){ bars.classList.add('playing'); disc.classList.add('spin'); }
-  function setBtn(s){ btn.textContent = s==='pause' ? '⏸️ Pausa' : '▶️ Ascolta'; }
+  function setBtn(s){ btn.textContent = s==='pause' ? t('pause_btn') : t('listen_btn'); }
   function tickProg(){
     if(progFill && a.duration){ progFill.style.width=Math.min(100,(a.currentTime/a.duration)*100)+'%'; }
     if(playing){ rafId=requestAnimationFrame(tickProg); }
@@ -4769,19 +4942,19 @@ function mountPlayer(container, song, opts){
   function doPlay(){
     try{ if(a.src!==url){ a.src=url; a.currentTime=0; } }catch(e){}
     const pr=a.play();
-    const okStart=()=>{ playing=true; st.textContent='🎧 In riproduzione… indovina!'; startVisual(); setBtn('pause'); cancelAnimationFrame(rafId); tickProg(); };
-    if(pr&&pr.then){ pr.then(okStart).catch(()=>{ st.textContent='⚠️ Tocca ancora “Ascolta”'; }); }
+    const okStart=()=>{ playing=true; st.textContent=t('playing_guess'); startVisual(); setBtn('pause'); cancelAnimationFrame(rafId); tickProg(); };
+    if(pr&&pr.then){ pr.then(okStart).catch(()=>{ st.textContent=t('tap_again'); }); }
     else { okStart(); }
   }
-  function doPause(){ try{a.pause();}catch(e){} playing=false; cancelAnimationFrame(rafId); stopVisual(); setBtn('play'); st.textContent='⏸️ In pausa · riprendi quando vuoi'; }
-  a.onended=()=>{ playing=false; cancelAnimationFrame(rafId); if(progFill)progFill.style.width='100%'; stopVisual(); setBtn('play'); st.textContent='Anteprima finita · riascolta o rivela'; };
+  function doPause(){ try{a.pause();}catch(e){} playing=false; cancelAnimationFrame(rafId); stopVisual(); setBtn('play'); st.textContent=t('paused_resume'); }
+  a.onended=()=>{ playing=false; cancelAnimationFrame(rafId); if(progFill)progFill.style.width='100%'; stopVisual(); setBtn('play'); st.textContent=t('preview_over'); };
   a.onpause=()=>{ stopVisual(); };
   // PRE-CARICO l'URL al montaggio: così quando l'utente tocca, play() parte nel gesto (fix iOS)
   itunesSearch(song.t, song.a, (u)=>{
-    if(u){ url=u.url; art=u.art; btn.disabled=false; btn.style.opacity='1'; setBtn('play'); st.textContent='Pronto · premi “Ascolta” e indovina'; revBtn.style.display='block'; }
-    else { btn.disabled=true; btn.textContent='🔇 Anteprima assente'; revBtn.style.display='block';
+    if(u){ url=u.url; art=u.art; btn.disabled=false; btn.style.opacity='1'; setBtn('play'); st.textContent=t('ready_listen'); revBtn.style.display='block'; }
+    else { btn.disabled=true; btn.textContent=t('no_preview_short'); revBtn.style.display='block';
       const d=window._itDiag||{}; 
-      st.innerHTML='⚠️ Anteprima non disponibile<br><span style="font-size:10px;opacity:.7">diag: fetch ok '+(d.fetchOk||0)+'/err '+(d.fetchErr||0)+' · jsonp ok '+(d.jsonpOk||0)+'/err '+(d.jsonpErr||0)+(d.lastErr?' · '+d.lastErr:'')+'</span>';
+      st.innerHTML=t('no_preview')+'<br><span style="font-size:10px;opacity:.7">diag: fetch ok '+(d.fetchOk||0)+'/err '+(d.fetchErr||0)+' · jsonp ok '+(d.jsonpOk||0)+'/err '+(d.jsonpErr||0)+(d.lastErr?' · '+d.lastErr:'')+'</span>';
       if(opts.onNoPreview)opts.onNoPreview(); }
   });
   btn.onclick=()=>{ if(!url)return; if(playing){ doPause(); } else { doPlay(); } };
@@ -4803,7 +4976,7 @@ function stopHitAudio(){ try{hitAudio().pause();}catch(e){} }
 function loadRecords(){ try{ return JSON.parse(localStorage.getItem('hitmania_records')||'{"solo":[],"team":[]}'); }catch(e){ return {solo:[],team:[]}; } }
 function saveRecords(r){ try{ localStorage.setItem('hitmania_records', JSON.stringify(r)); }catch(e){} }
 function addRecord(kind, name, score, diff){
-  if(!name) name = kind==='solo'?'Anonimo':'Squadra';
+  if(!name) name = kind==='solo'?t('anon'):t('team_default');
   diff=diff||'medio';
   const r=loadRecords(); if(!r[kind])r[kind]=[];
   const key=name.trim().toLowerCase();
@@ -4826,22 +4999,22 @@ function renderRecords(){
   function rowsFor(list){
     return list.slice(0,10).map((x,i)=>`<div class="score-row ${i===0?'lead':''}">
       <div class="rank">${medals[i]||(i+1)}</div>
-      <div class="nm">${escapeHtml(x.name)}<br><span style="font-weight:400;color:var(--muted);font-size:11px">${x.plays||1} ${((x.plays||1)===1?'partita':'partite')} · ultimo ${x.last} · ${fmtDate(x.bestAt)}</span></div>
+      <div class="nm">${escapeHtml(x.name)}<br><span style="font-weight:400;color:var(--muted);font-size:11px">${x.plays||1} ${((x.plays||1)===1?t('game_1'):t('game_n'))} · ${t('last_lbl')} ${x.last} · ${fmtDate(x.bestAt)}</span></div>
       <div class="pts">${x.best}</div></div>`).join('');
   }
   function table(kind,title,icon){
     const list=r[kind]||[];
-    if(!list.length) return `<div class="card"><h4>${icon} ${title}</h4><p class="hint" style="margin:0">Nessun record ancora. Gioca una partita!</p></div>`;
+    if(!list.length) return `<div class="card"><h4>${icon} ${title}</h4><p class="hint" style="margin:0">${t('no_rec_card')}</p></div>`;
     const g=group(list);
     let inner='';
     ['facile','medio','difficile'].forEach(d=>{
-      if(g[d].length){ g[d].sort((a,b)=>b.best-a.best); inner+=`<div class="catgroup" style="margin-top:12px">${DIFF_LABEL[d]}</div>${rowsFor(g[d])}`; }
+      if(g[d].length){ g[d].sort((a,b)=>b.best-a.best); inner+=`<div class="catgroup" style="margin-top:12px">${({facile:t('diff_easy'),medio:t('diff_med'),difficile:t('diff_hard')})[d]||DIFF_LABEL[d]}</div>${rowsFor(g[d])}`; }
     });
     return `<div class="card"><h4>${icon} ${title}</h4>${inner}</div>`;
   }
-  box.innerHTML = table('solo','Record — Giocatore singolo','🎧') + table('team','Record — Squadre','👥');
+  box.innerHTML = table('solo',t('rec_solo'),'🎧') + table('team',t('rec_team'),'👥');
 }
-function clearRecords(){ if(confirm('Vuoi cancellare tutto lo storico dei record?')){ saveRecords({solo:[],team:[]}); renderRecords(); sfx('wrong'); } }
+function clearRecords(){ if(confirm(t('confirm_clear_rec'))){ saveRecords({solo:[],team:[]}); renderRecords(); sfx('wrong'); } }
 
 function endGame(){
   clearTimer();sfx("win");stopHitAudio();_gameRunning=false;clearGameState();
@@ -4850,18 +5023,18 @@ function endGame(){
     let best=0; try{best=parseInt(localStorage.getItem('hitmania_solo_best')||'0',10)||0;}catch(e){}
     const isRec=sc>best; if(isRec){try{localStorage.setItem('hitmania_solo_best',String(sc));}catch(e){}}
     addRecord('solo', state.teams[0].name, sc, state.difficulty);
-    document.getElementById('winName').textContent=isRec?"🏆 Nuovo record!":"🎵 Partita finita";
-    document.getElementById('winPts').textContent=sc+" punti";
+    document.getElementById('winName').textContent=isRec?t('new_record'):t('game_over');
+    document.getElementById('winPts').textContent=sc+" "+t('pts_suffix');
     const board=document.getElementById('finalBoard');
-    board.innerHTML=`<div class="score-row lead"><div class="rank">🎧</div><div class="nm">Il tuo punteggio</div><div class="pts">${sc}</div></div>`+
-      `<div class="score-row"><div class="rank">🏆</div><div class="nm">Record personale</div><div class="pts">${Math.max(best,sc)}</div></div>`;
+    board.innerHTML=`<div class="score-row lead"><div class="rank">🎧</div><div class="nm">${t('your_score_row')}</div><div class="pts">${sc}</div></div>`+
+      `<div class="score-row"><div class="rank">🏆</div><div class="nm">${t('personal_best')}</div><div class="pts">${Math.max(best,sc)}</div></div>`;
     return go('results');
   }
   const sorted=state.teams.slice().sort((a,b)=>b.score-a.score);
   sorted.forEach(tm=>addRecord('team', tm.name, tm.score, state.difficulty));
   const win=sorted[0],tie=sorted.filter(t=>t.score===win.score);
-  document.getElementById('winName').textContent=tie.length>1?"Pareggio!":win.name+" vince!";
-  document.getElementById('winPts').textContent=tie.length>1?("Parimerito a "+win.score+" punti"):(win.score+" punti");
+  document.getElementById('winName').textContent=tie.length>1?t('tie'):win.name+" "+t('wins');
+  document.getElementById('winPts').textContent=tie.length>1?(t('tie_at')+" "+win.score+" "+t('pts_suffix')):(win.score+" "+t('pts_suffix'));
   const board=document.getElementById('finalBoard');board.innerHTML='';const medals=["🥇","🥈","🥉"];
   sorted.forEach((t,i)=>{board.innerHTML+=`<div class="score-row ${i===0?'lead':''}"><div class="rank">${medals[i]||(i+1)}</div><span class="dot" style="background:${t.color};color:${t.color}"></span><div class="nm">${escapeHtml(t.name)}</div><div class="pts">${t.score}</div></div>`;});
   go('results');
@@ -4893,9 +5066,12 @@ function installApp(){
   try{history.replaceState({screen:'home'},'','#home');}catch(e){}
   const eq=document.getElementById('eq');
   for(let i=0;i<40;i++){const s=document.createElement('span');s.style.animationDelay=(Math.random()*1.1)+'s';s.style.animationDuration=(0.7+Math.random()*0.8)+'s';eq.appendChild(s);}
-  state.teams=[{name:"Squadra 1",color:COLORS[0],score:0},{name:"Squadra 2",color:COLORS[1],score:0}];
+  state.teams=[{name:t('team_default')+" 1",color:COLORS[0],score:0},{name:t('team_default')+" 2",color:COLORS[1],score:0}];
   renderTeams();renderChList();updateDiffHint();maybeShowResume();
   setupPWA();
+  // se la lingua salvata è EN, applica la regola internazionale all'avvio
+  if(LANG==='en'){ if(!state.cats.includes('int')) state.cats.push('int'); state.cats=state.cats.filter(c=>c!=='ita'); try{syncCatChips();}catch(e){} }
+  applyLang();
   // nascondi splash dopo breve intro
   const sp=document.getElementById('splash');
   if(sp){setTimeout(()=>sp.classList.add('hide'),1400);setTimeout(()=>{sp&&sp.remove();},2100);}
